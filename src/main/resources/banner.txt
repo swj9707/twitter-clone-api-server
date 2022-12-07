@@ -1,0 +1,21 @@
+${AnsiColor.BLUE}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣤⣤⣀⠀⠀⠀⠀⣀
+${AnsiColor.BLUE}⠀⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣶⣶⡿⢋
+${AnsiColor.BLUE}⠀⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋
+${AnsiColor.BLUE}⠀⠹⣿⣿⣿⣿⣶⣤⣤⣤⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀
+${AnsiColor.BLUE}⠀⣄⣈⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀
+${AnsiColor.BLUE}⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀
+${AnsiColor.BLUE}⠀⠀⣀⣉⣛⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀
+${AnsiColor.BLUE}⠀⠀⠘⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀⠀
+${AnsiColor.BLUE}⠀⠀⠀⠀⠀⢉⣩⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀
+${AnsiColor.BLUE}⠒⠶⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠋⠁⠀⠀⠀⠀⠀⠀⠀
+${AnsiColor.BLUE}⠀⠀⠀⠉⠙⠛⠛⠛⠛⠛⠛⠉⠁⠀
+${AnsiColor.GREEN}  _______              _   _     _                      _____   _                                       _____    _____      _____
+${AnsiColor.BRIGHT_GREEN} |__   __|            (_) | |   | |                    / ____| | |                              /\     |  __ \  |_   _|    / ____|
+${AnsiColor.BRIGHT_GREEN}    | |    __      __  _  | |_  | |_    ___   _ __    | |      | |   ___    _ __     ___       /  \    | |__) |   | |     | (___     ___   _ __  __   __   ___   _ __
+${AnsiColor.BRIGHT_GREEN}    | |    \ \ /\ / / | | | __| | __|  / _ \ | '__|   | |      | |  / _ \  | '_ \   / _ \     / /\ \   |  ___/    | |      \___ \   / _ \ | '__| \ \ / /  / _ \ | '__|
+${AnsiColor.BRIGHT_GREEN}    | |     \ V  V /  | | | |_  | |_  |  __/ | |      | |____  | | | (_) | | | | | |  __/    / ____ \  | |       _| |_     ____) | |  __/ | |     \ V /  |  __/ | |
+${AnsiColor.GREEN}    |_|      \_/\_/   |_|  \__|  \__|  \___| |_|       \_____| |_|  \___/  |_| |_|  \___|   /_/    \_\ |_|      |_____|   |_____/   \___| |_|      \_/    \___| |_|
+
+
+${application.title} ${application.version}
+Powered by Spring Boot ${spring-boot.version}
