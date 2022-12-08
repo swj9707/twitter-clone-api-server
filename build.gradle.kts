@@ -1,11 +1,25 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.7.7-SNAPSHOT"
+	id("org.springframework.boot") version "3.0.0"
 	id("io.spring.dependency-management") version "1.0.15.RELEASE"
-	kotlin("jvm") version "1.6.21"
-	kotlin("plugin.spring") version "1.6.21"
-	kotlin("plugin.jpa") version "1.6.21"
+	kotlin("jvm") version "1.7.21"
+	kotlin("plugin.spring") version "1.7.21"
+	kotlin("plugin.jpa") version "1.7.21"
+	kotlin("plugin.noarg") version "1.7.21"
+	kotlin("plugin.allopen") version "1.7.21"
+}
+
+allOpen {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperClass")
+	annotation("jakarta.persistence.Embeddable")
+}
+
+noArg {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperClass")
+	annotation("jakarta.persistence.Embeddable")
 }
 
 group = "com.swj9707"
@@ -30,6 +44,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
