@@ -53,16 +53,16 @@ class TwitterUserService(private val twitterUserRepository: TwitterUserRepositor
         return UserResDTO.Res.Login(UserResDTO.Res.TokenInfo(accessToken = accessToken, refreshToken = refreshToken))
     }
 
-    fun reissue(req : UserReqDTO.Req.Reissue) : UserResDTO.Res.TokenInfo {
-        if(!jwtUtil.validateToken(req.refreshToken)){
+    fun reissue(refreshToken : String, accessToken : String) : UserResDTO.Res.TokenInfo {
+        if(!jwtUtil.validateToken(refreshToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
-        val authentication = jwtUtil.getAuthentication(req.accessToken)
+        val authentication = jwtUtil.getAuthentication(accessToken)
         val refreshToken = redisUtil.getData("RT:"+authentication.name)
         if(ObjectUtils.isEmpty(refreshToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
-        if(refreshToken == null || !refreshToken.equals(req.refreshToken)){
+        if(refreshToken == null || !refreshToken.equals(refreshToken)){
             throw BaseException(BaseResponseCode.INVALID_TOKEN)
         } else {
             val newAccessToken = jwtUtil.createAccessToken(authentication.name)

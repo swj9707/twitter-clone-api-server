@@ -23,23 +23,23 @@ class JwtUtil(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private var SECRET_KEY = "thisistestusersecretkeyprojectnameiswassssup"
+    private var SECRETKEY = "thisistestusersecretkeyprojectnameiswassssup"
     //토큰 유효시간 30분
     companion object{
-        val ACCESS_TOKEN_NAME = "accessToken"
-        val REFRESH_TOKEN_NAME = "refreshToken"
-        val ACCESS_TOKEN_VALID_TIME = Duration.ofMinutes(30).toMillis()
-        val REFRESH_TOKEN_VALID_TIME = Duration.ofDays(14).toMillis()
+        const val ACCESS_TOKEN_NAME = "accessToken"
+        const val REFRESH_TOKEN_NAME = "refreshToken"
+        const val ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1000L
+        const val REFRESH_TOKEN_VALID_TIME =  7 * 24 * 60 * 60 * 1000L
     }
-    private val SIGNATURE_ALG : SignatureAlgorithm = SignatureAlgorithm.HS256
+    private val SIGNATUREALG : SignatureAlgorithm = SignatureAlgorithm.HS256
 
     fun getSigningkey(secretKey : String) : Key{
-        return Keys.hmacShaKeyFor(SECRET_KEY.toByteArray(StandardCharsets.UTF_8))
+        return Keys.hmacShaKeyFor(SECRETKEY.toByteArray(StandardCharsets.UTF_8))
     }
 
     fun extractAllClaims(jwtToken: String) : Claims {
         return Jwts.parserBuilder()
-            .setSigningKey(getSigningkey(SECRET_KEY))
+            .setSigningKey(getSigningkey(SECRETKEY))
             .build()
             .parseClaimsJws(jwtToken)
             .body
@@ -52,7 +52,7 @@ class JwtUtil(
             .setClaims(claims)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + ACCESS_TOKEN_VALID_TIME))
-            .signWith(getSigningkey(SECRET_KEY), SIGNATURE_ALG)
+            .signWith(getSigningkey(SECRETKEY), SIGNATUREALG)
             .compact()
     }
 
@@ -60,7 +60,7 @@ class JwtUtil(
         return Jwts.builder()
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID_TIME))
-            .signWith(getSigningkey(SECRET_KEY), SIGNATURE_ALG)
+            .signWith(getSigningkey(SECRETKEY), SIGNATUREALG)
             .compact()
     }
     // JWT 토큰에서 인증 정보 조회
@@ -91,7 +91,7 @@ class JwtUtil(
 
     fun validateToken(jwtToken: String): Boolean {
         return try {
-            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRET_KEY)).build().parseClaimsJws(jwtToken)
+            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
             !claims.body.expiration.before(Date())
         } catch (e: Exception) {
             false
@@ -100,7 +100,7 @@ class JwtUtil(
 
     fun getExpirationPeriod(jwtToken: String) : Int {
         return try {
-            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRET_KEY)).build().parseClaimsJws(jwtToken)
+            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
             val expireDate = Instant.ofEpochMilli(claims.body.expiration.time).atZone(ZoneId.systemDefault()).toLocalDate()
             val today = LocalDate.now()
             Period.between(today, expireDate).days
@@ -110,7 +110,7 @@ class JwtUtil(
     }
 
     fun getExpiration(jwtToken : String) : Long {
-        val expiration = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRET_KEY)).build()
+        val expiration = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build()
             .parseClaimsJws(jwtToken).body.expiration
         val now = System.currentTimeMillis()
         return expiration.time - now

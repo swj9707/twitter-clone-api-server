@@ -19,12 +19,10 @@ class UserReqDTO {
             }
         }
         data class Reissue(
-            val accessToken : String = "",
-            val refreshToken : String = ""
+            val accessToken : String = ""
         )
         data class Logout(
-            val accessToken : String,
-            val refreshToken : String
+            val accessToken : String
         )
     }
 }

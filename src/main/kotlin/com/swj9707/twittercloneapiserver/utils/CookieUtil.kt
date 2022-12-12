@@ -10,7 +10,7 @@ class CookieUtil {
     fun createCookie(cookieName : String, value : String) : Cookie {
         var token : Cookie = Cookie(cookieName, value)
         token.isHttpOnly = true
-        token.maxAge = JwtUtil.ACCESS_TOKEN_VALID_TIME.toInt()
+        token.maxAge = JwtUtil.REFRESH_TOKEN_VALID_TIME.toInt()
         token.path = "/"
         return token
     }
