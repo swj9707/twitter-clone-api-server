@@ -3,6 +3,7 @@ package com.swj9707.twittercloneapiserver.Auth.controller
 import com.swj9707.twittercloneapiserver.Auth.dto.UserReqDTO
 import com.swj9707.twittercloneapiserver.Auth.dto.UserResDTO
 import com.swj9707.twittercloneapiserver.Auth.service.TwitterUserService
+import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import org.springframework.http.ResponseEntity
@@ -18,30 +19,30 @@ class AuthController(private val twitterUserService: TwitterUserService) {
     }
 
     @PostMapping("/register")
-    fun register(@RequestBody userRegistReq: UserReqDTO.req.Register) : ResponseEntity<UserResDTO.res.Register> {
+    fun register(@RequestBody userRegistReq: UserReqDTO.Req.Register) : ResponseEntity<BaseResponse<UserResDTO.Res.Register>> {
         if(twitterUserService.existsUser(userRegistReq.userEmail)){
             throw BaseException(BaseResponseCode.DUPLICATE_EMAIL)
         }
-        val response = twitterUserService.createUser(userRegistReq)
-        return ResponseEntity.ok().body(response)
+        val result = twitterUserService.createUser(userRegistReq)
+        return ResponseEntity.ok().body(BaseResponse.success(result))
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody userLoginReq: UserReqDTO.req.Login) : ResponseEntity<UserResDTO.res.Login> {
-        val response = twitterUserService.login(userLoginReq)
-        return ResponseEntity.ok().body(response)
+    fun login(@RequestBody userLoginReq: UserReqDTO.Req.Login) : ResponseEntity<BaseResponse<UserResDTO.Res.Login>> {
+        val result = twitterUserService.login(userLoginReq)
+        return ResponseEntity.ok().body(BaseResponse.success(result))
     }
 
     @PostMapping("/logout")
-    fun logout(@RequestBody userLogoutRes : UserReqDTO.req.Logout) : ResponseEntity<UserResDTO.res.Logout> {
-        val response = twitterUserService.logout(userLogoutRes)
-        return ResponseEntity.ok().body(response)
+    fun logout(@RequestBody userLogoutRes : UserReqDTO.Req.Logout) : ResponseEntity<BaseResponse<UserResDTO.Res.Logout>> {
+        val result = twitterUserService.logout(userLogoutRes)
+        return ResponseEntity.ok().body(BaseResponse.success(result))
     }
 
     @PostMapping("/reissue")
-    fun reissue(@RequestBody reissueRes : UserReqDTO.req.Reissue) : ResponseEntity<UserResDTO.res.TokenInfo>{
-        val response = twitterUserService.reissue(reissueRes)
-        return ResponseEntity.ok().body(response)
+    fun reissue(@RequestBody reissueRes : UserReqDTO.Req.Reissue) : ResponseEntity<BaseResponse<UserResDTO.Res.TokenInfo>>{
+        val result = twitterUserService.reissue(reissueRes)
+        return ResponseEntity.ok().body(BaseResponse.success(result))
     }
 
 }

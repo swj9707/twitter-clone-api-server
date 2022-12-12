@@ -3,7 +3,7 @@ package com.swj9707.twittercloneapiserver.Auth.dto
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 
 class UserReqDTO {
-    companion object req{
+    companion object Req{
         data class Register(
             val userEmail : String,
             val userName : String,

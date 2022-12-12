@@ -11,8 +11,8 @@ class GlobalExceptionHandler {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(BaseException::class)
-    protected fun handleBaseException(e: BaseException): ResponseEntity<BaseResponse> {
+    protected fun handleBaseException(e: BaseException): ResponseEntity<BaseResponse<String>> {
         return ResponseEntity.status(e.baseResponseCode.status)
-            .body(BaseResponse(e.baseResponseCode.status, e.baseResponseCode.message))
+            .body(BaseResponse.failure( e.baseResponseCode.status, e.baseResponseCode.message))
     }
 }

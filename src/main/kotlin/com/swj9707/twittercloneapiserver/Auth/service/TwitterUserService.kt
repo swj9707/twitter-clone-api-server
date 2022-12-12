@@ -9,7 +9,6 @@ import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.CookieUtil
 import com.swj9707.twittercloneapiserver.utils.JwtUtil
 import com.swj9707.twittercloneapiserver.utils.RedisUtil
-import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -31,17 +30,17 @@ class TwitterUserService(private val twitterUserRepository: TwitterUserRepositor
         return twitterUserRepository.existsTwitterUserByEmail(email)
     }
 
-    fun createUser(userRegistReq: UserReqDTO.req.Register) : UserResDTO.res.Register {
+    fun createUser(userRegistReq: UserReqDTO.Req.Register) : UserResDTO.Res.Register {
         val user  = TwitterUser(
             email = userRegistReq.userEmail,
             userName = userRegistReq.userName,
             passwd = passwordEncoder.encode(userRegistReq.password)
         )
         twitterUserRepository.save(user)
-        return UserResDTO.res.Register(user.email, user.userName)
+        return UserResDTO.Res.Register(user.email, user.userName)
     }
 
-    fun login(req: UserReqDTO.req.Login) : UserResDTO.res.Login {
+    fun login(req: UserReqDTO.Req.Login) : UserResDTO.Res.Login {
         twitterUserRepository.findUserByEmail(req.userEmail)
             .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
 
@@ -51,11 +50,10 @@ class TwitterUserService(private val twitterUserRepository: TwitterUserRepositor
         val refreshToken = jwtUtil.createRefreshToken()
 
         redisUtil.setDataExpire("RT:"+authentication.name, refreshToken, JwtUtil.REFRESH_TOKEN_VALID_TIME)
-        return UserResDTO.res.Login(HttpStatus.OK,
-            UserResDTO.res.TokenInfo(accessToken = accessToken, refreshToken = refreshToken))
+        return UserResDTO.Res.Login(UserResDTO.Res.TokenInfo(accessToken = accessToken, refreshToken = refreshToken))
     }
 
-    fun reissue(req : UserReqDTO.req.Reissue) : UserResDTO.res.TokenInfo {
+    fun reissue(req : UserReqDTO.Req.Reissue) : UserResDTO.Res.TokenInfo {
         if(!jwtUtil.validateToken(req.refreshToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
@@ -68,7 +66,7 @@ class TwitterUserService(private val twitterUserRepository: TwitterUserRepositor
             throw BaseException(BaseResponseCode.INVALID_TOKEN)
         } else {
             val newAccessToken = jwtUtil.createAccessToken(authentication.name)
-            var response = UserResDTO.res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
+            var response = UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
 
             if(jwtUtil.getExpirationPeriod(refreshToken) <= 7){
                 val newRefreshToken = jwtUtil.createRefreshToken()
@@ -79,7 +77,7 @@ class TwitterUserService(private val twitterUserRepository: TwitterUserRepositor
         }
     }
 
-    fun logout(req: UserReqDTO.req.Logout) : UserResDTO.res.Logout {
+    fun logout(req: UserReqDTO.Req.Logout) : UserResDTO.Res.Logout {
         if(!jwtUtil.validateToken(req.accessToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
@@ -92,6 +90,6 @@ class TwitterUserService(private val twitterUserRepository: TwitterUserRepositor
 
         val expiration = jwtUtil.getExpiration(req.accessToken)
         redisUtil.setDataExpire(req.accessToken, "logout", expiration)
-        return UserResDTO.res.Logout(HttpStatus.OK, authentication.name)
+        return UserResDTO.Res.Logout(authentication.name)
     }
 }
