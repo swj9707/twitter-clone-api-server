@@ -1,13 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+	val kotlinVersion = "1.7.21"
 	id("org.springframework.boot") version "3.0.0"
 	id("io.spring.dependency-management") version "1.0.15.RELEASE"
-	kotlin("jvm") version "1.7.21"
-	kotlin("plugin.spring") version "1.7.21"
-	kotlin("plugin.jpa") version "1.7.21"
-	kotlin("plugin.noarg") version "1.7.21"
-	kotlin("plugin.allopen") version "1.7.21"
+	kotlin("jvm") version kotlinVersion
+	kotlin("plugin.spring") version kotlinVersion
+	kotlin("plugin.jpa") version kotlinVersion
+	kotlin("plugin.noarg") version kotlinVersion
+	kotlin("plugin.allopen") version kotlinVersion
 }
 
 allOpen {
@@ -41,13 +42,21 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
-	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+	//Swagger UI
+//	implementation("io.springfox:springfox-boot-starter:3.0.0")
+//	implementation("io.springfox:springfox-swagger-ui:3.0.0")
+//	implementation("io.springfox:springfox-oas:3.0.0")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

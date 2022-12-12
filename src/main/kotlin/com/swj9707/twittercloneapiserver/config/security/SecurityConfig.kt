@@ -1,9 +1,11 @@
 package com.swj9707.twittercloneapiserver.config.security
 
-import com.swj9707.twittercloneapiserver.utils.JwtTokenProvider
+import com.swj9707.twittercloneapiserver.utils.JwtUtil
+import com.swj9707.twittercloneapiserver.utils.RedisUtil
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -13,7 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) {
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+class SecurityConfig(
+    private val jwtUtil: JwtUtil,
+    private val redisUtil : RedisUtil) {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
@@ -30,9 +35,9 @@ class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) {
             .and()
             .authorizeHttpRequests()
             .requestMatchers("/api/v1/**").authenticated()
-            .requestMatchers("/api/v1/user/register","/api/v1/user/login").permitAll()
+            .requestMatchers("/api/auth/v1/**", "/swagger-ui/**", "/swagger-resources/**" , "/v3/api-docs/**").permitAll()
             .and()
-            .addFilterBefore(JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }
