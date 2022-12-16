@@ -9,7 +9,7 @@
   - Kotlin (OpenJDK 17)
 - DB
   - MariaDB
-  
+  - Redis
 # application.yml 양식
 ```yml
 spring:
