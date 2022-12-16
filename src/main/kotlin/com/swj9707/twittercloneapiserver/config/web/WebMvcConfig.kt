@@ -12,6 +12,8 @@ class WebMvcConfig : WebMvcConfigurer{
         registry.addMapping("/api/**")
             .allowedOrigins("https://localhost:3000")
             .allowedMethods("GET", "POST", "PUT", "DELETE")
+            .allowedHeaders("*")
+            .exposedHeaders("*")
             .allowCredentials(true).maxAge(3600)
     }
 }

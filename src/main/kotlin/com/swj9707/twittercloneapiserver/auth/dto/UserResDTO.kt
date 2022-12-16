@@ -1,4 +1,4 @@
-package com.swj9707.twittercloneapiserver.Auth.dto
+package com.swj9707.twittercloneapiserver.auth.dto
 
 class UserResDTO {
     companion object Res{
@@ -7,9 +7,9 @@ class UserResDTO {
             val userName : String,
         )
         data class Login (
+            val userInfo : TwitterUserDTO,
             val tokenInfo : TokenInfo
             )
-
         data class TokenInfo (
             val accessToken : String?,
             var refreshToken : String?

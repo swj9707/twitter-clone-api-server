@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.utils
 
-import com.swj9707.twittercloneapiserver.Auth.service.UserDetailsServiceImpl
+import com.swj9707.twittercloneapiserver.auth.service.UserDetailsServiceImpl
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import io.jsonwebtoken.Claims
@@ -24,7 +24,7 @@ class JwtUtil(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private var SECRETKEY = "thisistestusersecretkeyprojectnameiswassssup"
-    //토큰 유효시간 30분
+
     companion object{
         const val ACCESS_TOKEN_NAME = "accessToken"
         const val REFRESH_TOKEN_NAME = "refreshToken"
@@ -78,7 +78,7 @@ class JwtUtil(
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
     fun resolveToken(request: HttpServletRequest): String? {
         var token = request.getHeader("Authorization")
-        if(token != null){
+        if(token != null) {
             token = token.substring("Bearer ".length)
         }
         return token

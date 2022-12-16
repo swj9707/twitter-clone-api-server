@@ -1,4 +1,4 @@
-package com.swj9707.twittercloneapiserver.Auth.dto
+package com.swj9707.twittercloneapiserver.auth.dto
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 

@@ -1,4 +1,4 @@
-package com.swj9707.twittercloneapiserver.Auth.entity
+package com.swj9707.twittercloneapiserver.auth.entity
 
 import com.swj9707.twittercloneapiserver.constant.entity.BaseEntity
 import com.swj9707.twittercloneapiserver.constant.enum.Authority
