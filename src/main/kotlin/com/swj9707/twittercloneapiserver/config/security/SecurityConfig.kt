@@ -35,7 +35,7 @@ class SecurityConfig(
             .and()
             .authorizeHttpRequests()
             .requestMatchers("/api/v1/**").authenticated()
-            .requestMatchers("/api/auth/v1/**", "/swagger-ui/**", "/swagger-resources/**" , "/v3/api-docs/**").permitAll()
+            .requestMatchers("/api/auth/v1/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
             .and()
             .addFilterBefore(JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter::class.java)
 

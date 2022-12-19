@@ -26,10 +26,10 @@ class TwitterUser (
     val email: String,
 
     @Column(name="user_passwd")
-    val passwd: String,
+    var passwd: String,
 
     @Column(name="user_name")
-    val userName: String,
+    var userName: String,
 
     @Column(name="user_role")
     @Enumerated(EnumType.STRING)

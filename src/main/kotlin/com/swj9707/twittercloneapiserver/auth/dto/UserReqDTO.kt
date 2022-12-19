@@ -1,6 +1,7 @@
 package com.swj9707.twittercloneapiserver.auth.dto
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import java.util.*
 
 class UserReqDTO {
     companion object Req{
@@ -21,8 +22,16 @@ class UserReqDTO {
         data class Reissue(
             val accessToken : String = ""
         )
-        data class Logout(
-            val accessToken : String
+
+        data class EditProfile(
+            val userId : UUID,
+            val newUserName : String
+        )
+
+        data class EditPassword(
+            val userId : UUID,
+            val currentPassword : String,
+            val newPassword : String
         )
     }
 }

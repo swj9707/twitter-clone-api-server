@@ -1,5 +1,7 @@
 package com.swj9707.twittercloneapiserver.auth.dto
 
+import java.util.*
+
 class UserResDTO {
     companion object Res{
         data class Register(
@@ -17,5 +19,12 @@ class UserResDTO {
         data class Logout (
             val userEmail : String
             )
+        data class EditProfile(
+            val userInfo : TwitterUserDTO
+        )
+
+        data class EditPassword(
+            val userId : UUID
+        )
     }
 }
