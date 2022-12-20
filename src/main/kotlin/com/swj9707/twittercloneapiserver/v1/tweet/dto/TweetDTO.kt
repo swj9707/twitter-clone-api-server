@@ -2,6 +2,7 @@ package com.swj9707.twittercloneapiserver.v1.tweet.dto
 
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
+import org.springframework.data.domain.Slice
 import java.util.*
 
 data class TweetDTO (
@@ -27,6 +28,10 @@ data class TweetDTO (
                 modified = entity.modified,
                 status = entity.status
             )
+        }
+
+        fun pageEntityToDTO(pageEntity : Slice<Tweet>) : Slice<TweetDTO> {
+            return pageEntity.map { entityToDTO(it) }
         }
     }
 }

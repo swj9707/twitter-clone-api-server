@@ -4,11 +4,13 @@ import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.service.inter.TweetService
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,6 +25,12 @@ class TweetServiceImpl(
         )
         tweetRepository.save(tweet)
         return TweetResDTO.Res.TweetInfo(tweetId = tweet.tweetId)
+    }
+
+    override fun readTweets(pageable: Pageable): TweetResDTO.Res.Tweets {
+        val result = tweetRepository.findTweetsByStatusNot(TweetStatus.DELETED, pageable)
+        val responseData = TweetDTO.pageEntityToDTO(result)
+        return TweetResDTO.Res.Tweets(tweets = responseData)
     }
 
     override fun updateTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.UpdateTweet): TweetResDTO.Res.TweetInfo {
