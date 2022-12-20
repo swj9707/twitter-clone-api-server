@@ -1,11 +1,11 @@
-package com.swj9707.twittercloneapiserver.auth.service
+package com.swj9707.twittercloneapiserver.v1.auth.service
 
-import com.swj9707.twittercloneapiserver.auth.dto.TwitterUserDTO
-import com.swj9707.twittercloneapiserver.auth.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.auth.dto.UserResDTO
-import com.swj9707.twittercloneapiserver.auth.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.auth.repository.TwitterUserRepository
-import com.swj9707.twittercloneapiserver.auth.service.inter.TwitterUserService
+import com.swj9707.twittercloneapiserver.v1.auth.dto.TwitterUserDTO
+import com.swj9707.twittercloneapiserver.v1.auth.dto.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.auth.dto.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.auth.repository.TwitterUserRepository
+import com.swj9707.twittercloneapiserver.v1.auth.service.inter.TwitterUserService
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.JwtUtil
@@ -20,7 +20,8 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
                              private val jwtUtil: JwtUtil,
                              private val redisUtil : RedisUtil,
                              private val passwordEncoder: PasswordEncoder,
-                             private val authenticationManagerBuilder: AuthenticationManagerBuilder) : TwitterUserService {
+                             private val authenticationManagerBuilder: AuthenticationManagerBuilder) :
+    TwitterUserService {
     override fun existsUser(email : String) : Boolean {
         return twitterUserRepository.existsTwitterUserByEmail(email)
     }
@@ -39,8 +40,12 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
         val user = twitterUserRepository.findById(editProfileReq.userId)
             .orElseThrow{ BaseException(BaseResponseCode.USER_NOT_FOUND)}
         user.userName = editProfileReq.newUserName
-        twitterUserRepository.save(user)
-        return UserResDTO.Res.EditProfile(userInfo = TwitterUserDTO.entityToDTO(user))
+        if(twitterUserRepository.existsTwitterUserByUserName(user.userName)){
+            throw BaseException(BaseResponseCode.DUPLICATE_USERNAME)
+        } else {
+            twitterUserRepository.save(user)
+            return UserResDTO.Res.EditProfile(userInfo = TwitterUserDTO.entityToDTO(user))
+        }
     }
 
     override fun editUserPassword(editUserPasswordReq: UserReqDTO.Req.EditPassword): UserResDTO.Res.EditPassword {

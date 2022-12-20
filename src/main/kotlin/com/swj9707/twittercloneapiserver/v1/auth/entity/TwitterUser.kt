@@ -1,4 +1,4 @@
-package com.swj9707.twittercloneapiserver.auth.entity
+package com.swj9707.twittercloneapiserver.v1.auth.entity
 
 import com.swj9707.twittercloneapiserver.constant.entity.BaseEntity
 import com.swj9707.twittercloneapiserver.constant.enum.Authority
@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 
 @Entity
 @Table(name = "TWITTER_USER")
-class TwitterUser (
+data class TwitterUser (
     @Id
     @GeneratedValue(generator = "uuid2", strategy = GenerationType.UUID)
     @GenericGenerator(name="uuid2", strategy="uuid2")
@@ -47,9 +47,6 @@ class TwitterUser (
     var lastLogin: LocalDateTime? = null,
 
     ) : BaseEntity(), UserDetails {
-        fun updateLoginTime(now : LocalDateTime){
-            this.lastLogin = now
-        }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val auth = mutableListOf<Authority>(this.userRole)
