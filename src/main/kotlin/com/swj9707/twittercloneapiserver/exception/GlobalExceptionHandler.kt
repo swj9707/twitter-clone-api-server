@@ -1,6 +1,7 @@
 package com.swj9707.twittercloneapiserver.exception
 
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,6 +23,7 @@ class GlobalExceptionHandler {
     protected  fun handleException (e : Exception) : ResponseEntity<BaseResponse<String>> {
         logger.error("Exception : " + e.message)
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(BaseResponse.failure(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 에러입니다."))
+            .body(BaseResponse.failure(BaseResponseCode.INTERNAL_SERVER_ERROR.status,
+                BaseResponseCode.INTERNAL_SERVER_ERROR.message))
     }
 }

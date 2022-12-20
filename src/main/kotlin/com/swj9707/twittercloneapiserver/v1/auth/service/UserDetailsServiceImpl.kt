@@ -1,7 +1,7 @@
-package com.swj9707.twittercloneapiserver.auth.service
+package com.swj9707.twittercloneapiserver.v1.auth.service
 
-import com.swj9707.twittercloneapiserver.auth.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.auth.repository.TwitterUserRepository
+import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.auth.repository.TwitterUserRepository
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import org.springframework.security.core.userdetails.UserDetails

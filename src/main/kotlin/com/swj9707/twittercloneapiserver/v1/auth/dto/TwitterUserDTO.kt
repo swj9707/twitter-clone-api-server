@@ -1,6 +1,6 @@
-package com.swj9707.twittercloneapiserver.auth.dto
+package com.swj9707.twittercloneapiserver.v1.auth.dto
 
-import com.swj9707.twittercloneapiserver.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.constant.enum.Authority
 import com.swj9707.twittercloneapiserver.constant.enum.Provider
 import com.swj9707.twittercloneapiserver.constant.enum.UserStatus
@@ -17,7 +17,7 @@ data class TwitterUserDTO (
     val lastLogin : LocalDateTime?,
 ) {
     companion object Util {
-        fun entityToDTO(entity : TwitterUser) : TwitterUserDTO{
+        fun entityToDTO(entity : TwitterUser) : TwitterUserDTO {
             return TwitterUserDTO(
                 userId = entity.userId,
                 email = entity.email,
