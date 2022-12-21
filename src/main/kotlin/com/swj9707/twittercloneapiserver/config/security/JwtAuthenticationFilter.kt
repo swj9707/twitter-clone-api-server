@@ -16,7 +16,7 @@ import kotlin.jvm.Throws
 class JwtAuthenticationFilter(
     private val jwtUtil: JwtUtil,
     private val redisUtil: RedisUtil): GenericFilterBean() {
-    @Throws(IOException::class, ServletException::class)
+    @Throws(IOException::class, ServletException::class, Exception::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         var token: String? = jwtUtil.resolveToken((request as HttpServletRequest))
 
@@ -27,6 +27,7 @@ class JwtAuthenticationFilter(
                 SecurityContextHolder.getContext().authentication = authentication
             }
         }
+
         chain.doFilter(request, response)
     }
 

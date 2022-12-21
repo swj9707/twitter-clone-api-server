@@ -1,16 +1,18 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.dto
-
-import org.springframework.data.domain.Slice
-import java.util.*
-
 class TweetResDTO {
     companion object Res {
         data class TweetInfo(
             val tweetId : Long?
         )
-
         data class Tweets(
-            val tweets : Slice<TweetDTO>
+            val tweets : List<TweetDTO>,
+            val size : Int,
+            val number : Int,
+            val first : Boolean,
+            val last : Boolean,
+            val numberOfElements : Int,
+            val empty : Boolean
+
         )
     }
 }
