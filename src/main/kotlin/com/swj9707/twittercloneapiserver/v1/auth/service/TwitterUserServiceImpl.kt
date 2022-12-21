@@ -22,16 +22,21 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
                              private val passwordEncoder: PasswordEncoder,
                              private val authenticationManagerBuilder: AuthenticationManagerBuilder) :
     TwitterUserService {
-    override fun existsUser(email : String) : Boolean {
-        return twitterUserRepository.existsTwitterUserByEmail(email)
-    }
-
     override fun createUser(userRegistReq: UserReqDTO.Req.Register) : UserResDTO.Res.Register {
         val user  = TwitterUser(
             email = userRegistReq.userEmail,
             userName = userRegistReq.userName,
             passwd = passwordEncoder.encode(userRegistReq.password)
         )
+
+        if(twitterUserRepository.existsTwitterUserByEmail(user.email)){
+            throw BaseException(BaseResponseCode.DUPLICATE_EMAIL)
+        }
+
+        if(twitterUserRepository.existsTwitterUserByUserName(user.userName)){
+            throw BaseException(BaseResponseCode.DUPLICATE_USERNAME)
+        }
+
         twitterUserRepository.save(user)
         return UserResDTO.Res.Register(user.email, user.userName)
     }
@@ -69,7 +74,7 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
         val accessToken = jwtUtil.createAccessToken(authentication.name)
         val refreshToken = jwtUtil.createRefreshToken()
-        val userInfoDTO = TwitterUserDTO.Util.entityToDTO(userInfo)
+        val userInfoDTO = TwitterUserDTO.entityToDTO(userInfo)
         redisUtil.setDataExpire("RT:"+authentication.name, refreshToken, JwtUtil.REFRESH_TOKEN_VALID_TIME)
         return UserResDTO.Res.Login(
             userInfo = userInfoDTO,
@@ -81,15 +86,15 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
         val authentication = jwtUtil.getAuthentication(accessToken)
-        val refreshToken = redisUtil.getData("RT:"+authentication.name)
+        val savedRefreshToken = redisUtil.getData("RT:"+authentication.name)
         if(ObjectUtils.isEmpty(refreshToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
-        if(refreshToken == null || !refreshToken.equals(refreshToken)){
+        if(savedRefreshToken == null || refreshToken != savedRefreshToken){
             throw BaseException(BaseResponseCode.INVALID_TOKEN)
         } else {
             val newAccessToken = jwtUtil.createAccessToken(authentication.name)
-            var response = UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
+            val response = UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
 
             if(jwtUtil.getExpirationPeriod(refreshToken) <= 7){
                 val newRefreshToken = jwtUtil.createRefreshToken()
