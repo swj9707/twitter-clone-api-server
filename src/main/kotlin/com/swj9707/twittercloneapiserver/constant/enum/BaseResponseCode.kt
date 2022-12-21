@@ -12,7 +12,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String ) {
     TWEET_NOT_FOUND(HttpStatus.NOT_FOUND, "조건에 맞는 트윗 데이터를 찾을 수 없습니다."),
 
     //UNAUTHORIZED
-    PERMISSION_DENIED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
 
     //BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "요청이 올바르지 않습니다."),

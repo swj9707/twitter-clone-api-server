@@ -18,7 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class SecurityConfig(
     private val jwtUtil: JwtUtil,
-    private val redisUtil : RedisUtil) {
+    private val redisUtil : RedisUtil,
+    private val entryPoint: CustomAuthenticationEntryPoint) {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
@@ -36,6 +37,9 @@ class SecurityConfig(
             .authorizeHttpRequests()
             .requestMatchers("/api/v1/**").authenticated()
             .requestMatchers("/api/auth/v1/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(entryPoint)
             .and()
             .addFilterBefore(JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter::class.java)
 

@@ -30,7 +30,15 @@ class TweetServiceImpl(
     override fun readTweets(pageable: Pageable): TweetResDTO.Res.Tweets {
         val result = tweetRepository.findTweetsByStatusNot(TweetStatus.DELETED, pageable)
         val responseData = TweetDTO.pageEntityToDTO(result)
-        return TweetResDTO.Res.Tweets(tweets = responseData)
+        return TweetResDTO.Res.Tweets(
+            tweets = responseData.content,
+            size = responseData.size,
+            number = responseData.number,
+            first = responseData.isFirst,
+            last = responseData.isLast,
+            numberOfElements = responseData.numberOfElements,
+            empty = responseData.isEmpty
+        )
     }
 
     override fun updateTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.UpdateTweet): TweetResDTO.Res.TweetInfo {
