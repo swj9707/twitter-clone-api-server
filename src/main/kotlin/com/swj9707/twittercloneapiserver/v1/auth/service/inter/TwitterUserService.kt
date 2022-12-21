@@ -5,8 +5,6 @@ import com.swj9707.twittercloneapiserver.v1.auth.dto.UserResDTO
 
 
 interface TwitterUserService {
-    fun existsUser(email : String) : Boolean
-
     fun createUser(userRegistReq: UserReqDTO.Req.Register) : UserResDTO.Res.Register
 
     fun editUserProfile(editProfileReq : UserReqDTO.Req.EditProfile) : UserResDTO.Res.EditProfile

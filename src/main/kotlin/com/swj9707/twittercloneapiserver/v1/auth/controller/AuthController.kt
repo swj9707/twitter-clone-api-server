@@ -24,9 +24,6 @@ class AuthController(
 
     @PostMapping("/register")
     fun register(@RequestBody request: UserReqDTO.Req.Register) : ResponseEntity<BaseResponse<UserResDTO.Res.Register>> {
-        if(twitterUserServiceImpl.existsUser(request.userEmail)){
-            throw BaseException(BaseResponseCode.DUPLICATE_EMAIL)
-        }
         val result = twitterUserServiceImpl.createUser(request)
         return ResponseEntity.ok().body(BaseResponse.success(result))
     }
