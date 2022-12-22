@@ -2,6 +2,7 @@ package com.swj9707.twittercloneapiserver.v1.tweet.controller
 
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.service.TweetServiceImpl
@@ -22,6 +23,13 @@ class TweetController (
     fun createTweet(@AuthenticationPrincipal user : TwitterUser,
         @RequestBody request : TweetReqDTO.Req.CreateTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
         val response = tweetService.createTweet(user, request)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
+
+    @GetMapping("/readAll")
+    @Deprecated("테스트용! 실 사용 시 사용하지 말것")
+    fun readAllTweets(@AuthenticationPrincipal user : TwitterUser) : ResponseEntity<BaseResponse<List<TweetDTO>>>{
+        val response = tweetService.readAllTweets()
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 

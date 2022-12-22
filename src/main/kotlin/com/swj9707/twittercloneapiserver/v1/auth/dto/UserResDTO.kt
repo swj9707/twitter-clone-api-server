@@ -13,8 +13,8 @@ class UserResDTO {
             val tokenInfo : TokenInfo
             )
         data class TokenInfo (
-            val accessToken : String?,
-            var refreshToken : String?
+            val accessToken : String,
+            var refreshToken : String
             )
         data class Logout (
             val userEmail : String

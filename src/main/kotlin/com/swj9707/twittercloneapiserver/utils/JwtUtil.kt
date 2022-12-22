@@ -5,13 +5,16 @@ import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import java.lang.IllegalArgumentException
 import java.nio.charset.StandardCharsets
 import java.security.Key
 import java.time.*
@@ -28,8 +31,8 @@ class JwtUtil(
     companion object{
         const val ACCESS_TOKEN_NAME = "accessToken"
         const val REFRESH_TOKEN_NAME = "refreshToken"
-        const val ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1000L
-        const val REFRESH_TOKEN_VALID_TIME =  7 * 24 * 60 * 60 * 1000L
+        const val ACCESS_TOKEN_VALID_TIME = 15 * 60 * 1000L
+        const val REFRESH_TOKEN_VALID_TIME =  30 * 24 * 60 * 60 * 1000L
     }
     private val SIGNATUREALG : SignatureAlgorithm = SignatureAlgorithm.HS256
 
@@ -45,21 +48,13 @@ class JwtUtil(
             .body
     }
 
-    fun createAccessToken(userEmail : String) : String{
+    fun createToken(userEmail : String, validTime : Long) : String{
         val claims : Claims = Jwts.claims().setSubject(userEmail)
-        claims["userEmail"] = userEmail // 정보는 key / value 쌍으로 저장된다.
+        claims["userEmail"] = userEmail
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + ACCESS_TOKEN_VALID_TIME))
-            .signWith(getSigningkey(SECRETKEY), SIGNATUREALG)
-            .compact()
-    }
-
-    fun createRefreshToken() : String{
-        return Jwts.builder()
-            .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID_TIME))
+            .setExpiration(Date(System.currentTimeMillis() + validTime))
             .signWith(getSigningkey(SECRETKEY), SIGNATUREALG)
             .compact()
     }
@@ -84,16 +79,21 @@ class JwtUtil(
         return token
     }
 
-    fun isTokenExpired(token: String) : Boolean {
-        val expiration = extractAllClaims(token).expiration
-        return expiration.before(Date())
-    }
-
     fun validateToken(jwtToken: String): Boolean {
         return try {
             val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
             !claims.body.expiration.before(Date())
-        } catch (e: Exception) {
+        } catch (e: SecurityException) {
+            logger.error("Invalid JWT Signature : SecurityException")
+            false
+        } catch (e : MalformedJwtException){
+            logger.error("Invalid JWT Signature : MalformedJwtException")
+            false
+        } catch (e : UnsupportedJwtException) {
+            logger.error("Unsupported JWT Token")
+            false
+        } catch (e : IllegalArgumentException) {
+            logger.error("JWT toke is invalid")
             false
         }
     }

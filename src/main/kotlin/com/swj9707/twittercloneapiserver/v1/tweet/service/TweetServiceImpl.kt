@@ -41,6 +41,11 @@ class TweetServiceImpl(
         )
     }
 
+    override fun readAllTweets(): List<TweetDTO> {
+        val tweets = tweetRepository.findAllByStatusNot(TweetStatus.DELETED)
+        return tweets.map { TweetDTO.entityToDTO(it)}
+    }
+
     override fun updateTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.UpdateTweet): TweetResDTO.Res.TweetInfo {
         var tweet = tweetRepository.findById(request.tweetId)
             .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND)}

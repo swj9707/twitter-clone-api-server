@@ -38,9 +38,6 @@ class SecurityConfig(
             .requestMatchers("/api/v1/**").authenticated()
             .requestMatchers("/api/auth/v1/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
             .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(entryPoint)
-            .and()
             .addFilterBefore(JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()

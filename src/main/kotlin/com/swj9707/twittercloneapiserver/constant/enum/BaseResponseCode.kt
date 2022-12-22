@@ -13,6 +13,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String ) {
 
     //UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Token Expired"),
 
     //BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "요청이 올바르지 않습니다."),
