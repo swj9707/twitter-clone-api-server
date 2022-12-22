@@ -57,16 +57,15 @@ class AuthController(
     }
 
     @PostMapping("/reissue")
-    fun reissue(@RequestBody request : UserReqDTO.Req.Reissue,
-                @CookieValue(value= JwtUtil.REFRESH_TOKEN_NAME, defaultValue = "") refreshToken : String,
+    fun reissue(@CookieValue(value= JwtUtil.REFRESH_TOKEN_NAME, defaultValue = "") refreshToken : String,
                 req : HttpServletRequest,
                 res : HttpServletResponse) : ResponseEntity<BaseResponse<UserResDTO.Res.TokenInfo>>{
 
         if(refreshToken.isNotEmpty()){
-            val result = twitterUserServiceImpl.reissue(refreshToken, request.accessToken)
-            if(result.refreshToken != null){
+            val result = twitterUserServiceImpl.reissue(refreshToken)
+            if(!result.refreshToken.isEmpty()){
                 cookieUtil.deleteCookie(req, res, JwtUtil.REFRESH_TOKEN_NAME)
-                val refreshTokenCookie = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, result.refreshToken!!)
+                val refreshTokenCookie = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, result.refreshToken)
                 res.addCookie(refreshTokenCookie)
             }
             return ResponseEntity.ok().body(BaseResponse.success(result))

@@ -13,7 +13,7 @@ interface TwitterUserService {
 
     fun login(req: UserReqDTO.Req.Login) : UserResDTO.Res.Login
 
-    fun reissue(refreshToken : String, accessToken : String) : UserResDTO.Res.TokenInfo
+    fun reissue(refreshToken : String) : UserResDTO.Res.TokenInfo
 
     fun logout(accessToken: String) : UserResDTO.Res.Logout
 }

@@ -19,9 +19,6 @@ class UserReqDTO {
                 return UsernamePasswordAuthenticationToken(userEmail, password)
             }
         }
-        data class Reissue(
-            val accessToken : String = ""
-        )
 
         data class EditProfile(
             val userId : UUID,

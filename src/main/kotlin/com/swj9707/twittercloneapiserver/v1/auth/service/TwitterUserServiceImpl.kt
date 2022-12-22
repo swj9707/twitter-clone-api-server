@@ -72,8 +72,8 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
 
         val authenticationToken = req.toAuthentication()
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
-        val accessToken = jwtUtil.createAccessToken(authentication.name)
-        val refreshToken = jwtUtil.createRefreshToken()
+        val accessToken = jwtUtil.createToken(authentication.name, JwtUtil.ACCESS_TOKEN_VALID_TIME)
+        val refreshToken = jwtUtil.createToken(authentication.name, JwtUtil.REFRESH_TOKEN_VALID_TIME)
         val userInfoDTO = TwitterUserDTO.entityToDTO(userInfo)
         redisUtil.setDataExpire("RT:"+authentication.name, refreshToken, JwtUtil.REFRESH_TOKEN_VALID_TIME)
         return UserResDTO.Res.Login(
@@ -81,24 +81,25 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
             tokenInfo = UserResDTO.Res.TokenInfo(accessToken = accessToken, refreshToken = refreshToken))
     }
 
-    override fun reissue(refreshToken : String, accessToken : String) : UserResDTO.Res.TokenInfo {
+    override fun reissue(refreshToken : String) : UserResDTO.Res.TokenInfo {
         if(!jwtUtil.validateToken(refreshToken)){
-            throw BaseException(BaseResponseCode.BAD_REQUEST)
+            throw BaseException(BaseResponseCode.REFRESH_TOKEN_EXPIRED)
         }
-        val authentication = jwtUtil.getAuthentication(accessToken)
-        val savedRefreshToken = redisUtil.getData("RT:"+authentication.name)
+        val userEmail = jwtUtil.getUserEmail(refreshToken)
+        val savedRefreshToken = redisUtil.getData("RT:$userEmail")
         if(ObjectUtils.isEmpty(refreshToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
         if(savedRefreshToken == null || refreshToken != savedRefreshToken){
             throw BaseException(BaseResponseCode.INVALID_TOKEN)
         } else {
-            val newAccessToken = jwtUtil.createAccessToken(authentication.name)
+            val newAccessToken = jwtUtil.createToken(userEmail, JwtUtil.ACCESS_TOKEN_VALID_TIME)
             val response = UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
 
             if(jwtUtil.getExpirationPeriod(refreshToken) <= 7){
-                val newRefreshToken = jwtUtil.createRefreshToken()
-                redisUtil.setDataExpire("RT:"+authentication.name, newRefreshToken, JwtUtil.REFRESH_TOKEN_VALID_TIME)
+                val newRefreshToken = jwtUtil.createToken(userEmail, JwtUtil.REFRESH_TOKEN_VALID_TIME)
+                redisUtil.deleteData("RT:$userEmail")
+                redisUtil.setDataExpire("RT:$userEmail", newRefreshToken, JwtUtil.REFRESH_TOKEN_VALID_TIME)
                 response.refreshToken = newRefreshToken
             }
             return response

@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface TweetRepository : JpaRepository<Tweet, Long> {
     fun findTweetsByStatusNot(status : TweetStatus, pageable : Pageable) : Slice<Tweet>
+    @Deprecated("테스트용! 실 사용 하지 말것")
+    fun findAllByStatusNot(status : TweetStatus) : List<Tweet>
 }
