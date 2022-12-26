@@ -20,7 +20,7 @@ data class Tweet (
     var tweetContent : String,
 
     @Column(name = "tweet_image_meta")
-    var tweetImageMeta : String?,
+    var tweetImageMeta : String = "",
 
     @Column(name = "modified")
     var modified : Boolean = false,

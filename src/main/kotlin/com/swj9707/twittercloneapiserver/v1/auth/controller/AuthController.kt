@@ -7,8 +7,8 @@ import com.swj9707.twittercloneapiserver.v1.auth.service.TwitterUserServiceImpl
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
-import com.swj9707.twittercloneapiserver.utils.CookieUtil
-import com.swj9707.twittercloneapiserver.utils.JwtUtil
+import com.swj9707.twittercloneapiserver.utils.CookieUtils
+import com.swj9707.twittercloneapiserver.utils.JwtUtils
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseEntity
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/auth/v1")
 class AuthController(
     private val twitterUserServiceImpl: TwitterUserServiceImpl,
-    private val jwtUtil: JwtUtil,
-    private val cookieUtil: CookieUtil) {
+    private val jwtUtils: JwtUtils,
+    private val cookieUtils: CookieUtils) {
 
     @PostMapping("/register")
     fun register(@RequestBody request: UserReqDTO.Req.Register) : ResponseEntity<BaseResponse<UserResDTO.Res.Register>> {
@@ -33,7 +33,7 @@ class AuthController(
               req : HttpServletRequest,
               res : HttpServletResponse) : ResponseEntity<BaseResponse<UserResDTO.Res.Login>> {
         val result = twitterUserServiceImpl.login(request)
-        val refreshTokenCookie = result.tokenInfo.refreshToken?.let { cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, it) }
+        val refreshTokenCookie = result.tokenInfo.refreshToken?.let { cookieUtils.createCookie(JwtUtils.REFRESH_TOKEN_NAME, it) }
         res.addCookie(refreshTokenCookie)
         return ResponseEntity.ok().body(BaseResponse.success(result))
     }
@@ -41,14 +41,14 @@ class AuthController(
 
     @PostMapping("/logout")
     fun logout(@AuthenticationPrincipal user : TwitterUser,
-               @CookieValue(value = JwtUtil.REFRESH_TOKEN_NAME, defaultValue = "") refreshToken: String,
+               @CookieValue(value = JwtUtils.REFRESH_TOKEN_NAME, defaultValue = "") refreshToken: String,
                req : HttpServletRequest, res : HttpServletResponse) : ResponseEntity<BaseResponse<UserResDTO.Res.Logout>> {
 
-        val accessToken = jwtUtil.resolveToken(req)
+        val accessToken = jwtUtils.resolveToken(req)
         if(accessToken != null){
             val result = twitterUserServiceImpl.logout(accessToken)
             if(refreshToken.isNotEmpty()){
-                cookieUtil.deleteCookie(req, res, JwtUtil.REFRESH_TOKEN_NAME)
+                cookieUtils.deleteCookie(req, res, JwtUtils.REFRESH_TOKEN_NAME)
             }
             return ResponseEntity.ok().body(BaseResponse.success(result))
         } else {
@@ -57,15 +57,15 @@ class AuthController(
     }
 
     @PostMapping("/reissue")
-    fun reissue(@CookieValue(value= JwtUtil.REFRESH_TOKEN_NAME, defaultValue = "") refreshToken : String,
+    fun reissue(@CookieValue(value= JwtUtils.REFRESH_TOKEN_NAME, defaultValue = "") refreshToken : String,
                 req : HttpServletRequest,
                 res : HttpServletResponse) : ResponseEntity<BaseResponse<UserResDTO.Res.TokenInfo>>{
 
         if(refreshToken.isNotEmpty()){
             val result = twitterUserServiceImpl.reissue(refreshToken)
             if(!result.refreshToken.isEmpty()){
-                cookieUtil.deleteCookie(req, res, JwtUtil.REFRESH_TOKEN_NAME)
-                val refreshTokenCookie = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, result.refreshToken)
+                cookieUtils.deleteCookie(req, res, JwtUtils.REFRESH_TOKEN_NAME)
+                val refreshTokenCookie = cookieUtils.createCookie(JwtUtils.REFRESH_TOKEN_NAME, result.refreshToken)
                 res.addCookie(refreshTokenCookie)
             }
             return ResponseEntity.ok().body(BaseResponse.success(result))

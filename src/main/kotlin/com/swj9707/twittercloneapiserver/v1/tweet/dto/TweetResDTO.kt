@@ -4,6 +4,11 @@ class TweetResDTO {
         data class TweetInfo(
             val tweetId : Long?
         )
+
+        data class TweetImageInfo(
+            val imageName : String,
+            val uploadDate : String
+        )
         data class Tweets(
             val tweets : List<TweetDTO>,
             val size : Int,

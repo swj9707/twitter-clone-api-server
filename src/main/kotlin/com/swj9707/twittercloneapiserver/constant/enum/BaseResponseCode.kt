@@ -30,7 +30,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String ) {
     LOGIN_FAILED(HttpStatus.CONFLICT, "로그인에 실패하였습니다."),
 
     //INTERNAL SERVER ERROR
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,  "내부 서버 오류입니다. 관리자에게 문의하세요");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,  "내부 서버 오류입니다. 관리자에게 문의하세요"),
+    FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다.");
 
     val status: HttpStatus = status
     val message : String = message

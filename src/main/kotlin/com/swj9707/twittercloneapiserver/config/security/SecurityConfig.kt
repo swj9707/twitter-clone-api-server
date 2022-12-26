@@ -1,7 +1,7 @@
 package com.swj9707.twittercloneapiserver.config.security
 
-import com.swj9707.twittercloneapiserver.utils.JwtUtil
-import com.swj9707.twittercloneapiserver.utils.RedisUtil
+import com.swj9707.twittercloneapiserver.utils.JwtUtils
+import com.swj9707.twittercloneapiserver.utils.RedisUtils
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -17,8 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class SecurityConfig(
-    private val jwtUtil: JwtUtil,
-    private val redisUtil : RedisUtil,
+    private val jwtUtils: JwtUtils,
+    private val redisUtils : RedisUtils,
     private val entryPoint: CustomAuthenticationEntryPoint) {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
@@ -38,7 +38,7 @@ class SecurityConfig(
             .requestMatchers("/api/v1/**").authenticated()
             .requestMatchers("/api/auth/v1/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
             .and()
-            .addFilterBefore(JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(JwtAuthenticationFilter(jwtUtils, redisUtils), UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }

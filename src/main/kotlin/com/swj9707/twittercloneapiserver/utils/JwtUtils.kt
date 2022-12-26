@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
@@ -21,12 +22,13 @@ import java.time.*
 import java.util.*
 
 @Component
-class JwtUtil(
+class JwtUtils(
     private val userDetailsServiceImpl: UserDetailsServiceImpl
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private var SECRETKEY = "thisistestusersecretkeyprojectnameiswassssup"
+    @Value("\${jwt.security.key}")
+    private lateinit var SECRETKEY : String
 
     companion object{
         const val ACCESS_TOKEN_NAME = "accessToken"

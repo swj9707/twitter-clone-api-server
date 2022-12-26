@@ -6,11 +6,11 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service
 
 @Service
-class CookieUtil {
+class CookieUtils {
     fun createCookie(cookieName : String, value : String) : Cookie {
         var token : Cookie = Cookie(cookieName, value)
         token.isHttpOnly = true
-        token.maxAge = JwtUtil.REFRESH_TOKEN_VALID_TIME.toInt()
+        token.maxAge = JwtUtils.REFRESH_TOKEN_VALID_TIME.toInt()
         token.path = "/"
         return token
     }
