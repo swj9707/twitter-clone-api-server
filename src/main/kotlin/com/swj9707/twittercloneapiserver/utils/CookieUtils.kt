@@ -3,16 +3,27 @@ package com.swj9707.twittercloneapiserver.utils
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.ResponseCookie
 import org.springframework.stereotype.Service
 
 @Service
 class CookieUtils {
-    fun createCookie(cookieName : String, value : String) : Cookie {
-        var token : Cookie = Cookie(cookieName, value)
-        token.isHttpOnly = true
-        token.maxAge = JwtUtils.REFRESH_TOKEN_VALID_TIME.toInt()
-        token.path = "/"
-        return token
+
+    @Value("\${client-side.domain}")
+    lateinit var clientDomain : String
+
+    @Value("\${client-side.local-domain}")
+    lateinit var localDomain : String
+
+    fun createCookie(cookieName: String, value: String) : ResponseCookie {
+        return ResponseCookie.from(cookieName, value)
+            .path("/")
+            .secure(true)
+            .sameSite("None")
+            .httpOnly(true)
+            .maxAge(JwtUtils.REFRESH_TOKEN_VALID_TIME)
+            .build()
     }
 
     fun getCookie(req : HttpServletRequest, cookieName : String) : Cookie? {

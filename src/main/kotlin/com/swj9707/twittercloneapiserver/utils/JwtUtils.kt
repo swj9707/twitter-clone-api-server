@@ -4,6 +4,7 @@ import com.swj9707.twittercloneapiserver.v1.auth.service.UserDetailsServiceImpl
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
@@ -31,9 +32,8 @@ class JwtUtils(
     private lateinit var SECRETKEY : String
 
     companion object{
-        const val ACCESS_TOKEN_NAME = "accessToken"
         const val REFRESH_TOKEN_NAME = "refreshToken"
-        const val ACCESS_TOKEN_VALID_TIME = 15 * 60 * 1000L
+        const val ACCESS_TOKEN_VALID_TIME =  30 * 60 * 1000L
         const val REFRESH_TOKEN_VALID_TIME =  30 * 24 * 60 * 60 * 1000L
     }
     private val SIGNATUREALG : SignatureAlgorithm = SignatureAlgorithm.HS256
@@ -49,7 +49,6 @@ class JwtUtils(
             .parseClaimsJws(jwtToken)
             .body
     }
-
     fun createToken(userEmail : String, validTime : Long) : String{
         val claims : Claims = Jwts.claims().setSubject(userEmail)
         claims["userEmail"] = userEmail
@@ -60,19 +59,17 @@ class JwtUtils(
             .signWith(getSigningkey(SECRETKEY), SIGNATUREALG)
             .compact()
     }
-    // JWT 토큰에서 인증 정보 조회
+
     fun getAuthentication(token: String): Authentication {
         val userDetails = userDetailsServiceImpl.loadUserByUsername(getUserEmail(token))
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
-    // 토큰에서 회원 정보 추출
     fun getUserEmail(token: String): String {
         val result = extractAllClaims(token).get("userEmail", String::class.java)
         return result
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
     fun resolveToken(request: HttpServletRequest): String? {
         var token = request.getHeader("Authorization")
         if(token != null) {
@@ -80,7 +77,6 @@ class JwtUtils(
         }
         return token
     }
-
     fun validateToken(jwtToken: String): Boolean {
         return try {
             val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
@@ -95,7 +91,10 @@ class JwtUtils(
             logger.error("Unsupported JWT Token")
             false
         } catch (e : IllegalArgumentException) {
-            logger.error("JWT toke is invalid")
+            logger.error("JWT token is invalid")
+            false
+        } catch (e : ExpiredJwtException){
+            logger.error("JWT token is Expired")
             false
         }
     }

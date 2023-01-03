@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile
 class TweetController (
     private val tweetService: TweetServiceImpl
         ) {
-
     @PostMapping("/create")
     fun createTweet(@AuthenticationPrincipal user : TwitterUser,
         @RequestBody request : TweetReqDTO.Req.CreateTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {

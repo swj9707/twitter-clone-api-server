@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.util.ObjectUtils
+import java.util.*
 
 @Service
 class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepository,
@@ -95,7 +96,7 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
         } else {
             val newAccessToken = jwtUtils.createToken(userEmail, JwtUtils.ACCESS_TOKEN_VALID_TIME)
             val response = UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
-
+            //얘를 뺄까 말까
             if(jwtUtils.getExpirationPeriod(refreshToken) <= 7){
                 val newRefreshToken = jwtUtils.createToken(userEmail, JwtUtils.REFRESH_TOKEN_VALID_TIME)
                 redisUtils.deleteData("RT:$userEmail")
@@ -105,6 +106,7 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
             return response
         }
     }
+
     override fun logout(accessToken: String) : UserResDTO.Res.Logout {
         if(!jwtUtils.validateToken(accessToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)
