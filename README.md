@@ -17,10 +17,3 @@ SNS 서비스의 백엔드 설계 및 개발 공부 목적의 프로젝트입니
     <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white"/>
   </row>
 </div>
-
-# Features
-- 인증
-  - JWT 방식
-- 서비스 API 제공
-  - 트윗 생성, 수정, 열람, 삭제
-  - 유저 정보 조회 및 수정
