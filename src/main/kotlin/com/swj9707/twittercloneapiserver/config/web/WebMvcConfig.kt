@@ -11,7 +11,7 @@ class WebMvcConfig : WebMvcConfigurer{
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
             .allowCredentials(true).maxAge(3600)
-            .allowedOrigins("http://localhost:3000", "https://swj-twitter-clone.netlify.app")
+            .allowedOrigins("http://localhost:3000", "https://swj-twitter-clone.netlify.app", "https://swj-twitter-clone-release.netlify.app")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
             .allowedHeaders("*")
             .exposedHeaders("*")
