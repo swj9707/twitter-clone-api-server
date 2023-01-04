@@ -6,6 +6,8 @@
 클라이언트 : https://github.com/swj9707/twitter-clone-client  
 어드민 : https://github.com/swj9707/twitter-clone-admin 
 
+SNS 서비스의 백엔드 설계 및 개발 공부 목적의 프로젝트입니다. 
+
 # Tech Stacks
 <div>
   <row>
