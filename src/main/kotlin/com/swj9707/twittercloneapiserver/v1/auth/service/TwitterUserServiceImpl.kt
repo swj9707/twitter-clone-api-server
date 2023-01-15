@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.util.ObjectUtils
+import java.util.*
 
 @Service
 class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepository,
@@ -72,10 +73,16 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
 
         val authenticationToken = req.toAuthentication()
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
+
         val accessToken = jwtUtils.createToken(authentication.name, JwtUtils.ACCESS_TOKEN_VALID_TIME)
-        val refreshToken = jwtUtils.createToken(authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+        var refreshToken = redisUtils.getData("RT"+authentication.name)
         val userInfoDTO = TwitterUserDTO.entityToDTO(userInfo)
-        redisUtils.setDataExpire("RT:"+authentication.name, refreshToken, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+
+        if(refreshToken == null){
+            refreshToken = jwtUtils.createToken(authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+            redisUtils.setDataExpire("RT:"+authentication.name, refreshToken, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+        }
+
         return UserResDTO.Res.Login(
             userInfo = userInfoDTO,
             tokenInfo = UserResDTO.Res.TokenInfo(accessToken = accessToken, refreshToken = refreshToken))
@@ -87,24 +94,22 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
         }
         val userEmail = jwtUtils.getUserEmail(refreshToken)
         val savedRefreshToken = redisUtils.getData("RT:$userEmail")
-        if(ObjectUtils.isEmpty(refreshToken)){
-            throw BaseException(BaseResponseCode.BAD_REQUEST)
-        }
-        if(savedRefreshToken == null || refreshToken != savedRefreshToken){
+        if(ObjectUtils.isEmpty(refreshToken) || savedRefreshToken == null || refreshToken != savedRefreshToken){
             throw BaseException(BaseResponseCode.INVALID_TOKEN)
         } else {
             val newAccessToken = jwtUtils.createToken(userEmail, JwtUtils.ACCESS_TOKEN_VALID_TIME)
-            val response = UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
-
-            if(jwtUtils.getExpirationPeriod(refreshToken) <= 7){
-                val newRefreshToken = jwtUtils.createToken(userEmail, JwtUtils.REFRESH_TOKEN_VALID_TIME)
-                redisUtils.deleteData("RT:$userEmail")
-                redisUtils.setDataExpire("RT:$userEmail", newRefreshToken, JwtUtils.REFRESH_TOKEN_VALID_TIME)
-                response.refreshToken = newRefreshToken
-            }
-            return response
+            return UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
+            //리프레쉬 토큰 만료 기간이 7일 이내라면 다시 재발급해주는 코드.
+            //여러개의 브라우저 상에서 로그인했을 경우 문제가 생길 수 있으므로 일단 주석처리
+//            if(jwtUtils.getExpirationPeriod(refreshToken) <= 7){
+//                val newRefreshToken = jwtUtils.createToken(userEmail, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+//                redisUtils.deleteData("RT:$userEmail")
+//                redisUtils.setDataExpire("RT:$userEmail", newRefreshToken, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+//                response.refreshToken = newRefreshToken
+//            }
         }
     }
+
     override fun logout(accessToken: String) : UserResDTO.Res.Logout {
         if(!jwtUtils.validateToken(accessToken)){
             throw BaseException(BaseResponseCode.BAD_REQUEST)

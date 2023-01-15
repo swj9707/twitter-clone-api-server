@@ -16,14 +16,9 @@ class RedisUtils(
         return valueOperations.get(key)
     }
 
-    fun setData(key : String, value : String) {
+    fun setDataExpire(key : String, value : String, duration : Long) {
         var valueOperations : ValueOperations<String, String> = stringRedisTemplate.opsForValue()
-        valueOperations.set(key, value)
-    }
-
-    fun setDataExpire(key : String, value : String, duraion : Long) {
-        var valueOperations : ValueOperations<String, String> = stringRedisTemplate.opsForValue()
-        val expireDuration : Duration = Duration.ofSeconds(duraion)
+        val expireDuration : Duration = Duration.ofMillis(duration)
         valueOperations.set(key, value, expireDuration)
     }
 

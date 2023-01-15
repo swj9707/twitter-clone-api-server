@@ -6,7 +6,9 @@ build/
 !**/src/test/**/build/
 ### Spring Boot ###
 application.yml
-
+application-local.yml
+application-prod.yml
+src/main/resources/keystore.p12
 
 ### STS ###
 .apt_generated

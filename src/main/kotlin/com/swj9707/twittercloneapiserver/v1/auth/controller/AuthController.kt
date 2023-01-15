@@ -11,6 +11,7 @@ import com.swj9707.twittercloneapiserver.utils.CookieUtils
 import com.swj9707.twittercloneapiserver.utils.JwtUtils
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpHeaders.SET_COOKIE
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -21,6 +22,11 @@ class AuthController(
     private val twitterUserServiceImpl: TwitterUserServiceImpl,
     private val jwtUtils: JwtUtils,
     private val cookieUtils: CookieUtils) {
+
+    @GetMapping("/test")
+    fun testApi() : ResponseEntity<BaseResponse<String>> {
+        return ResponseEntity.ok().body(BaseResponse.success("테스트입니다!"))
+    }
 
     @PostMapping("/register")
     fun register(@RequestBody request: UserReqDTO.Req.Register) : ResponseEntity<BaseResponse<UserResDTO.Res.Register>> {
@@ -33,9 +39,8 @@ class AuthController(
               req : HttpServletRequest,
               res : HttpServletResponse) : ResponseEntity<BaseResponse<UserResDTO.Res.Login>> {
         val result = twitterUserServiceImpl.login(request)
-        val refreshTokenCookie = result.tokenInfo.refreshToken?.let { cookieUtils.createCookie(JwtUtils.REFRESH_TOKEN_NAME, it) }
-        res.addCookie(refreshTokenCookie)
-        return ResponseEntity.ok().body(BaseResponse.success(result))
+        val refreshTokenCookie = result.tokenInfo.refreshToken.let { cookieUtils.createCookie(JwtUtils.REFRESH_TOKEN_NAME, it) }
+        return ResponseEntity.ok().header(SET_COOKIE, refreshTokenCookie.toString()).body(BaseResponse.success(result))
     }
 
 
@@ -66,7 +71,7 @@ class AuthController(
             if(!result.refreshToken.isEmpty()){
                 cookieUtils.deleteCookie(req, res, JwtUtils.REFRESH_TOKEN_NAME)
                 val refreshTokenCookie = cookieUtils.createCookie(JwtUtils.REFRESH_TOKEN_NAME, result.refreshToken)
-                res.addCookie(refreshTokenCookie)
+                return ResponseEntity.ok().header(SET_COOKIE, refreshTokenCookie.toString()).body(BaseResponse.success(result))
             }
             return ResponseEntity.ok().body(BaseResponse.success(result))
         } else {
