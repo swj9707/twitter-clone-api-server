@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.utils
 
-import com.swj9707.twittercloneapiserver.v1.auth.service.UserDetailsServiceImpl
+import com.swj9707.twittercloneapiserver.v1.user.service.UserDetailsServiceImpl
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import io.jsonwebtoken.Claims

@@ -1,11 +1,11 @@
-package com.swj9707.twittercloneapiserver.v1.auth.service
+package com.swj9707.twittercloneapiserver.v1.user.service
 
-import com.swj9707.twittercloneapiserver.v1.auth.dto.TwitterUserDTO
-import com.swj9707.twittercloneapiserver.v1.auth.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.v1.auth.dto.UserResDTO
-import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.v1.auth.repository.TwitterUserRepository
-import com.swj9707.twittercloneapiserver.v1.auth.service.inter.TwitterUserService
+import com.swj9707.twittercloneapiserver.v1.user.dto.TwitterUserDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.repository.TwitterUserRepository
+import com.swj9707.twittercloneapiserver.v1.user.service.inter.TwitterUserService
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.JwtUtils
@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.util.ObjectUtils
-import java.util.*
 
 @Service
 class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepository,

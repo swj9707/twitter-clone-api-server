@@ -12,7 +12,7 @@ data class TweetDTO (
 
     var tweetContent : String,
 
-    var tweetImageMeta : String?,
+    //var tweetImageMeta : String?,
 
     var modified : Boolean,
 
@@ -24,7 +24,7 @@ data class TweetDTO (
                 tweetId = entity.tweetId,
                 userId = entity.userId,
                 tweetContent = entity.tweetContent,
-                tweetImageMeta = entity.tweetImageMeta,
+                //tweetImageMeta = entity.tweetImageMeta,
                 modified = entity.modified,
                 status = entity.status
             )

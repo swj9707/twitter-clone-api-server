@@ -1,4 +1,4 @@
-package com.swj9707.twittercloneapiserver.v1.auth.dto
+package com.swj9707.twittercloneapiserver.v1.user.dto
 
 import java.util.*
 

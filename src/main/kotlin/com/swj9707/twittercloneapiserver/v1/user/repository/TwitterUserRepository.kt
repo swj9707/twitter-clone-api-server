@@ -1,6 +1,6 @@
-package com.swj9707.twittercloneapiserver.v1.auth.repository
+package com.swj9707.twittercloneapiserver.v1.user.repository
 
-import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*

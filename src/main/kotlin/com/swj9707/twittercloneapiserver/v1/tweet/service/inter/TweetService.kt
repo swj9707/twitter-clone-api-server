@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.service.inter
 
-import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO

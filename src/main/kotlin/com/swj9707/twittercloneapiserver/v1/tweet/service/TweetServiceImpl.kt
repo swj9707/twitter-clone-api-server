@@ -4,8 +4,7 @@ import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.FileUtils
-import com.swj9707.twittercloneapiserver.utils.StringUtils
-import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
@@ -37,9 +36,9 @@ class TweetServiceImpl(
             userId = userInfo.userId,
             tweetContent = request.tweetContent
         )
-        if(request.tweetImageMeta != null) {
-            tweet.tweetImageMeta = cdnUrl + "/" + request.tweetImageMeta.name
-        }
+//        if(request.tweetImageMeta != null) {
+//            tweet.tweetImageMeta = cdnUrl + "/" + request.tweetImageMeta.name
+//        }
 
         tweetRepository.save(tweet)
 
@@ -91,13 +90,13 @@ class TweetServiceImpl(
 
         tweet.tweetContent = request.tweetContent
 
-        if(request.tweetImageMeta != null){
-            if(tweet.tweetImageMeta != "") {
-                val filename = StringUtils.extractFilenameFromPath(tweet.tweetImageMeta)
-                fileUtils.deleteFile(imgLocation, filename)
-            }
-            tweet.tweetImageMeta = cdnUrl + '/' + request.tweetImageMeta.name
-        }
+//        if(request.tweetImageMeta != null){
+//            if(tweet.tweetImageMeta != "") {
+//                val filename = StringUtils.extractFilenameFromPath(tweet.tweetImageMeta)
+//                fileUtils.deleteFile(imgLocation, filename)
+//            }
+//            tweet.tweetImageMeta = cdnUrl + '/' + request.tweetImageMeta.name
+//        }
 
         tweet.modified = true
         tweetRepository.save(tweet)
@@ -116,8 +115,8 @@ class TweetServiceImpl(
 
         tweet.status = TweetStatus.DELETED
         tweetRepository.save(tweet)
-        val filename = StringUtils.extractFilenameFromPath(tweet.tweetImageMeta)
-        fileUtils.deleteFile(imgLocation, filename)
+        //val filename = StringUtils.extractFilenameFromPath(tweet.tweetImageMeta)
+        //fileUtils.deleteFile(imgLocation, filename)
         return TweetResDTO.Res.TweetInfo(tweetId = tweet.tweetId)
     }
 }

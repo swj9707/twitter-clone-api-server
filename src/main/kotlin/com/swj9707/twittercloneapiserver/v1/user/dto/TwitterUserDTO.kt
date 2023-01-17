@@ -1,6 +1,6 @@
-package com.swj9707.twittercloneapiserver.v1.auth.dto
+package com.swj9707.twittercloneapiserver.v1.user.dto
 
-import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.constant.enum.Authority
 import com.swj9707.twittercloneapiserver.constant.enum.Provider
 import com.swj9707.twittercloneapiserver.constant.enum.UserStatus
