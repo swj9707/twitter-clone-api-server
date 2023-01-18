@@ -13,9 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Init
-      run : |
-        echo ${{ github.ref_name }}
     - name: Checkout
       uses: actions/checkout@v3.3.0
     
@@ -38,9 +35,15 @@ jobs:
         ./gradlew bootJar
     
     - name: Web Docker build and push (Master)
-      if: ${{ github.base_ref }} == 'master'
+      if: github.ref_name == 'master'
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPO }}:latest .
         docker push ${{ secrets.DOCKER_REPO }}:latest
     
+    - name: Web Docker build and push (Else)
+      if: github.ref_name != 'master'
+      run: |
+        docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+        docker build -t ${{ secrets.DOCKER_REPO }}:${{ github.ref_name }} .
+        docker push ${{ secrets.DOCKER_REPO }}:${{ github.ref_name }}
