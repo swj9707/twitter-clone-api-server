@@ -35,21 +35,21 @@ jobs:
         ./gradlew bootJar
     
     - name: Web Docker build and push (Master)
-      if: github.base_ref == 'master'
+      if: ${{ github.base_ref }} == 'master'
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPO }}:latest .
         docker push ${{ secrets.DOCKER_REPO }}:latest
     
     - name: Web Docker build and push (Dev)
-      if: github.base_ref == 'dev'
+      if: ${{ github.base_ref }} == 'dev'
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPO }}:latest .
         docker push ${{ secrets.DOCKER_REPO }}:latest
     
     - name: Web Docker build and push (release)
-      if: github.base_ref == 'release'
+      if: ${{ github.base_ref }} == 'release'
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPO }}:latest .
