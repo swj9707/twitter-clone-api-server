@@ -25,7 +25,7 @@ class AuthController(
 
     @GetMapping("/test")
     fun testApi() : ResponseEntity<BaseResponse<String>> {
-        return ResponseEntity.ok().body(BaseResponse.success("Heartbeat check"))
+        return ResponseEntity.ok().body(BaseResponse.success("Heartbeat check *^^*"))
     }
 
     @PostMapping("/register")
