@@ -1,8 +1,7 @@
-package com.swj9707.twittercloneapiserver.v1.auth.service.inter
+package com.swj9707.twittercloneapiserver.v1.user.service.inter
 
-import com.swj9707.twittercloneapiserver.v1.auth.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.v1.auth.dto.UserResDTO
-import java.util.*
+import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
 
 
 interface TwitterUserService {

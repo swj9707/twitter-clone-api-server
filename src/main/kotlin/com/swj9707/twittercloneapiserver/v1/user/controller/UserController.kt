@@ -1,9 +1,9 @@
-package com.swj9707.twittercloneapiserver.v1.auth.controller
+package com.swj9707.twittercloneapiserver.v1.user.controller
 
-import com.swj9707.twittercloneapiserver.v1.auth.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.v1.auth.dto.UserResDTO
-import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.v1.auth.service.TwitterUserServiceImpl
+import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal

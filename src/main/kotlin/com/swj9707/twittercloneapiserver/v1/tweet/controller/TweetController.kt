@@ -3,7 +3,7 @@ package com.swj9707.twittercloneapiserver.v1.tweet.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
-import com.swj9707.twittercloneapiserver.v1.auth.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
