@@ -6,7 +6,7 @@ class TweetResDTO {
         )
         data class TweetImageRes (
             val imageId : Long?,
-            val imageUrl : String?
+            val imageUrl : String
         )
         data class Tweets(
             val tweets : List<TweetDTO>,

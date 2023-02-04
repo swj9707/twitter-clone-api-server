@@ -12,7 +12,7 @@ class Image (
     val imageId : Long? = null,
 
     @Column(name = "image_url")
-    val imageUrl : String?
+    val imageUrl : String
 ) {
     companion object {
         fun dtoToEntity(dto : ImageDTO): Image {

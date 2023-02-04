@@ -33,8 +33,6 @@ class TweetServiceImpl(
 
     @Transactional
     override fun createTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.CreateTweet): TweetResDTO.Res.TweetInfo {
-
-
         val tweet = Tweet(
             userId = userInfo.userId,
             tweetContent = request.tweetContent,
