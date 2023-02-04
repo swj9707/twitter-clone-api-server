@@ -2,11 +2,9 @@ package com.swj9707.twittercloneapiserver.v1.user.controller
 
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
-import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,7 +17,6 @@ class UserController(
 ) {
     @PutMapping("/editProfile")
     fun editProfile(
-        @AuthenticationPrincipal user : TwitterUser,
         @RequestBody request : UserReqDTO.Req.EditProfile) : ResponseEntity<BaseResponse<UserResDTO.Res.EditProfile>>  {
         val result = twitterUserServiceImpl.editUserProfile(request)
         return ResponseEntity.ok().body(BaseResponse.success(result))
@@ -27,7 +24,6 @@ class UserController(
 
     @PutMapping("/editPassword")
     fun editPassword(
-        @AuthenticationPrincipal user : TwitterUser,
         @RequestBody request : UserReqDTO.Req.EditPassword) : ResponseEntity<BaseResponse<UserResDTO.Res.EditPassword>>{
         val result = twitterUserServiceImpl.editUserPassword(request)
         return ResponseEntity.ok().body(BaseResponse.success(result))

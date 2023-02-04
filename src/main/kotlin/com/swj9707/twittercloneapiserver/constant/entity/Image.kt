@@ -1,5 +1,6 @@
 package com.swj9707.twittercloneapiserver.constant.entity
 
+import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
 import jakarta.persistence.*
 
 @Entity
@@ -8,8 +9,18 @@ class Image (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
-    val imageId : Long,
+    val imageId : Long? = null,
 
     @Column(name = "image_url")
-    val imageUrl : String
-)
+    val imageUrl : String?
+) {
+    companion object {
+        fun dtoToEntity(dto : ImageDTO): Image {
+            return Image(imageId = dto.imageId, imageUrl = dto.imageUrl)
+        }
+
+        fun dtoListToEntityList(dtoList : MutableList<ImageDTO>?) : MutableList<Image>? {
+            return dtoList?.map{ dtoToEntity(it)}?.toMutableList()
+        }
+    }
+}

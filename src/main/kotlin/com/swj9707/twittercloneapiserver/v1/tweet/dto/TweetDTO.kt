@@ -1,5 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.dto
 
+import com.swj9707.twittercloneapiserver.constant.entity.Image
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
 import org.springframework.data.domain.Slice
@@ -12,7 +13,7 @@ data class TweetDTO (
 
     var tweetContent : String,
 
-    //var tweetImageMeta : String?,
+    var images : MutableList<Image>?,
 
     var modified : Boolean,
 
@@ -24,7 +25,7 @@ data class TweetDTO (
                 tweetId = entity.tweetId,
                 userId = entity.userId,
                 tweetContent = entity.tweetContent,
-                //tweetImageMeta = entity.tweetImageMeta,
+                images = entity.images,
                 modified = entity.modified,
                 status = entity.status
             )
