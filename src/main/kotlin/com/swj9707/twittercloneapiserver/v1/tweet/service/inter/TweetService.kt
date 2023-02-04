@@ -12,12 +12,7 @@ interface TweetService {
     fun createTweet(userInfo : TwitterUser, request : TweetReqDTO.Req.CreateTweet) : TweetResDTO.Res.TweetInfo
 
     fun readTweets(pageable : Pageable) : TweetResDTO.Res.Tweets
-
-    fun uploadImage(imageData : MultipartFile, imageMeta : TweetReqDTO.Req.TweetImageMeta) : TweetResDTO.Res.TweetImageInfo
-
+    fun uploadTweetImage(imageData : MultipartFile) : TweetResDTO.Res.TweetImageRes
     fun readAllTweets() : List<TweetDTO>
-
-    fun updateTweet(userInfo : TwitterUser, request : TweetReqDTO.Req.UpdateTweet) : TweetResDTO.Res.TweetInfo
-
     fun deleteTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.DeleteTweet) : TweetResDTO.Res.TweetInfo
 }

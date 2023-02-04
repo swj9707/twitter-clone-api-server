@@ -1,7 +1,5 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
@@ -22,47 +20,32 @@ class TweetController (
     private val tweetService: TweetServiceImpl
         ) {
     @PostMapping("/create")
-    fun createTweet(@AuthenticationPrincipal user : TwitterUser,
-        @RequestBody request : TweetReqDTO.Req.CreateTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
+    fun createTweet(@AuthenticationPrincipal user : TwitterUser, @RequestBody request : TweetReqDTO.Req.CreateTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
         val response = tweetService.createTweet(user, request)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
-
-    @PostMapping("/uploadImage")
-    fun uploadImage(@AuthenticationPrincipal user : TwitterUser,
-    @RequestParam("ImageFile") imageFile : MultipartFile,
-    @RequestParam("ImageMeta") imageMeta : String) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetImageInfo>> {
-        val mapper = ObjectMapper().registerKotlinModule()
-        val imageMetaData = mapper.readValue(imageMeta, TweetReqDTO.Req.TweetImageMeta::class.java)
-        val response = tweetService.uploadImage(imageFile, imageMetaData)
+    @PostMapping("/uploadTweetImage")
+    fun uploadTweetImage(@RequestParam("file") file : MultipartFile) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetImageRes>> {
+        val response = tweetService.uploadTweetImage(file)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
     @GetMapping("/readAll")
     @Deprecated("테스트용! 실 사용 시 사용하지 말것")
-    fun readAllTweets(@AuthenticationPrincipal user : TwitterUser) : ResponseEntity<BaseResponse<List<TweetDTO>>>{
+    fun readAllTweets() : ResponseEntity<BaseResponse<List<TweetDTO>>>{
         val response = tweetService.readAllTweets()
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
     @GetMapping("/read")
-    fun readTweets(@AuthenticationPrincipal user : TwitterUser,
-        @PageableDefault(size = 10, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable : Pageable)
+    fun readTweets(@PageableDefault(size = 10, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable : Pageable)
         : ResponseEntity<BaseResponse<TweetResDTO.Res.Tweets>>{
         val response = tweetService.readTweets(pageable)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
-    @PutMapping("/update")
-    fun updateTweet(@AuthenticationPrincipal user : TwitterUser,
-    @RequestBody request : TweetReqDTO.Req.UpdateTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
-        val response = tweetService.updateTweet(user, request)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
-    }
-
     @PutMapping("/delete")
-    fun deleteTweet(@AuthenticationPrincipal user : TwitterUser,
-    @RequestBody request : TweetReqDTO.Req.DeleteTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
+    fun deleteTweet(@AuthenticationPrincipal user : TwitterUser, @RequestBody request : TweetReqDTO.Req.DeleteTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
         val response = tweetService.deleteTweet(user, request)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }

@@ -29,13 +29,13 @@ class Tweet (
     var status : TweetStatus = TweetStatus.NORMAL,
 
     @OneToMany
-    var images : MutableList<Image> = ArrayList(),
+    var images : MutableList<Image>? = ArrayList(),
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
-    var retweets : MutableList<ReTweet> = ArrayList(),
+    var retweets : MutableList<ReTweet>? = ArrayList(),
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
-    var likes : MutableList<Like> = ArrayList(),
+    var likes : MutableList<Like>? = ArrayList(),
 
     @ManyToMany
     @JoinTable(name = "reply",
