@@ -8,6 +8,7 @@ class UserReqDTO {
         data class Register(
             val userEmail : String,
             val userName : String,
+            val userNickname : String,
             val password : String
         )
 
@@ -22,7 +23,7 @@ class UserReqDTO {
 
         data class EditProfile(
             val userId : UUID,
-            val newUserName : String
+            val newUserNickname : String
         )
 
         data class EditPassword(

@@ -31,7 +31,10 @@ class TwitterUser(
     var passwd: String,
 
     @Column(name="user_name")
-    var userName: String,
+    var userName : String,
+
+    @Column(name="user_nickname")
+    var userNickname: String,
 
     @Column(name="user_role")
     @Enumerated(EnumType.STRING)

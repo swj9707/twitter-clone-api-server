@@ -5,16 +5,18 @@ import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/user")
 class UserController(
     private val twitterUserServiceImpl: TwitterUserServiceImpl
 ) {
+    @GetMapping("/getUserProfile")
+    fun getUserInfo(@RequestParam(name = "userName", defaultValue = "") userName : String) : ResponseEntity<BaseResponse<UserResDTO.Res.UserProfile>> {
+        val result = twitterUserServiceImpl.getUserInfoByUserName(userName)
+        return ResponseEntity.ok().body(BaseResponse.success(result))
+    }
     @PutMapping("/editProfile")
     fun editProfile(
         @RequestBody request : UserReqDTO.Req.EditProfile) : ResponseEntity<BaseResponse<UserResDTO.Res.EditProfile>>  {

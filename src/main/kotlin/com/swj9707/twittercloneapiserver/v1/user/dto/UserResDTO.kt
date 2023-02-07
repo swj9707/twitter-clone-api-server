@@ -9,7 +9,7 @@ class UserResDTO {
             val userName : String,
         )
         data class Login (
-            val userInfo : TwitterUserDTO,
+            val userInfo : UserDTO.Dto.TwitterUserAuthInfo,
             val tokenInfo : TokenInfo
             )
         data class TokenInfo (
@@ -19,8 +19,16 @@ class UserResDTO {
         data class Logout (
             val userEmail : String
             )
+        data class UserInfo (
+            val userInfo : UserDTO.Dto.TwitterUserInfo
+        )
+
+        data class UserProfile (
+            val userProfile : UserDTO.Dto.TwitterUserProfile
+        )
+
         data class EditProfile(
-            val userInfo : TwitterUserDTO
+            val userInfo :  UserDTO.Dto.TwitterUserAuthInfo
         )
 
         data class EditPassword(
