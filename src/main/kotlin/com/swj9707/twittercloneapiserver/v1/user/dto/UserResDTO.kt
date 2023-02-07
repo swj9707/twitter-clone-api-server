@@ -24,11 +24,17 @@ class UserResDTO {
         )
 
         data class UserProfile (
-            val userProfile : UserDTO.Dto.TwitterUserProfile
+            val userProfile : UserDTO.Dto.TwitterUserProfile,
+            val countOfTweet : Long
+            //TODO
+            /*
+            * countOfFollower
+            * countOfFollowing
+            * */
         )
 
         data class EditProfile(
-            val userInfo :  UserDTO.Dto.TwitterUserAuthInfo
+            val userInfo :  UserDTO.Dto.TwitterUserProfile
         )
 
         data class EditPassword(

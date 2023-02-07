@@ -12,9 +12,14 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val twitterUserServiceImpl: TwitterUserServiceImpl
 ) {
+    @GetMapping("/getUserInfo")
+    fun getUserInfo(@RequestParam(name= "userId", defaultValue = "") userId : String) : ResponseEntity<BaseResponse<UserResDTO.Res.UserInfo>> {
+        val result = twitterUserServiceImpl.getUserInfoByUserId(userId)
+        return ResponseEntity.ok().body(BaseResponse.success(result))
+    }
     @GetMapping("/getUserProfile")
-    fun getUserInfo(@RequestParam(name = "userName", defaultValue = "") userName : String) : ResponseEntity<BaseResponse<UserResDTO.Res.UserProfile>> {
-        val result = twitterUserServiceImpl.getUserInfoByUserName(userName)
+    fun getUserProfile(@RequestParam(name = "userName", defaultValue = "") userName : String) : ResponseEntity<BaseResponse<UserResDTO.Res.UserProfile>> {
+        val result = twitterUserServiceImpl.getUserProfileByUserName(userName)
         return ResponseEntity.ok().body(BaseResponse.success(result))
     }
     @PutMapping("/editProfile")

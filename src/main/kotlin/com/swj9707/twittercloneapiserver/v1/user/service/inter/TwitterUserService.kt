@@ -16,5 +16,6 @@ interface TwitterUserService {
     fun reissue(refreshToken : String) : UserResDTO.Res.TokenInfo
 
     fun logout(accessToken: String) : UserResDTO.Res.Logout
-    fun getUserInfoByUserName(userName : String) : UserResDTO.Res.UserProfile
+    fun getUserInfoByUserId(userId : String) : UserResDTO.Res.UserInfo
+    fun getUserProfileByUserName(userName : String) : UserResDTO.Res.UserProfile
 }

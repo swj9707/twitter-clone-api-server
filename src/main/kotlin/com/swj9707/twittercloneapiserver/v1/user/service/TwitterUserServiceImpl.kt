@@ -9,14 +9,17 @@ import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.JwtUtils
 import com.swj9707.twittercloneapiserver.utils.RedisUtils
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.util.ObjectUtils
+import java.util.*
 
 @Service
 class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepository,
+                             private val tweetRepository: TweetRepository,
                              private val jwtUtils: JwtUtils,
                              private val redisUtils : RedisUtils,
                              private val passwordEncoder: PasswordEncoder,
@@ -51,7 +54,7 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
         } else {
             twitterUserRepository.save(user)
             return UserResDTO.Res.EditProfile(userInfo =
-            UserDTO.Dto.TwitterUserAuthInfo.entityToDTO(user))
+            UserDTO.Dto.TwitterUserProfile.entityToDTO(user))
         }
     }
 
@@ -127,9 +130,18 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
         return UserResDTO.Res.Logout(authentication.name)
     }
 
-    override fun getUserInfoByUserName(userName: String): UserResDTO.Res.UserProfile {
+    override fun getUserInfoByUserId(userId: String): UserResDTO.Res.UserInfo {
+        val result = twitterUserRepository.findById(UUID.fromString(userId))
+            .orElseThrow{ BaseException(BaseResponseCode.USER_NOT_FOUND) }
+        return UserResDTO.Res.UserInfo(UserDTO.Dto.TwitterUserInfo.entityToDTO(result))
+    }
+
+    override fun getUserProfileByUserName(userName: String): UserResDTO.Res.UserProfile {
         val result = twitterUserRepository.findUserByUserName(userName)
             .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
-        return UserResDTO.Res.UserProfile(UserDTO.Dto.TwitterUserProfile.entityToDTO(result))
+        val countOfTweets = tweetRepository.countByUserId(result.userId)
+        val userProfile = UserDTO.Dto.TwitterUserProfile.entityToDTO(result)
+
+        return UserResDTO.Res.UserProfile(userProfile = userProfile, countOfTweet = countOfTweets)
     }
 }
