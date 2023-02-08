@@ -31,7 +31,10 @@ class TwitterUser(
     var passwd: String,
 
     @Column(name="user_name")
-    var userName: String,
+    var userName : String,
+
+    @Column(name="user_nickname")
+    var userNickname: String,
 
     @Column(name="user_role")
     @Enumerated(EnumType.STRING)
@@ -52,13 +55,13 @@ class TwitterUser(
     @JoinTable(name = "twitter_user_profile",
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "image_id")])
-    val profileImage: Image? = null,
+    var profileImage: Image? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "twitter_user_background_image",
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "image_id")])
-    val backgroundImage: Image? = null,
+    var backgroundImage: Image? = null,
 
     @ManyToMany
     @JoinTable(name = "follow",

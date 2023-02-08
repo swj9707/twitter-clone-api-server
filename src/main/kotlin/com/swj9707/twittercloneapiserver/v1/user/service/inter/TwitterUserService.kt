@@ -9,6 +9,8 @@ interface TwitterUserService {
 
     fun editUserProfile(editProfileReq : UserReqDTO.Req.EditProfile) : UserResDTO.Res.EditProfile
 
+    fun editUserProfile(editUserProfile: UserReqDTO.Req.EditUserProfile) : UserResDTO.Res.EditProfile
+
     fun editUserPassword(editUserPasswordReq : UserReqDTO.Req.EditPassword) : UserResDTO.Res.EditPassword
 
     fun login(req: UserReqDTO.Req.Login) : UserResDTO.Res.Login
@@ -16,4 +18,6 @@ interface TwitterUserService {
     fun reissue(refreshToken : String) : UserResDTO.Res.TokenInfo
 
     fun logout(accessToken: String) : UserResDTO.Res.Logout
+    fun getUserInfoByUserId(userId : String) : UserResDTO.Res.UserInfo
+    fun getUserProfileByUserName(userName : String) : UserResDTO.Res.UserProfile
 }

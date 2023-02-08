@@ -6,7 +6,7 @@ class TweetReqDTO {
     companion object Req {
         data class CreateTweet(
             val tweetContent : String,
-            val tweetImages : MutableList<ImageDTO>?
+            val tweetImages : MutableList<ImageDTO.Dto.ImageInfo>?
         )
         data class DeleteTweet(
             val tweetId : Long,

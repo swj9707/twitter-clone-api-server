@@ -15,11 +15,11 @@ class Image (
     val imageUrl : String
 ) {
     companion object {
-        fun dtoToEntity(dto : ImageDTO): Image {
+        fun dtoToEntity(dto : ImageDTO.Dto.ImageInfo): Image {
             return Image(imageId = dto.imageId, imageUrl = dto.imageUrl)
         }
 
-        fun dtoListToEntityList(dtoList : MutableList<ImageDTO>?) : MutableList<Image>? {
+        fun dtoListToEntityList(dtoList : MutableList<ImageDTO.Dto.ImageInfo>?) : MutableList<Image>? {
             return dtoList?.map{ dtoToEntity(it)}?.toMutableList()
         }
     }
