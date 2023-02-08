@@ -1,12 +1,9 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.service
 
 import com.swj9707.twittercloneapiserver.constant.entity.Image
-import com.swj9707.twittercloneapiserver.constant.entity.repository.ImageRepository
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.exception.BaseException
-import com.swj9707.twittercloneapiserver.utils.FileUtils
-import com.swj9707.twittercloneapiserver.utils.StringUtils
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
@@ -18,12 +15,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 
 @Service
 class TweetServiceImpl(
     private val tweetRepository: TweetRepository,
-    private val imageRepository: ImageRepository
 ) : TweetService{
 
     @Value("\${file.ImageLocation}")
@@ -56,20 +51,6 @@ class TweetServiceImpl(
             empty = responseData.isEmpty
         )
     }
-
-    @Transactional
-    override fun uploadTweetImage(imageData: MultipartFile): TweetResDTO.Res.TweetImageRes {
-        try{
-            val fileName = StringUtils.Utils.createImageFileName(imageData.originalFilename)
-            FileUtils.Utils.uploadFile(imgLocation, fileName, imageData.bytes)
-            val imageEntity = Image(imageUrl = "$cdnUrl/$fileName")
-            imageRepository.save(imageEntity)
-            return TweetResDTO.Res.TweetImageRes(imageId = imageEntity.imageId, imageUrl = imageEntity.imageUrl)
-        } catch (e : Exception){
-            throw BaseException(BaseResponseCode.FILE_UPLOAD_ERROR)
-        }
-    }
-
     override fun readAllTweets(): List<TweetDTO> {
         val tweets = tweetRepository.findAllByStatusNot(TweetStatus.DELETED)
         return tweets.map { TweetDTO.entityToDTO(it)}

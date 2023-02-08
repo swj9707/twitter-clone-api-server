@@ -13,7 +13,7 @@ data class TweetDTO (
 
     var tweetContent : String,
 
-    var images : MutableList<ImageDTO>?,
+    var images : MutableList<ImageDTO.Dto.ImageInfo>?,
 
     var modified : Boolean,
 
@@ -25,7 +25,7 @@ data class TweetDTO (
                 tweetId = entity.tweetId,
                 userId = entity.userId,
                 tweetContent = entity.tweetContent,
-                images = ImageDTO.entitysToListDTO(entity.images),
+                images = ImageDTO.Dto.ImageInfo.entitysToListDTO(entity.images),
                 modified = entity.modified,
                 status = entity.status
             )
