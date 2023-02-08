@@ -1,7 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.service
 
 import com.swj9707.twittercloneapiserver.constant.entity.Image
-import com.swj9707.twittercloneapiserver.constant.entity.repository.ImageRepository
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.exception.BaseException
