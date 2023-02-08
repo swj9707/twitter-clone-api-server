@@ -1,5 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.user.dto
 
+import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import java.util.*
 
@@ -20,7 +21,12 @@ class UserReqDTO {
                 return UsernamePasswordAuthenticationToken(userEmail, password)
             }
         }
-
+        data class EditUserProfile(
+            val userId : UUID,
+            val newUserNickname: String,
+            val profileImage : ImageDTO.Dto.ImageInfo,
+            val backgroundImage : ImageDTO.Dto.ImageInfo
+            )
         data class EditProfile(
             val userId : UUID,
             val newUserNickname : String

@@ -26,16 +26,16 @@ class UserDTO {
         data class TwitterUserProfile (
             val userName : String,
             val userNickname: String,
-            val profileImage: ImageDTO?,
-            val backgroundImage: ImageDTO?
+            val profileImage: ImageDTO.Dto.ImageInfo?,
+            val backgroundImage: ImageDTO.Dto.ImageInfo?
         ) {
             companion object Util {
                 fun entityToDTO(entity: TwitterUser): TwitterUserProfile {
                     return TwitterUserProfile(
                         userName = entity.userName,
                         userNickname = entity.userNickname,
-                        profileImage = entity.profileImage?.let { ImageDTO.entityToDTO(it) },
-                        backgroundImage = entity.backgroundImage?.let { ImageDTO.entityToDTO(it) }
+                        profileImage = entity.profileImage?.let { ImageDTO.Dto.ImageInfo.entityToDTO(it) },
+                        backgroundImage = entity.backgroundImage?.let {ImageDTO.Dto.ImageInfo.entityToDTO(it) }
                     )
                 }
             }
@@ -45,8 +45,8 @@ class UserDTO {
             val userName : String,
             val userNickname : String,
             val userRole : Authority,
-            val profileImage : ImageDTO?,
-            val backgroundImage: ImageDTO?,
+            val profileImage : ImageDTO.Dto.ImageInfo?,
+            val backgroundImage: ImageDTO.Dto.ImageInfo?,
             val provider : Provider,
             val lastLogin : LocalDateTime?,
         ) {
@@ -57,8 +57,8 @@ class UserDTO {
                         userName = entity.userName,
                         userNickname = entity.userNickname,
                         userRole = entity.userRole,
-                        profileImage = entity.profileImage?.let {ImageDTO.entityToDTO(it)},
-                        backgroundImage = entity.backgroundImage?.let { ImageDTO.entityToDTO(it) },
+                        profileImage = entity.profileImage?.let {ImageDTO.Dto.ImageInfo.entityToDTO(it)},
+                        backgroundImage = entity.backgroundImage?.let { ImageDTO.Dto.ImageInfo.entityToDTO(it) },
                         provider = entity.provider,
                         lastLogin = entity.lastLogin,
                     )

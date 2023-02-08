@@ -29,6 +29,13 @@ class UserController(
         return ResponseEntity.ok().body(BaseResponse.success(result))
     }
 
+    @PutMapping("/editUserProfile")
+    fun editUserProfile(
+        @RequestBody request: UserReqDTO.Req.EditUserProfile) : ResponseEntity<BaseResponse<UserResDTO.Res.EditProfile>> {
+        val result = twitterUserServiceImpl.editUserProfile(request)
+        return ResponseEntity.ok().body(BaseResponse.success(result))
+    }
+
     @PutMapping("/editPassword")
     fun editPassword(
         @RequestBody request : UserReqDTO.Req.EditPassword) : ResponseEntity<BaseResponse<UserResDTO.Res.EditPassword>>{

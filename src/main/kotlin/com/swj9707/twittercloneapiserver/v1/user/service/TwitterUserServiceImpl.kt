@@ -1,5 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.user.service
 
+import com.swj9707.twittercloneapiserver.constant.entity.Image
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
@@ -55,6 +56,20 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
             twitterUserRepository.save(user)
             return UserResDTO.Res.EditProfile(userInfo =
             UserDTO.Dto.TwitterUserProfile.entityToDTO(user))
+        }
+    }
+
+    override fun editUserProfile(editUserProfile: UserReqDTO.Req.EditUserProfile): UserResDTO.Res.EditProfile {
+        val user = twitterUserRepository.findById(editUserProfile.userId)
+            .orElseThrow{ BaseException(BaseResponseCode.USER_NOT_FOUND)}
+        if(twitterUserRepository.existsTwitterUserByUserNickname(editUserProfile.newUserNickname)){
+            throw BaseException(BaseResponseCode.DUPLICATE_USERNICKNAME)
+        } else {
+            user.userNickname = editUserProfile.newUserNickname
+            user.profileImage = Image.dtoToEntity(editUserProfile.profileImage)
+            user.backgroundImage = Image.dtoToEntity(editUserProfile.backgroundImage)
+            twitterUserRepository.save(user)
+            return UserResDTO.Res.EditProfile(userInfo = UserDTO.Dto.TwitterUserProfile.entityToDTO(user))
         }
     }
 
