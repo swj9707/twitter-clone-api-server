@@ -38,6 +38,10 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
             throw BaseException(BaseResponseCode.DUPLICATE_EMAIL)
         }
 
+        if(twitterUserRepository.existsTwitterUserByUserName(user.userName)){
+            throw BaseException(BaseResponseCode.DUPLICATE_USERNAME)
+        }
+
         if(twitterUserRepository.existsTwitterUserByUserName(user.userNickname)){
             throw BaseException(BaseResponseCode.DUPLICATE_USERNAME)
         }
