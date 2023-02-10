@@ -11,7 +11,6 @@ import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.service.inter.TweetService
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,17 +20,12 @@ class TweetServiceImpl(
     private val tweetRepository: TweetRepository,
 ) : TweetService{
 
-    @Value("\${file.ImageLocation}")
-    lateinit var imgLocation: String
-    @Value("\${file.cdn.tweetImage}")
-    lateinit var cdnUrl : String
-
     @Transactional
     override fun createTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.CreateTweet): TweetResDTO.Res.TweetInfo {
         val tweet = Tweet(
-            userId = userInfo.userId,
             tweetContent = request.tweetContent,
-            images = Image.dtoListToEntityList(request.tweetImages)
+            images = Image.dtoListToEntityList(request.tweetImages),
+            user = userInfo
         )
         tweetRepository.save(tweet)
 
@@ -40,7 +34,7 @@ class TweetServiceImpl(
 
     override fun readTweets(pageable: Pageable): TweetResDTO.Res.Tweets {
         val result = tweetRepository.findTweetsByStatusNot(TweetStatus.DELETED, pageable)
-        val responseData = TweetDTO.pageEntityToDTO(result)
+        val responseData = TweetDTO.Dto.TweetInfo.pageEntityToDTO(result)
         return TweetResDTO.Res.Tweets(
             tweets = responseData.content,
             size = responseData.size,
@@ -51,9 +45,9 @@ class TweetServiceImpl(
             empty = responseData.isEmpty
         )
     }
-    override fun readAllTweets(): List<TweetDTO> {
-        val tweets = tweetRepository.findAllByStatusNot(TweetStatus.DELETED)
-        return tweets.map { TweetDTO.entityToDTO(it)}
+    override fun readAllTweets(): List<TweetDTO.Dto.TweetInfo> {
+        val tweets = tweetRepository.findAllByStatusNotOrderByCreateAtDesc(TweetStatus.DELETED)
+        return tweets.map { TweetDTO.Dto.TweetInfo.entityToDTO(it)}
     }
 
     @Transactional
@@ -61,7 +55,7 @@ class TweetServiceImpl(
         val tweet = tweetRepository.findById(request.tweetId)
             .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
 
-        if(tweet.userId != userInfo.userId){
+        if(tweet.user.userId != userInfo.userId){
             throw BaseException(BaseResponseCode.FORBIDDEN)
         }
 

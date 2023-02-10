@@ -3,6 +3,7 @@ package com.swj9707.twittercloneapiserver.v1.tweet.entity
 import com.swj9707.twittercloneapiserver.constant.entity.BaseEntity
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.constant.entity.Image
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import jakarta.persistence.*
 import java.util.*
 
@@ -15,9 +16,6 @@ class Tweet (
     @Column(name = "tweet_id")
     val tweetId : Long? = null,
 
-    @Column(name = "user_id")
-    val userId : UUID,
-
     @Column(name = "tweet_content")
     var tweetContent : String,
 
@@ -27,6 +25,10 @@ class Tweet (
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     var status : TweetStatus = TweetStatus.NORMAL,
+
+    @ManyToOne
+    @JoinColumn(name ="user_id")
+    val user : TwitterUser,
 
     @OneToMany
     var images : MutableList<Image>? = ArrayList(),

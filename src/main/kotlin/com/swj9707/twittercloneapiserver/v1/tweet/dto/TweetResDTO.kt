@@ -5,7 +5,7 @@ class TweetResDTO {
             val tweetId : Long?
         )
         data class Tweets(
-            val tweets : List<TweetDTO>,
+            val tweets : List<TweetDTO.Dto.TweetInfo>,
             val size : Int,
             val number : Int,
             val first : Boolean,

@@ -11,6 +11,6 @@ interface TweetService {
     fun createTweet(userInfo : TwitterUser, request : TweetReqDTO.Req.CreateTweet) : TweetResDTO.Res.TweetInfo
 
     fun readTweets(pageable : Pageable) : TweetResDTO.Res.Tweets
-    fun readAllTweets() : List<TweetDTO>
+    fun readAllTweets() : List<TweetDTO.Dto.TweetInfo>
     fun deleteTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.DeleteTweet) : TweetResDTO.Res.TweetInfo
 }

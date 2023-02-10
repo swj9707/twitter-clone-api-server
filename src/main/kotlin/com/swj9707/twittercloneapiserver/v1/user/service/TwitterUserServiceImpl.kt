@@ -62,7 +62,8 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
     override fun editUserProfile(editUserProfile: UserReqDTO.Req.EditUserProfile): UserResDTO.Res.EditProfile {
         val user = twitterUserRepository.findById(editUserProfile.userId)
             .orElseThrow{ BaseException(BaseResponseCode.USER_NOT_FOUND)}
-        if(twitterUserRepository.existsTwitterUserByUserNickname(editUserProfile.newUserNickname)){
+        if(user.userNickname != editUserProfile.newUserNickname &&
+            twitterUserRepository.existsTwitterUserByUserNickname(editUserProfile.newUserNickname)){
             throw BaseException(BaseResponseCode.DUPLICATE_USERNICKNAME)
         } else {
             user.userNickname = editUserProfile.newUserNickname
@@ -154,7 +155,7 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
     override fun getUserProfileByUserName(userName: String): UserResDTO.Res.UserProfile {
         val result = twitterUserRepository.findUserByUserName(userName)
             .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
-        val countOfTweets = tweetRepository.countByUserId(result.userId)
+        val countOfTweets = 0L
         val userProfile = UserDTO.Dto.TwitterUserProfile.entityToDTO(result)
 
         return UserResDTO.Res.UserProfile(userProfile = userProfile, countOfTweet = countOfTweets)

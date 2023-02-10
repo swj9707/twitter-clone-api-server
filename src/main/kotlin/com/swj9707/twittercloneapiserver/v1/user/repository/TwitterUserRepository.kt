@@ -12,4 +12,5 @@ interface TwitterUserRepository : JpaRepository<TwitterUser, UUID>{
     fun existsTwitterUserByEmail(Email : String) : Boolean
     fun existsTwitterUserByUserName(userName : String) : Boolean
     fun existsTwitterUserByUserNickname(userNickname: String) : Boolean
+    fun countByUserNickname(userNickname : String) : Boolean
 }

@@ -26,7 +26,7 @@ class TweetController (
 
     @GetMapping("/readAll")
     @Deprecated("테스트용! 실 사용 시 사용하지 말것")
-    fun readAllTweets() : ResponseEntity<BaseResponse<List<TweetDTO>>>{
+    fun readAllTweets() : ResponseEntity<BaseResponse<List<TweetDTO.Dto.TweetInfo>>>{
         val response = tweetService.readAllTweets()
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }

@@ -5,6 +5,7 @@ import com.swj9707.twittercloneapiserver.constant.enum.Authority
 import com.swj9707.twittercloneapiserver.constant.enum.UserStatus
 import com.swj9707.twittercloneapiserver.constant.enum.Provider
 import com.swj9707.twittercloneapiserver.constant.entity.Image
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
 import jakarta.persistence.*
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.security.core.GrantedAuthority
@@ -62,6 +63,9 @@ class TwitterUser(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "image_id")])
     var backgroundImage: Image? = null,
+
+    @ManyToMany
+    val tweets : MutableList<Tweet> = ArrayList(),
 
     @ManyToMany
     @JoinTable(name = "follow",
