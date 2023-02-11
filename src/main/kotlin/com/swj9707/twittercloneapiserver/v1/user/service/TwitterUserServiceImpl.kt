@@ -10,17 +10,16 @@ import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.JwtUtils
 import com.swj9707.twittercloneapiserver.utils.RedisUtils
-import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.util.ObjectUtils
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
 class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepository,
-                             private val tweetRepository: TweetRepository,
                              private val jwtUtils: JwtUtils,
                              private val redisUtils : RedisUtils,
                              private val passwordEncoder: PasswordEncoder,
@@ -106,6 +105,10 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
             refreshToken = jwtUtils.createToken(authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
             redisUtils.setDataExpire("RT:"+authentication.name, refreshToken, JwtUtils.REFRESH_TOKEN_VALID_TIME)
         }
+
+        val now : LocalDateTime = LocalDateTime.now()
+        userInfo.lastLogin = now
+        twitterUserRepository.save(userInfo)
 
         return UserResDTO.Res.Login(
             userInfo = userInfoDTO,

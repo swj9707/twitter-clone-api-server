@@ -2,14 +2,21 @@ package com.swj9707.twittercloneapiserver.v1.tweet.repository
 
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import java.util.*
 
 interface TweetRepository : JpaRepository<Tweet, Long> {
-    fun findTweetsByStatusNot(status : TweetStatus, pageable : Pageable) : Slice<Tweet>
-    //TODO
-    //현재 삭제 처리되지 않은 트윗 중 본인이 쓴 트윗과 본인이 팔로우하는 유저가 쓴 트윗만 보기
-    @Deprecated("테스트용! 실 사용 하지 말것")
-    fun findAllByStatusNotOrderByCreateAtDesc(status : TweetStatus) : List<Tweet>
+    @Query("SELECT tweet from Tweet tweet JOIN FETCH tweet.user WHERE tweet.status != 'DELETED' ORDER BY tweet.createAt DESC")
+    fun findTweetsByStatusNot(pageable : Pageable) : Slice<TweetProjection>
+    @Query("SELECT tweet FROM Tweet tweet JOIN FETCH tweet.user WHERE tweet.status != 'DELETED' ")
+    fun findTweets() : List<Tweet>
+
+    @Query("SELECT tweet from Tweet tweet WHERE tweet.tweetId = :tweetId")
+    fun findTweetById(tweetId : Long) : Optional<TweetProjection>
+    @Query("SELECT tweet from Tweet tweet JOIN FETCH tweet.user WHERE tweet.status != 'DELETED' ORDER BY tweet.createAt DESC")
+    fun findAllByStatusNotFetchJoin(status : TweetStatus) : List<TweetProjection>
 }

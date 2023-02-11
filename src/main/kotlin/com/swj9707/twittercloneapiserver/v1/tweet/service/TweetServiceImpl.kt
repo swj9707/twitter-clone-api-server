@@ -32,10 +32,10 @@ class TweetServiceImpl(
         return TweetResDTO.Res.TweetInfo(tweetId = tweet.tweetId)
     }
 
-    override fun readTweets(pageable: Pageable): TweetResDTO.Res.Tweets {
-        val result = tweetRepository.findTweetsByStatusNot(TweetStatus.DELETED, pageable)
-        val responseData = TweetDTO.Dto.TweetInfo.pageEntityToDTO(result)
-        return TweetResDTO.Res.Tweets(
+    override fun readTweets(pageable: Pageable): TweetResDTO.Res.TweetsRes {
+        val result = tweetRepository.findTweetsByStatusNot(pageable)
+        val responseData = TweetDTO.Dto.TweetInfo.toPageableDTO(result)
+        return TweetResDTO.Res.TweetsRes(
             tweets = responseData.content,
             size = responseData.size,
             number = responseData.number,
@@ -44,10 +44,6 @@ class TweetServiceImpl(
             numberOfElements = responseData.numberOfElements,
             empty = responseData.isEmpty
         )
-    }
-    override fun readAllTweets(): List<TweetDTO.Dto.TweetInfo> {
-        val tweets = tweetRepository.findAllByStatusNotOrderByCreateAtDesc(TweetStatus.DELETED)
-        return tweets.map { TweetDTO.Dto.TweetInfo.entityToDTO(it)}
     }
 
     @Transactional

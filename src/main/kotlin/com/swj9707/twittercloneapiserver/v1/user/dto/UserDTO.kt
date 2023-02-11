@@ -3,6 +3,7 @@ package com.swj9707.twittercloneapiserver.v1.user.dto
 import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
 import com.swj9707.twittercloneapiserver.constant.enum.Authority
 import com.swj9707.twittercloneapiserver.constant.enum.Provider
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import java.util.*
 
@@ -76,6 +77,14 @@ class UserDTO {
                         userName = entity.userName,
                         userNickname = entity.userNickname,
                         profileImage = entity.profileImage?.let {ImageDTO.Dto.ImageInfo.entityToDTO(it)}
+                    )
+                }
+
+                fun projectionToDTO(projection : TweetProjection.UserProjection) : TweetOwnerInfo {
+                    return TweetOwnerInfo(
+                        userName = projection.getUserName(),
+                        userNickname = projection.getUserNickname(),
+                        profileImage = projection.getProfileImage()?.let { ImageDTO.Dto.ImageInfo.projectionToDTO(it) }
                     )
                 }
             }

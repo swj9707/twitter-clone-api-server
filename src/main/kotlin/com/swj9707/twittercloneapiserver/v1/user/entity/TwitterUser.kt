@@ -64,7 +64,7 @@ class TwitterUser(
         inverseJoinColumns = [JoinColumn(name = "image_id")])
     var backgroundImage: Image? = null,
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     val tweets : MutableList<Tweet> = ArrayList(),
 
     @ManyToMany

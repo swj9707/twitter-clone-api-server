@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.util.*
 
 @SpringBootTest
 class TweetTest (
@@ -17,9 +18,28 @@ class TweetTest (
     @Test
     @DisplayName("Tweet Entity 확인")
     fun findAllTweet() {
-        val result = tweetRepository.findAllByStatusNotOrderByCreateAtDesc(TweetStatus.DELETED)
+        val result = tweetRepository.findAllByStatusNotFetchJoin(TweetStatus.DELETED)
         result.forEach{
-            tweet -> logger.info(tweet.user.userName)
+            logger.info(it.toString())
         }
+    }
+    @Test
+    @DisplayName("Tweet Data 확인")
+    fun findTweet() {
+        val result = tweetRepository.findTweets()
+        result.forEach {
+            tweet ->
+            run {
+                val user = tweet.user
+                logger.info(user.profileImage?.imageUrl ?: "")
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Find by Id")
+    fun findTweetById() {
+        val result = tweetRepository.findTweetById(1)
+        logger.info(result.get().toString())
     }
 }

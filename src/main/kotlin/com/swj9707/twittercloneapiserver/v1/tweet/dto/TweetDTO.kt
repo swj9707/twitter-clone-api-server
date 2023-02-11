@@ -3,8 +3,8 @@ package com.swj9707.twittercloneapiserver.v1.tweet.dto
 import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
-import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import org.springframework.data.domain.Slice
 
 class TweetDTO {
@@ -29,7 +29,7 @@ class TweetDTO {
                     return TweetInfo(
                         tweetId = entity.tweetId,
                         tweetContent = entity.tweetContent,
-                        images = ImageDTO.Dto.ImageInfo.entitysToListDTO(entity.images),
+                        images = ImageDTO.Dto.ImageInfo.entitiesToListDTO(entity.images),
                         modified = entity.modified,
                         createdAt = entity.createAt.toString(),
                         status = entity.status,
@@ -37,20 +37,20 @@ class TweetDTO {
                     )
                 }
 
-                fun pageEntityToDTO(pageEntity : Slice<Tweet>) : Slice<TweetInfo> {
-                    return pageEntity.map { entityToDTO(it) }
+                fun projectionToDTO( projection: TweetProjection) : TweetInfo {
+                    return TweetInfo(
+                        tweetId = projection.getTweetId(),
+                        tweetContent = projection.getTweetContent(),
+                        images = ImageDTO.Dto.ImageInfo.projectionsToListDTO(projection.getImages()),
+                        modified = projection.getModified(),
+                        createdAt = projection.getCreateAt().toString(),
+                        status = projection.getStatus(),
+                        userInfo = UserDTO.Dto.TweetOwnerInfo.projectionToDTO(projection.getUser())
+                    )
                 }
-            }
-        }
 
-        data class TweetData (
-            val tweetInfo : TweetInfo,
-            val userInfo : UserDTO.Dto.TweetOwnerInfo
-        ) {
-            companion object Util {
-                fun entityToDTO(tweet: Tweet, user : TwitterUser) : TweetData {
-                    return TweetData(tweetInfo = TweetInfo.entityToDTO(tweet),
-                        userInfo = UserDTO.Dto.TweetOwnerInfo.entityToDTO(user))
+                fun toPageableDTO(pageEntity : Slice<TweetProjection>) : Slice<TweetInfo> {
+                    return pageEntity.map { projectionToDTO(it) }
                 }
             }
         }

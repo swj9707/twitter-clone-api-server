@@ -26,11 +26,14 @@ class Tweet (
     @Enumerated(EnumType.STRING)
     var status : TweetStatus = TweetStatus.NORMAL,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
     val user : TwitterUser,
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tweet_images",
+        joinColumns = [JoinColumn(name = "tweet_id")],
+        inverseJoinColumns = [JoinColumn(name = "image_id")])
     var images : MutableList<Image>? = ArrayList(),
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
