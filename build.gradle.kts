@@ -54,9 +54,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 	//Swagger UI
-	implementation("io.springfox:springfox-boot-starter:3.0.0")
-//	implementation("io.springfox:springfox-swagger-ui:3.0.0")
-//	implementation("io.springfox:springfox-oas:3.0.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

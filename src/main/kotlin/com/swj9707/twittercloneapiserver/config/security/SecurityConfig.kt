@@ -31,17 +31,23 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity) : SecurityFilterChain {
         http
-            .httpBasic().disable()
             .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .httpBasic().disable()
+            .authorizeHttpRequests()
+            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+            .requestMatchers(
+                "/docs/**",
+                "/v3/api-docs",
+                "/swagger*/**", "/api/auth/v1/**").permitAll()
+            .requestMatchers("/api/v1/**").authenticated()
             .and()
             .addFilterBefore(JwtAuthenticationFilter(jwtUtils, redisUtils), UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling().authenticationEntryPoint(CustomAuthenticationEntryPoint())
             .and()
-            .authorizeHttpRequests()
-            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-            .requestMatchers("/api/auth/v1/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-            .requestMatchers("/api/v1/**").authenticated()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+
+
 
         return http.build()
     }
