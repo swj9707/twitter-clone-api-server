@@ -13,9 +13,9 @@ import java.time.LocalDateTime
 abstract class BaseEntity {
     @CreatedDate
     @Column(name = "create_at", nullable = false, updatable = false)
-    protected open var createAt: LocalDateTime = LocalDateTime.MIN
+    open var createAt: LocalDateTime = LocalDateTime.MIN
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    protected open var updatedAt: LocalDateTime? = LocalDateTime.MIN
+    open var updatedAt: LocalDateTime? = LocalDateTime.MIN
 }

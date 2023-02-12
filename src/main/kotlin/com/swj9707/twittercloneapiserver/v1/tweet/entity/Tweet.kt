@@ -3,6 +3,7 @@ package com.swj9707.twittercloneapiserver.v1.tweet.entity
 import com.swj9707.twittercloneapiserver.constant.entity.BaseEntity
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.constant.entity.Image
+import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import jakarta.persistence.*
 import java.util.*
 
@@ -15,9 +16,6 @@ class Tweet (
     @Column(name = "tweet_id")
     val tweetId : Long? = null,
 
-    @Column(name = "user_id")
-    val userId : UUID,
-
     @Column(name = "tweet_content")
     var tweetContent : String,
 
@@ -28,7 +26,14 @@ class Tweet (
     @Enumerated(EnumType.STRING)
     var status : TweetStatus = TweetStatus.NORMAL,
 
-    @OneToMany
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="user_id")
+    val user : TwitterUser,
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tweet_images",
+        joinColumns = [JoinColumn(name = "tweet_id")],
+        inverseJoinColumns = [JoinColumn(name = "image_id")])
     var images : MutableList<Image>? = ArrayList(),
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
@@ -37,7 +42,7 @@ class Tweet (
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
     var likes : MutableList<Like>? = ArrayList(),
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "reply",
     joinColumns = [JoinColumn(name = "tweet_id")],
     inverseJoinColumns = [JoinColumn(name = "reply_tweet_id")])

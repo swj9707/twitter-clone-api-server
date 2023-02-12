@@ -2,7 +2,6 @@ package com.swj9707.twittercloneapiserver.v1.tweet.controller
 
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.service.TweetServiceImpl
@@ -24,17 +23,17 @@ class TweetController (
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
-    @GetMapping("/readAll")
-    @Deprecated("테스트용! 실 사용 시 사용하지 말것")
-    fun readAllTweets() : ResponseEntity<BaseResponse<List<TweetDTO>>>{
-        val response = tweetService.readAllTweets()
+    @GetMapping("/read")
+    fun readTweets(@PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable : Pageable)
+        : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>>{
+        val response = tweetService.readTweets(pageable)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
-    @GetMapping("/read")
-    fun readTweets(@PageableDefault(size = 10, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable : Pageable)
-        : ResponseEntity<BaseResponse<TweetResDTO.Res.Tweets>>{
-        val response = tweetService.readTweets(pageable)
+    @GetMapping("/user")
+    fun getUserTweets(@PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable : Pageable,
+        @RequestParam(name = "userName", defaultValue = "") userName : String) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>> {
+        val response = tweetService.getUserTweets(userName, pageable)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
