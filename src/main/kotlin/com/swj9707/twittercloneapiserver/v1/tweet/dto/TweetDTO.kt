@@ -22,7 +22,13 @@ class TweetDTO {
 
             var status : TweetStatus,
 
-            var userInfo: UserDTO.Dto.TweetOwnerInfo
+            var userInfo: UserDTO.Dto.TweetOwnerInfo,
+
+            var likedTweetsCount : Int = 0,
+
+            var retweetsCount : Int = 0,
+
+            var repliesCount : Int = 0
         ) {
             companion object Util {
                 fun entityToDTO(entity : Tweet) : TweetInfo{
@@ -45,7 +51,10 @@ class TweetDTO {
                         modified = projection.getModified(),
                         createdAt = projection.getCreateAt().toString(),
                         status = projection.getStatus(),
-                        userInfo = UserDTO.Dto.TweetOwnerInfo.projectionToDTO(projection.getUser())
+                        userInfo = UserDTO.Dto.TweetOwnerInfo.projectionToDTO(projection.getUser()),
+                        likedTweetsCount = projection.getLikedTweetsCount(),
+                        retweetsCount = projection.getRetweetsCount(),
+                        repliesCount = projection.getRepliesCount()
                     )
                 }
 

@@ -67,13 +67,13 @@ class TwitterUser(
     @ManyToMany(fetch = FetchType.LAZY)
     val tweets : MutableList<Tweet> = ArrayList(),
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "follow",
         joinColumns = [JoinColumn(name = "followee")],
         inverseJoinColumns = [JoinColumn(name = "follower")])
     val followers: MutableList<TwitterUser> = ArrayList(),
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "follow",
       joinColumns = [JoinColumn(name="follower")],
     inverseJoinColumns = [JoinColumn(name = "followee")])

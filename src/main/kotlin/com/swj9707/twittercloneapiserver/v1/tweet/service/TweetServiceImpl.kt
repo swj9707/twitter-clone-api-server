@@ -46,6 +46,20 @@ class TweetServiceImpl(
         )
     }
 
+    override fun getUserTweets(userName : String, pageable: Pageable): TweetResDTO.Res.TweetsRes {
+        val result = tweetRepository.findTweetsByUserUserName(userName, pageable)
+        val responseData = TweetDTO.Dto.TweetInfo.toPageableDTO(result)
+        return TweetResDTO.Res.TweetsRes(
+            tweets = responseData.content,
+            size = responseData.size,
+            number = responseData.number,
+            first = responseData.isFirst,
+            last = responseData.isLast,
+            numberOfElements = responseData.numberOfElements,
+            empty = responseData.isEmpty
+        )
+    }
+
     @Transactional
     override fun deleteTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.DeleteTweet): TweetResDTO.Res.TweetInfo {
         val tweet = tweetRepository.findById(request.tweetId)

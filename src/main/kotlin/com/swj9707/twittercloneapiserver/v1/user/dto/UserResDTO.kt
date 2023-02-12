@@ -25,12 +25,7 @@ class UserResDTO {
 
         data class UserProfile (
             val userProfile : UserDTO.Dto.TwitterUserProfile,
-            val countOfTweet : Long
-            //TODO
-            /*
-            * countOfFollower
-            * countOfFollowing
-            * */
+            val countOfTweet : Int
         )
 
         data class EditProfile(

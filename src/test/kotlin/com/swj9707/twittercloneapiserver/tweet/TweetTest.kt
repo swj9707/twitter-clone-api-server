@@ -16,14 +16,6 @@ class TweetTest (
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     @Test
-    @DisplayName("Tweet Entity 확인")
-    fun findAllTweet() {
-        val result = tweetRepository.findAllByStatusNotFetchJoin(TweetStatus.DELETED)
-        result.forEach{
-            logger.info(it.toString())
-        }
-    }
-    @Test
     @DisplayName("Tweet Data 확인")
     fun findTweet() {
         val result = tweetRepository.findTweets()
@@ -41,5 +33,12 @@ class TweetTest (
     fun findTweetById() {
         val result = tweetRepository.findTweetById(1)
         logger.info(result.get().toString())
+    }
+
+    @Test
+    @DisplayName("유저 트윗 총 갯수 Count Test")
+    fun countByUserNameTest() {
+        val result = tweetRepository.countByUserUserName("wassup")
+        logger.info("result : $result")
     }
 }

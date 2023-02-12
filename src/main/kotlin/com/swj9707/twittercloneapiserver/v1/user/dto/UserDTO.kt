@@ -27,7 +27,9 @@ class UserDTO {
             val userName : String,
             val userNickname: String,
             val profileImage: ImageDTO.Dto.ImageInfo?,
-            val backgroundImage: ImageDTO.Dto.ImageInfo?
+            val backgroundImage: ImageDTO.Dto.ImageInfo?,
+            val followerCount : Int,
+            val followingCount : Int
         ) {
             companion object Util {
                 fun entityToDTO(entity: TwitterUser): TwitterUserProfile {
@@ -35,7 +37,9 @@ class UserDTO {
                         userName = entity.userName,
                         userNickname = entity.userNickname,
                         profileImage = entity.profileImage?.let { ImageDTO.Dto.ImageInfo.entityToDTO(it) },
-                        backgroundImage = entity.backgroundImage?.let {ImageDTO.Dto.ImageInfo.entityToDTO(it) }
+                        backgroundImage = entity.backgroundImage?.let {ImageDTO.Dto.ImageInfo.entityToDTO(it) },
+                        followerCount = entity.followers.size,
+                        followingCount = entity.followers.size
                     )
                 }
             }
@@ -49,6 +53,7 @@ class UserDTO {
             val backgroundImage: ImageDTO.Dto.ImageInfo?,
             val provider : Provider,
             val lastLogin : String?,
+
         ) {
             companion object Util{
                 fun entityToDTO(entity : TwitterUser) : TwitterUserInfo {
@@ -60,7 +65,7 @@ class UserDTO {
                         profileImage = entity.profileImage?.let {ImageDTO.Dto.ImageInfo.entityToDTO(it)},
                         backgroundImage = entity.backgroundImage?.let { ImageDTO.Dto.ImageInfo.entityToDTO(it) },
                         provider = entity.provider,
-                        lastLogin = entity.lastLogin.toString(),
+                        lastLogin = entity.lastLogin.toString()
                     )
                 }
             }

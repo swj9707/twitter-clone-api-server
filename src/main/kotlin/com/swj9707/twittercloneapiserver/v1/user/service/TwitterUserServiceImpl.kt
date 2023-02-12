@@ -10,6 +10,7 @@ import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.JwtUtils
 import com.swj9707.twittercloneapiserver.utils.RedisUtils
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,6 +21,7 @@ import java.util.*
 
 @Service
 class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepository,
+                             private val tweetRepository: TweetRepository,
                              private val jwtUtils: JwtUtils,
                              private val redisUtils : RedisUtils,
                              private val passwordEncoder: PasswordEncoder,
@@ -162,7 +164,7 @@ class TwitterUserServiceImpl(private val twitterUserRepository: TwitterUserRepos
     override fun getUserProfileByUserName(userName: String): UserResDTO.Res.UserProfile {
         val result = twitterUserRepository.findUserByUserName(userName)
             .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
-        val countOfTweets = 0L
+        val countOfTweets = tweetRepository.countByUserUserName(userName)
         val userProfile = UserDTO.Dto.TwitterUserProfile.entityToDTO(result)
 
         return UserResDTO.Res.UserProfile(userProfile = userProfile, countOfTweet = countOfTweets)
