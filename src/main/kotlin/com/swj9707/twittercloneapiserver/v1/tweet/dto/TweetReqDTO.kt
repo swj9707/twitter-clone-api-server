@@ -8,6 +8,13 @@ class TweetReqDTO {
             val tweetContent : String,
             val tweetImages : MutableList<ImageDTO.Dto.ImageInfo>?
         )
+
+        data class CreateReplyTweet(
+            val tweetId : Long,
+            val tweetContent: String,
+            val tweetImage : MutableList<ImageDTO.Dto.ImageInfo>?
+        )
+
         data class DeleteTweet(
             val tweetId : Long,
         )

@@ -8,7 +8,9 @@ import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.RetweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.service.inter.TweetService
 import org.springframework.data.domain.Pageable
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TweetServiceImpl(
     private val tweetRepository: TweetRepository,
+    private val retweetRepository: RetweetRepository
 ) : TweetService{
 
     @Transactional
@@ -30,6 +33,49 @@ class TweetServiceImpl(
         tweetRepository.save(tweet)
 
         return TweetResDTO.Res.TweetInfo(tweetId = tweet.tweetId)
+    }
+
+    override fun createReplyTweet(
+        userInfo: TwitterUser,
+        request: TweetReqDTO.Req.CreateReplyTweet
+    ): TweetResDTO.Res.TweetInfo {
+        val tweet = tweetRepository.findById(request.tweetId)
+            .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+
+        val replyTweet = Tweet(
+            tweetContent = request.tweetContent,
+            images = Image.dtoListToEntityList(request.tweetImage),
+            user = userInfo,
+            connectedTweetId = request.tweetId
+        )
+        tweetRepository.save(replyTweet)
+        tweet.replies.add(replyTweet)
+
+        return TweetResDTO.Res.TweetInfo(tweetId = replyTweet.tweetId)
+    }
+
+    override fun retweet(userInfo: TwitterUser, tweetId: Long): TweetResDTO.Res.RetweetResult {
+        val tweet = tweetRepository.findById(tweetId)
+            .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND)}
+
+        val retweets = userInfo.retweets
+
+        val retweet = retweets.stream().filter{t -> t.tweet.tweetId?.equals(tweet.tweetId) ?: false }
+            .findFirst()
+
+        return if(retweet.isPresent){
+            retweets.remove(retweet.get())
+            retweetRepository.delete(retweet.get())
+            TweetResDTO.Res.RetweetResult(result = false)
+        } else {
+            val newRetweet = ReTweet(
+                user = userInfo,
+                tweet = tweet
+            )
+            retweetRepository.save(newRetweet)
+            userInfo.retweets.add(newRetweet)
+            TweetResDTO.Res.RetweetResult(result = true)
+        }
     }
 
     override fun readTweets(pageable: Pageable): TweetResDTO.Res.TweetsRes {

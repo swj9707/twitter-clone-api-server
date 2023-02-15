@@ -36,6 +36,14 @@ class TweetTest (
     }
 
     @Test
+    @DisplayName("Find Detail info by Id")
+    fun findDetailById(){
+        val result = tweetRepository.findTweetDetailInfoById(1)
+        logger.info(result.get().getLikes().toString()
+        )
+    }
+
+    @Test
     @DisplayName("유저 트윗 총 갯수 Count Test")
     fun countByUserNameTest() {
         val result = tweetRepository.countByUserUserName("wassup")

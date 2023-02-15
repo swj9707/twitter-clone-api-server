@@ -30,6 +30,9 @@ class Tweet (
     @JoinColumn(name ="user_id")
     val user : TwitterUser,
 
+    @Column(name = "connected_tweet_id")
+    var connectedTweetId : Long? = null,
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tweet_images",
         joinColumns = [JoinColumn(name = "tweet_id")],
