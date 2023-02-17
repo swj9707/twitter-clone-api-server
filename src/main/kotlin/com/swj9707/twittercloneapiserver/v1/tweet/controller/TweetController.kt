@@ -29,6 +29,12 @@ class TweetController (
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
+    @GetMapping("/retweet")
+    fun retweetRequest(@AuthenticationPrincipal user : TwitterUser, @RequestParam(name = "tweetId", defaultValue = "") tweetId : Long) : ResponseEntity<BaseResponse<TweetResDTO.Res.RetweetResult>> {
+        val response = tweetService.retweet(user, tweetId)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
+
     @GetMapping("/read")
     fun readTweets(@PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable : Pageable)
         : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>>{

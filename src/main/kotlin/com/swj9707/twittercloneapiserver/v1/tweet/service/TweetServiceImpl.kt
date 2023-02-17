@@ -67,18 +67,19 @@ class TweetServiceImpl(
         return TweetResDTO.Res.TweetInfo(tweetId = replyTweet.tweetId)
     }
 
+    @Transactional
     override fun retweet(userInfo: TwitterUser, tweetId: Long): TweetResDTO.Res.RetweetResult {
         val tweet = tweetRepository.findById(tweetId)
             .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND)}
 
-        val retweets = userInfo.retweets
+        val retweets = TweetDTO.Dto.RetweetInfo.getRetweetInfo(tweet)
 
-        val retweet = retweets.stream().filter{t -> t.tweet.tweetId?.equals(tweet.tweetId) ?: false }
+        val retweet = retweets.stream().filter{t -> t.retweetId?.equals(tweet.tweetId) ?: false }
             .findFirst()
 
+
         return if(retweet.isPresent){
-            retweets.remove(retweet.get())
-            retweetRepository.delete(retweet.get())
+            retweetRepository.deleteById(retweet.get().retweetId)
             TweetResDTO.Res.RetweetResult(result = false)
         } else {
             val newRetweet = ReTweet(
@@ -86,7 +87,6 @@ class TweetServiceImpl(
                 tweet = tweet
             )
             retweetRepository.save(newRetweet)
-            userInfo.retweets.add(newRetweet)
             TweetResDTO.Res.RetweetResult(result = true)
         }
     }

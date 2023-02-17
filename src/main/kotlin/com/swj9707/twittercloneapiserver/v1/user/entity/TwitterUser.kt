@@ -69,10 +69,10 @@ class TwitterUser(
     @ManyToMany(fetch = FetchType.LAZY)
     val tweets : MutableList<Tweet> = ArrayList(),
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val retweets : MutableList<ReTweet> = ArrayList(),
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val likes : MutableList<Like> = ArrayList(),
 
     @ManyToMany(fetch = FetchType.LAZY)

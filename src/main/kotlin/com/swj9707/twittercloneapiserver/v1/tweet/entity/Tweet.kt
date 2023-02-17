@@ -39,13 +39,13 @@ class Tweet (
         inverseJoinColumns = [JoinColumn(name = "image_id")])
     var images : MutableList<Image>? = ArrayList(),
 
-    @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tweet", fetch = FetchType.EAGER)
     var retweets : MutableList<ReTweet>? = ArrayList(),
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
     var likes : MutableList<Like>? = ArrayList(),
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
-    var replyTweets : MutableList<ReplyTweet> = ArrayList()
+    var replyTweets : MutableList<ReplyTweet>? = ArrayList()
 
     ) : BaseEntity()
