@@ -45,10 +45,7 @@ class Tweet (
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
     var likes : MutableList<Like>? = ArrayList(),
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "reply",
-    joinColumns = [JoinColumn(name = "tweet_id")],
-    inverseJoinColumns = [JoinColumn(name = "reply_tweet_id")])
-    var replies : MutableList<Tweet> = ArrayList()
+    @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
+    var replyTweets : MutableList<ReplyTweet> = ArrayList()
 
     ) : BaseEntity()

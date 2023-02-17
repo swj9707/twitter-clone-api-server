@@ -20,7 +20,7 @@ interface TweetProjection {
     @Value("#{target.retweets.size()}")
     fun getRetweetsCount() : Int
 
-    @Value("#{target.replies.size()}")
+    @Value("#{target.replyTweets.size()}")
     fun getRepliesCount() : Int
 
     interface UserProjection {

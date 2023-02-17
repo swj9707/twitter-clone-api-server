@@ -9,7 +9,9 @@ import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReplyTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.ReplyTweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.RetweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.service.inter.TweetService
@@ -20,7 +22,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TweetServiceImpl(
     private val tweetRepository: TweetRepository,
-    private val retweetRepository: RetweetRepository
+    private val retweetRepository: RetweetRepository,
+    private val replyTweetRepository: ReplyTweetRepository
 ) : TweetService{
 
     @Transactional
@@ -30,6 +33,7 @@ class TweetServiceImpl(
             images = Image.dtoListToEntityList(request.tweetImages),
             user = userInfo
         )
+
         tweetRepository.save(tweet)
 
         return TweetResDTO.Res.TweetInfo(tweetId = tweet.tweetId)
@@ -37,20 +41,29 @@ class TweetServiceImpl(
 
     override fun createReplyTweet(
         userInfo: TwitterUser,
-        request: TweetReqDTO.Req.CreateReplyTweet
+        request: TweetReqDTO.Req.CreateTweet
     ): TweetResDTO.Res.TweetInfo {
-        val tweet = tweetRepository.findById(request.tweetId)
-            .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+        val tweet = request.tweetId?.let {
+            tweetRepository.findById(it)
+                .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+        }
 
         val replyTweet = Tweet(
             tweetContent = request.tweetContent,
-            images = Image.dtoListToEntityList(request.tweetImage),
+            images = Image.dtoListToEntityList(request.tweetImages),
             user = userInfo,
             connectedTweetId = request.tweetId
         )
         tweetRepository.save(replyTweet)
-        tweet.replies.add(replyTweet)
 
+        val tweetReplyInfo = tweet?.let {
+            ReplyTweet(
+                tweet = it,
+                connectedTweet = replyTweet
+            )
+        }
+
+        tweetReplyInfo?.let { replyTweetRepository.save(it) }
         return TweetResDTO.Res.TweetInfo(tweetId = replyTweet.tweetId)
     }
 

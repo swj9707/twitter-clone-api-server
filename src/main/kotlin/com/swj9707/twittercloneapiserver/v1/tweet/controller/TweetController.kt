@@ -23,6 +23,12 @@ class TweetController (
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
+    @PostMapping("/reply")
+    fun createReplyTweet(@AuthenticationPrincipal user : TwitterUser, @RequestBody request: TweetReqDTO.Req.CreateTweet) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
+        val response = tweetService.createReplyTweet(user, request)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
+
     @GetMapping("/read")
     fun readTweets(@PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable : Pageable)
         : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>>{

@@ -14,7 +14,7 @@ interface TweetDetailProjection {
     fun getUser() : UserProjection
     fun getLikes() : MutableList<LikeProjection>
     fun getRetweets() : MutableList<RetweetProjection>
-    fun getReplies() : MutableList<TweetProjection>
+    fun getReplyTweets() : MutableList<TweetProjection>
 
     interface UserProjection {
         fun getUserName() : String
