@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
-abstract class BaseNonMutableEntity {
+abstract class BaseImmutableEntity {
     @CreatedDate
     @Column(name = "create_at", nullable = false, updatable = false)
     open var createAt: LocalDateTime = LocalDateTime.MIN
