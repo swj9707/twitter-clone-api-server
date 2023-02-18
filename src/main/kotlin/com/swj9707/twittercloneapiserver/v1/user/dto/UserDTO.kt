@@ -46,6 +46,7 @@ class UserDTO {
         }
 
         data class TwitterUserInfo(
+            val userId : UUID,
             val email: String,
             val userName: String,
             val userNickname: String,
@@ -59,6 +60,7 @@ class UserDTO {
             companion object Util {
                 fun entityToDTO(entity: TwitterUser): TwitterUserInfo {
                     return TwitterUserInfo(
+                        userId = entity.userId,
                         email = entity.email,
                         userName = entity.userName,
                         userNickname = entity.userNickname,
