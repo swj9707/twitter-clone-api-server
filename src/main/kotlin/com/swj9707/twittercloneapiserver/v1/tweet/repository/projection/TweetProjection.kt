@@ -6,27 +6,27 @@ import org.springframework.beans.factory.annotation.Value
 import java.time.LocalDateTime
 
 interface TweetProjection {
-    fun getTweetId() : Long
-    fun getTweetContent() : String
-    fun getModified() : Boolean
-    fun getStatus() : TweetStatus
-    fun getImages() : MutableList<ImageProjection>
-    fun getCreateAt() : LocalDateTime
-    fun getUser() : UserProjection
+    fun getTweetId(): Long
+    fun getTweetContent(): String
+    fun getModified(): Boolean
+    fun getStatus(): TweetStatus
+    fun getImages(): MutableList<ImageProjection>
+    fun getCreateAt(): LocalDateTime
+    fun getUser(): UserProjection
 
     @Value("#{target.likes.size()}")
-    fun getLikedTweetsCount() : Int
+    fun getLikedTweetsCount(): Int
 
     @Value("#{target.retweets.size()}")
-    fun getRetweetsCount() : Int
+    fun getRetweetsCount(): Int
 
     @Value("#{target.replyTweets.size()}")
-    fun getRepliesCount() : Int
+    fun getRepliesCount(): Int
 
     interface UserProjection {
-        fun getUserName() : String
-        fun getUserNickname() : String
-        fun getProfileImage() : ImageProjection?
+        fun getUserName(): String
+        fun getUserNickname(): String
+        fun getProfileImage(): ImageProjection?
     }
 
 }

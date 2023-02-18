@@ -8,9 +8,11 @@ import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.Like
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReplyTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.LikeRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.ReplyTweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.RetweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
@@ -23,7 +25,8 @@ import org.springframework.transaction.annotation.Transactional
 class TweetServiceImpl(
     private val tweetRepository: TweetRepository,
     private val retweetRepository: RetweetRepository,
-    private val replyTweetRepository: ReplyTweetRepository
+    private val replyTweetRepository: ReplyTweetRepository,
+    private val likeRepository: LikeRepository
 ) : TweetService{
 
     @Transactional
@@ -74,12 +77,12 @@ class TweetServiceImpl(
 
         val retweets = TweetDTO.Dto.RetweetInfo.getRetweetInfo(tweet)
 
-        val retweet = retweets.stream().filter{t -> t.retweetId?.equals(tweet.tweetId) ?: false }
+        val retweet = retweets.stream().filter{t -> (t.retweetId == tweet.tweetId) }
             .findFirst()
 
 
         return if(retweet.isPresent){
-            retweetRepository.deleteById(retweet.get().retweetId)
+            retweetRepository.deleteById(retweet.get().id)
             TweetResDTO.Res.RetweetResult(result = false)
         } else {
             val newRetweet = ReTweet(
@@ -88,6 +91,28 @@ class TweetServiceImpl(
             )
             retweetRepository.save(newRetweet)
             TweetResDTO.Res.RetweetResult(result = true)
+        }
+    }
+
+    override fun likeTweet(userInfo: TwitterUser, tweetId: Long) : TweetResDTO.Res.TweetInfo {
+        var tweet = tweetRepository.findById(tweetId)
+            .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+
+        val likes = TweetDTO.Dto.LikeInfo.getLikeInfo(tweet)
+
+        val like = likes.stream().filter { t -> (t.likeId == tweet.tweetId) }
+            .findFirst()
+
+        return if(like.isPresent){
+            likeRepository.deleteById(like.get().id)
+            TweetResDTO.Res.TweetInfo(tweetId = tweet.tweetId)
+        } else {
+            val newLike = Like(
+                tweet = tweet,
+                user = userInfo
+            )
+            likeRepository.save(newLike)
+            TweetResDTO.Res.TweetInfo(tweetId = tweet.tweetId)
         }
     }
 

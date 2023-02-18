@@ -10,7 +10,7 @@ class ReTweet (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "retweet_id")
-    val retweetId : Long = 0,
+    val retweetId: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

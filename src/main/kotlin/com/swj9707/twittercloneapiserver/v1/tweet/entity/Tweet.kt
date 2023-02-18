@@ -14,7 +14,7 @@ class Tweet (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tweet_id")
-    val tweetId : Long? = null,
+    val tweetId : Long = 0,
 
     @Column(name = "tweet_content")
     var tweetContent : String,
@@ -39,7 +39,7 @@ class Tweet (
         inverseJoinColumns = [JoinColumn(name = "image_id")])
     var images : MutableList<Image>? = ArrayList(),
 
-    @OneToMany(mappedBy = "tweet", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
     var retweets : MutableList<ReTweet>? = ArrayList(),
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)

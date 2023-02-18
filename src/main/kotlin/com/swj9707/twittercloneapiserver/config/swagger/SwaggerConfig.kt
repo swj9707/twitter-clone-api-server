@@ -12,26 +12,17 @@ import org.springframework.context.annotation.Configuration
 class SwaggerConfig {
     @Bean
     fun openAPI(): OpenAPI? {
-        val info: Info = Info()
-            .title("Twitter Clone Project API Server Docs")
-            .version("v1.0.0")
+        val info: Info = Info().title("Twitter Clone Project API Server Docs").version("v1.0.0")
             .description("Twitter Clone Project API Server API 문서 페이지")
 
-        val jwtSchemeName : String = "jwtAuth"
+        val jwtSchemeName: String = "jwtAuth"
         val securityRequirement: SecurityRequirement = SecurityRequirement().addList(jwtSchemeName)
 
-        val components = Components()
-            .addSecuritySchemes(
-                jwtSchemeName, SecurityScheme()
-                    .name(jwtSchemeName)
-                    .type(SecurityScheme.Type.HTTP) // HTTP 방식
-                    .scheme("bearer")
-                    .bearerFormat("JWT")
+        val components = Components().addSecuritySchemes(
+                jwtSchemeName, SecurityScheme().name(jwtSchemeName).type(SecurityScheme.Type.HTTP) // HTTP 방식
+                    .scheme("bearer").bearerFormat("JWT")
             )
 
-        return OpenAPI()
-            .info(info)
-            .addSecurityItem(securityRequirement)
-            .components(components)
+        return OpenAPI().info(info).addSecurityItem(securityRequirement).components(components)
     }
 }

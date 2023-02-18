@@ -8,14 +8,14 @@ import jakarta.persistence.*
 class ReplyTweet (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id : Long = 0,
+    val id: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "tweet_id")
-    val tweet : Tweet,
+    val tweet: Tweet,
 
     @ManyToOne
     @JoinColumn(name = "connected_tweet_id")
-    val connectedTweet : Tweet
+    val connectedTweet: Tweet
 
 ) : BaseNonMutableEntity()

@@ -12,11 +12,11 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/api/v1/image")
-class ImageController (
+class ImageController(
     private val imageService: ImageServiceImpl
 ) {
     @PostMapping("/uploadImage")
-    fun uploadImage(@RequestParam("file") file : MultipartFile) : ResponseEntity<BaseResponse<ImageDTO.Dto.ImageInfo>> {
+    fun uploadImage(@RequestParam("file") file: MultipartFile): ResponseEntity<BaseResponse<ImageDTO.Dto.ImageInfo>> {
         val result = imageService.uploadImage(file)
         return ResponseEntity.ok().body(BaseResponse.success(result))
     }

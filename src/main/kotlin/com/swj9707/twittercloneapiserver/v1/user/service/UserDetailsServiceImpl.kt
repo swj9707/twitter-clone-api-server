@@ -13,6 +13,6 @@ class UserDetailsServiceImpl(private val twitterUserRepository: TwitterUserRepos
     @Throws(BaseException::class)
     override fun loadUserByUsername(username: String): UserDetails {
         return twitterUserRepository.findUserByEmail(username)
-            .orElseThrow{BaseException(BaseResponseCode.USER_NOT_FOUND)}
+            .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
     }
 }

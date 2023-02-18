@@ -19,14 +19,13 @@ import kotlin.jvm.Throws
 class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val expiredExceptionResponse = BaseResponse.failure(BaseResponseCode.EXPIRED_TOKEN.status
-        , BaseResponseCode.EXPIRED_TOKEN.message)
+    private val expiredExceptionResponse = BaseResponse.failure(
+        BaseResponseCode.EXPIRED_TOKEN.status, BaseResponseCode.EXPIRED_TOKEN.message
+    )
 
     @Throws(IOException::class, ServletException::class)
     override fun commence(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        authException: AuthenticationException
+        request: HttpServletRequest, response: HttpServletResponse, authException: AuthenticationException
     ) {
         logger.error("Unauthorized Error : " + authException.message.toString())
         //CORS 에러 방지용 (개선 필요)
