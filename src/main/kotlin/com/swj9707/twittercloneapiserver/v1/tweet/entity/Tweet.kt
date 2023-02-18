@@ -14,7 +14,7 @@ class Tweet (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tweet_id")
-    val tweetId : Long = 0,
+    val tweetId : Long = 0L,
 
     @Column(name = "tweet_content")
     var tweetContent : String,

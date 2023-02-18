@@ -8,6 +8,8 @@ import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
 import org.springframework.data.domain.Slice
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TweetDTO {
     companion object Dto {
@@ -88,17 +90,15 @@ class TweetDTO {
 
         data class RetweetInfo (
             val id : Long,
-            val retweetId : Long,
-            val userInfo : UserDTO.Dto.TwitterUserInfo,
-            val tweetInfo: TweetInfo
+            val userId : UUID,
+            val tweetId : Long
         ) {
             companion object Util {
                 fun entityToDTO(retweet : ReTweet) : RetweetInfo {
                     return RetweetInfo(
                         id = retweet.retweetId,
-                        retweetId = retweet.tweet.tweetId,
-                        userInfo =  UserDTO.Dto.TwitterUserInfo.entityToDTO(retweet.user),
-                        tweetInfo = TweetInfo.entityToDTO(retweet.tweet)
+                        userId =  retweet.user.userId,
+                        tweetId = retweet.tweet.tweetId
                     )
                 }
                 fun getRetweetInfo(tweet : Tweet) : List<RetweetInfo> {
@@ -109,17 +109,15 @@ class TweetDTO {
 
         data class LikeInfo (
             val id : Long,
-            val likeId : Long,
-            val userInfo : UserDTO.Dto.TwitterUserInfo,
-            val tweetInfo : TweetInfo
+            val userId : UUID,
+            val tweetId : Long
         ) {
             companion object Util {
                 fun entityToDTO(like : Like) : LikeInfo {
                     return LikeInfo(
                         id = like.likeId,
-                        likeId = like.tweet.tweetId,
-                        userInfo =  UserDTO.Dto.TwitterUserInfo.entityToDTO(like.user),
-                        tweetInfo = TweetInfo.entityToDTO(like.tweet)
+                        userId = like.user.userId,
+                        tweetId = like.tweet.tweetId
                     )
                 }
                 fun getLikeInfo(tweet : Tweet) : List<LikeInfo> {

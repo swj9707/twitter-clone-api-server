@@ -77,7 +77,7 @@ class TweetServiceImpl(
 
         val retweets = TweetDTO.Dto.RetweetInfo.getRetweetInfo(tweet)
 
-        val retweet = retweets.stream().filter{t -> (t.retweetId == tweet.tweetId) }
+        val retweet = retweets.stream().filter{t -> (t.userId == userInfo.userId) }
             .findFirst()
 
 
@@ -94,13 +94,14 @@ class TweetServiceImpl(
         }
     }
 
+    @Transactional
     override fun likeTweet(userInfo: TwitterUser, tweetId: Long) : TweetResDTO.Res.TweetInfo {
         var tweet = tweetRepository.findById(tweetId)
             .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
 
         val likes = TweetDTO.Dto.LikeInfo.getLikeInfo(tweet)
 
-        val like = likes.stream().filter { t -> (t.likeId == tweet.tweetId) }
+        val like = likes.stream().filter { t -> (t.userId == userInfo.userId) }
             .findFirst()
 
         return if(like.isPresent){

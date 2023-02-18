@@ -66,7 +66,7 @@ class TwitterUser(
         inverseJoinColumns = [JoinColumn(name = "image_id")])
     var backgroundImage: Image? = null,
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val tweets : MutableList<Tweet> = ArrayList(),
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -75,17 +75,11 @@ class TwitterUser(
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val likes : MutableList<Like> = ArrayList(),
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "follow",
-        joinColumns = [JoinColumn(name = "followee")],
-        inverseJoinColumns = [JoinColumn(name = "follower")])
-    val followers: MutableList<TwitterUser> = ArrayList(),
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
+    val followers : MutableList<UserFollower> = ArrayList(),
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "follow",
-      joinColumns = [JoinColumn(name="follower")],
-    inverseJoinColumns = [JoinColumn(name = "followee")])
-    val following: MutableList<TwitterUser> = ArrayList()
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
+    val following : MutableList<UserFollower> = ArrayList(),
 
     ) : BaseEntity(), UserDetails {
 

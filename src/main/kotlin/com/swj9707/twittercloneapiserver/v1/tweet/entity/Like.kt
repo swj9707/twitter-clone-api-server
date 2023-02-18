@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.entity
 
-import com.swj9707.twittercloneapiserver.constant.entity.BaseEntity
+import com.swj9707.twittercloneapiserver.constant.entity.BaseImmutableEntity
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import jakarta.persistence.*
 
@@ -10,7 +10,7 @@ class Like(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
-    val likeId : Long = 0,
+    val likeId : Long = 0L,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -20,4 +20,4 @@ class Like(
     @JoinColumn(name = "tweet_id")
     val tweet : Tweet
 
-) : BaseEntity()
+) : BaseImmutableEntity()
