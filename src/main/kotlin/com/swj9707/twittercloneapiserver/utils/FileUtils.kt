@@ -17,7 +17,7 @@ class FileUtils {
         }
 
         @Throws(Exception::class)
-        fun deleteFile(filePath: String, fileName : String) : Boolean {
+        fun deleteFile(filePath: String, fileName: String): Boolean {
             val deleteFile = File("$filePath/$fileName")
             return if (deleteFile.exists()) {
                 deleteFile.delete()

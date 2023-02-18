@@ -14,7 +14,7 @@ class Tweet (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tweet_id")
-    val tweetId : Long? = null,
+    val tweetId : Long = 0,
 
     @Column(name = "tweet_content")
     var tweetContent : String,
@@ -30,6 +30,9 @@ class Tweet (
     @JoinColumn(name ="user_id")
     val user : TwitterUser,
 
+    @Column(name = "connected_tweet_id")
+    var connectedTweetId : Long? = null,
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tweet_images",
         joinColumns = [JoinColumn(name = "tweet_id")],
@@ -42,10 +45,7 @@ class Tweet (
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
     var likes : MutableList<Like>? = ArrayList(),
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "reply",
-    joinColumns = [JoinColumn(name = "tweet_id")],
-    inverseJoinColumns = [JoinColumn(name = "reply_tweet_id")])
-    var replies : MutableList<Tweet> = ArrayList()
+    @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)
+    var replyTweets : MutableList<ReplyTweet>? = ArrayList()
 
     ) : BaseEntity()

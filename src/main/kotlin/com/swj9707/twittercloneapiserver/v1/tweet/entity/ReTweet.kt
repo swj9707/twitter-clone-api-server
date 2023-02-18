@@ -10,14 +10,14 @@ class ReTweet (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "retweet_id")
-    val retweetId : Long,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="tweet_id", nullable = false)
-    val tweet: Tweet,
+    val retweetId: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    val user: TwitterUser
+    val user: TwitterUser,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="tweet_id", nullable = false)
+    val tweet: Tweet
 
     ) : BaseEntity()

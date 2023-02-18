@@ -2,6 +2,8 @@ package com.swj9707.twittercloneapiserver.v1.tweet.dto
 
 import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.Like
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
@@ -9,6 +11,23 @@ import org.springframework.data.domain.Slice
 
 class TweetDTO {
     companion object Dto {
+
+        data class TweetDTO(
+            val tweetId : Long?,
+
+            var tweetContent : String,
+
+            var images : MutableList<ImageDTO.Dto.ImageInfo>?,
+
+            var modified : Boolean,
+
+            var createdAt : String,
+
+            var status : TweetStatus,
+
+            var userInfo: UserDTO.Dto.TweetOwnerInfo,
+
+        )
         data class TweetInfo(
             val tweetId : Long?,
 
@@ -31,18 +50,21 @@ class TweetDTO {
             var repliesCount : Int = 0
         ) {
             companion object Util {
-                fun entityToDTO(entity : Tweet) : TweetInfo{
+
+                fun entityToDTO(tweet : Tweet) : TweetInfo {
                     return TweetInfo(
-                        tweetId = entity.tweetId,
-                        tweetContent = entity.tweetContent,
-                        images = ImageDTO.Dto.ImageInfo.entitiesToListDTO(entity.images),
-                        modified = entity.modified,
-                        createdAt = entity.createAt.toString(),
-                        status = entity.status,
-                        userInfo = UserDTO.Dto.TweetOwnerInfo.entityToDTO(entity.user)
+                        tweetId = tweet.tweetId,
+                        tweetContent = tweet.tweetContent,
+                        images = ImageDTO.Dto.ImageInfo.entitiesToListDTO(tweet.images),
+                        modified = tweet.modified,
+                        createdAt = tweet.createAt.toString(),
+                        status = tweet.status,
+                        userInfo = UserDTO.Dto.TweetOwnerInfo.entityToDTO(tweet.user),
+                        likedTweetsCount = tweet.likes?.size ?: 0,
+                        retweetsCount = tweet.retweets?.size ?: 0,
+                        repliesCount = tweet.replyTweets?.size ?: 0
                     )
                 }
-
                 fun projectionToDTO( projection: TweetProjection) : TweetInfo {
                     return TweetInfo(
                         tweetId = projection.getTweetId(),
@@ -60,6 +82,48 @@ class TweetDTO {
 
                 fun toPageableDTO(pageEntity : Slice<TweetProjection>) : Slice<TweetInfo> {
                     return pageEntity.map { projectionToDTO(it) }
+                }
+            }
+        }
+
+        data class RetweetInfo (
+            val id : Long,
+            val retweetId : Long,
+            val userInfo : UserDTO.Dto.TwitterUserInfo,
+            val tweetInfo: TweetInfo
+        ) {
+            companion object Util {
+                fun entityToDTO(retweet : ReTweet) : RetweetInfo {
+                    return RetweetInfo(
+                        id = retweet.retweetId,
+                        retweetId = retweet.tweet.tweetId,
+                        userInfo =  UserDTO.Dto.TwitterUserInfo.entityToDTO(retweet.user),
+                        tweetInfo = TweetInfo.entityToDTO(retweet.tweet)
+                    )
+                }
+                fun getRetweetInfo(tweet : Tweet) : List<RetweetInfo> {
+                    return tweet.retweets?.map { entityToDTO(it) } ?: ArrayList()
+                }
+            }
+        }
+
+        data class LikeInfo (
+            val id : Long,
+            val likeId : Long,
+            val userInfo : UserDTO.Dto.TwitterUserInfo,
+            val tweetInfo : TweetInfo
+        ) {
+            companion object Util {
+                fun entityToDTO(like : Like) : LikeInfo {
+                    return LikeInfo(
+                        id = like.likeId,
+                        likeId = like.tweet.tweetId,
+                        userInfo =  UserDTO.Dto.TwitterUserInfo.entityToDTO(like.user),
+                        tweetInfo = TweetInfo.entityToDTO(like.tweet)
+                    )
+                }
+                fun getLikeInfo(tweet : Tweet) : List<LikeInfo> {
+                    return tweet.likes?.map { entityToDTO(it) } ?: ArrayList()
                 }
             }
         }

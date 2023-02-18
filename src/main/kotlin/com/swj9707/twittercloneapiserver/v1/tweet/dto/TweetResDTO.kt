@@ -3,8 +3,13 @@ package com.swj9707.twittercloneapiserver.v1.tweet.dto
 class TweetResDTO {
     companion object Res {
         data class TweetInfo(
-            val tweetId : Long?
+            val tweetId: Long?
         )
+
+        data class RetweetResult(
+            val result: Boolean
+        )
+
         data class TweetsRes(
             val tweets: MutableList<TweetDTO.Dto.TweetInfo>,
             val size: Int,

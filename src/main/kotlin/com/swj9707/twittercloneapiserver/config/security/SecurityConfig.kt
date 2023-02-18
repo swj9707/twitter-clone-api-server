@@ -19,32 +19,34 @@ import org.springframework.web.cors.CorsUtils
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class SecurityConfig(
     private val jwtUtils: JwtUtils,
-    private val redisUtils : RedisUtils,
-    private val entryPoint: CustomAuthenticationEntryPoint) {
+    private val redisUtils: RedisUtils,
+    private val entryPoint: CustomAuthenticationEntryPoint
+) {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
     @Bean
-    fun AuthenticationManager(authenticationConfiguration: AuthenticationConfiguration)
-        = authenticationConfiguration.authenticationManager
+    fun AuthenticationManager(authenticationConfiguration: AuthenticationConfiguration) =
+        authenticationConfiguration.authenticationManager
 
     @Bean
-    fun filterChain(http: HttpSecurity) : SecurityFilterChain {
+    fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf().disable()
             .httpBasic().disable()
             .authorizeHttpRequests()
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-            .requestMatchers(
-                "/docs/**",
-                "/v3/api-docs",
-                "/swagger*/**", "/api/auth/v1/**").permitAll()
+            .requestMatchers("/docs/**", "/v3/api-docs", "/swagger*/**", "/api/auth/v1/**").permitAll()
             .requestMatchers("/api/v1/**").authenticated()
             .and()
-            .addFilterBefore(JwtAuthenticationFilter(jwtUtils, redisUtils), UsernamePasswordAuthenticationFilter::class.java)
-            .exceptionHandling().authenticationEntryPoint(CustomAuthenticationEntryPoint())
+            .addFilterBefore(
+                JwtAuthenticationFilter(jwtUtils, redisUtils),
+                UsernamePasswordAuthenticationFilter::class.java
+            ).exceptionHandling()
+            .authenticationEntryPoint(CustomAuthenticationEntryPoint())
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
 
 

@@ -8,7 +8,11 @@ import org.springframework.data.domain.Pageable
 interface TweetService {
 
     fun createTweet(userInfo : TwitterUser, request : TweetReqDTO.Req.CreateTweet) : TweetResDTO.Res.TweetInfo
+    fun createReplyTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.CreateTweet) : TweetResDTO.Res.TweetInfo
+    fun retweet(userInfo: TwitterUser, tweetId : Long) : TweetResDTO.Res.RetweetResult
+    fun likeTweet(userInfo: TwitterUser, tweetId : Long) : TweetResDTO.Res.TweetInfo
     fun readTweets(pageable : Pageable) : TweetResDTO.Res.TweetsRes
+    //fun getTweetDetails(tweetId : Long) :
     fun getUserTweets(userName : String, pageable : Pageable) : TweetResDTO.Res.TweetsRes
     fun deleteTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.DeleteTweet) : TweetResDTO.Res.TweetInfo
 
