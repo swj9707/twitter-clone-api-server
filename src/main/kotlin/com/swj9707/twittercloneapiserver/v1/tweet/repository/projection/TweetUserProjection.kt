@@ -5,7 +5,7 @@ import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import org.springframework.beans.factory.annotation.Value
 import java.time.LocalDateTime
 
-interface TweetProjection {
+interface TweetUserProjection {
     fun getTweetId(): Long
     fun getTweetContent(): String
     fun getModified(): Boolean
@@ -14,6 +14,12 @@ interface TweetProjection {
     fun getImages(): MutableList<ImageProjection>
     fun getCreateAt(): LocalDateTime
     fun getUser(): UserProjection
+
+    @Value("#{@tweetUtilServiceImpl.isUserRetweetedTweet(getUser().)}")
+    fun getIsRetweeted() : Boolean
+
+    @Value("#{@tweetUtilServiceImpl.isUserLikedTweet}")
+    fun getIsLiked() : Boolean
 
     @Value("#{target.likes.size()}")
     fun getLikedTweetsCount(): Int
@@ -29,5 +35,4 @@ interface TweetProjection {
         fun getUserNickname(): String
         fun getProfileImage(): ImageProjection?
     }
-
 }

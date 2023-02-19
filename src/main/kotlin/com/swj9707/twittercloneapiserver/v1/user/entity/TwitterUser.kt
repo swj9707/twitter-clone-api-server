@@ -10,6 +10,7 @@ import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
 import jakarta.persistence.*
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.JdbcTypeCode
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -24,6 +25,7 @@ class TwitterUser(
     @Id
     @GeneratedValue(generator = "uuid2", strategy = GenerationType.UUID)
     @GenericGenerator(name="uuid2", strategy="uuid2")
+    @JdbcTypeCode(java.sql.Types.VARCHAR)
     @Column(name = "user_id")
     val userId: UUID = UUID.randomUUID(),
 
