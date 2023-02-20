@@ -20,7 +20,7 @@ interface TweetRepository : JpaRepository<Tweet, Long> {
     fun findTweetDetailInfoById(tweetId : Long) : Optional<TweetDetailProjection>
     fun countByUserUserName(userName : String) : Int
     fun findTweetsByUserUserName(userName : String, pageable : Pageable) : Slice<TweetProjection>
-
-    //fun findTweetsAndRepliesByUserName(pageable : Pageable) : Slice<TweetProjection>
-    //fun findTweetsLiked(pageable: Pageable) : Slice<TweetProjection>
+    @Query("SELECT t FROM Tweet t JOIN ReTweet rt ON t.tweetId = rt.tweet.tweetId WHERE rt.user.userId = :userId")
+    fun findRetweetsByUserId(userId : UUID) : List<TweetProjection>
+    fun findTweetsByUserUserId(userId : UUID) : List<TweetProjection>
 }
