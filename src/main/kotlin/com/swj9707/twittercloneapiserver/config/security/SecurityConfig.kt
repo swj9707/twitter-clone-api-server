@@ -35,7 +35,7 @@ class SecurityConfig(
     fun corsConfigurationSource() : CorsConfigurationSource {
         val configuration = CorsConfiguration()
         configuration.addAllowedOrigin("*")
-        configuration.allowedMethods = mutableListOf("HEAD", "GET", "POST", "PUT", "DELETE")
+        configuration.allowedMethods = mutableListOf("HEAD", "GET", "POST", "PUT", "DELETE", "OPTION")
         configuration.addAllowedHeader("*")
         configuration.allowCredentials = true
         configuration.maxAge = 3600L
@@ -53,6 +53,8 @@ class SecurityConfig(
             .and()
             .addFilterBefore(JwtAuthenticationFilter(jwtUtils, redisUtils), UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling().authenticationEntryPoint(CustomAuthenticationEntryPoint())
+            .and()
+            .cors().configurationSource(corsConfigurationSource())
             .and()
             .authorizeHttpRequests()
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
