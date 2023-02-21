@@ -55,4 +55,14 @@ class TweetTest (
         val result = tweetRepository.countByUserUserName("wassup")
         logger.info("result : $result")
     }
+
+    @Test
+    @DisplayName("리트윗 데이터 가져오기")
+    fun getRetweetsByUserID() {
+        val result = tweetRepository.findRepliesByUserId(UUID.fromString("2781a1c3-9c53-4572-869d-29b451ae5aec"))
+        result.forEach {
+            result ->
+            logger.info("result : ${result.getTweetId()}")
+        }
+    }
 }

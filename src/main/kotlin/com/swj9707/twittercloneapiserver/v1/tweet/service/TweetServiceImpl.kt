@@ -133,11 +133,6 @@ class TweetServiceImpl(
         )
     }
 
-    /*
-    * TODO
-    *  현재 테이블의 한계로 인해 굳이 이렇게 각 정보 별로 불러와서 정렬 후 리턴하는 로직이 돕니다.
-    *  개선이 필요합니다. 정말 Retweet (공유한) 데이터를 테이블로 빼는 게 옳은 것일까요?
-    * */
     override fun getUsersTweets(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
         val tweets = tweetRepository.findTweetsByUserUserId(userId)
         val retweets = retweetRepository.findRetweetsByUserUserId(userId)
@@ -146,7 +141,7 @@ class TweetServiceImpl(
         val retweetsDTO = TweetDTO.Dto.UsersTweetInfo.retweetProjToListDTO(retweets)
 
         val result = tweetsDTO.plus(retweetsDTO)
-            .sortedWith(compareBy({it.createdAt}, {it.retweetedDate})).reversed()
+            .sortedWith(compareBy({it.modifiedDate}, {it.createdAt})).reversed()
 
         val start : Int = pageable.offset.toInt()
         val end : Int = (start + pageable.pageSize).coerceAtMost(result.size)
@@ -161,6 +156,36 @@ class TweetServiceImpl(
             numberOfElements = pageResult.numberOfElements,
             empty = pageResult.isEmpty
         )
+    }
+
+    override fun getUsersRetweetsAndReplies(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
+        val retweets = retweetRepository.findRetweetsByUserUserId(userId)
+        val replies = tweetRepository.findRepliesByUserId(userId)
+
+        val retweetsDTO = TweetDTO.Dto.UsersTweetInfo.retweetProjToListDTO(retweets)
+        val repliesDTO = TweetDTO.Dto.UsersTweetInfo.projectionsToListDTO(replies)
+
+        val result = retweetsDTO.plus(repliesDTO)
+            .sortedWith(compareBy({it.modifiedDate}, {it.createdAt})).reversed()
+
+        val start : Int = pageable.offset.toInt()
+        val end : Int = (start + pageable.pageSize).coerceAtMost(result.size)
+
+        val pageResult = PageImpl(result.subList(start, end), pageable, result.size.toLong())
+        return TweetResDTO.Res.UserTweetsRes(
+            tweets = pageResult.content,
+            size = pageResult.size,
+            number = pageResult.number,
+            first = pageResult.isFirst,
+            last = pageResult.isLast,
+            numberOfElements = pageResult.numberOfElements,
+            empty = pageResult.isEmpty
+        )
+
+    }
+
+    override fun getUsersLikes(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
+        TODO("Not yet implemented")
     }
 
     override fun getUserTweets(userName : String, pageable: Pageable): TweetResDTO.Res.TweetsRes {

@@ -18,9 +18,12 @@ interface TweetRepository : JpaRepository<Tweet, Long> {
     fun findTweetById(tweetId : Long) : Optional<TweetProjection>
     @Query("SELECT tweet from Tweet tweet WHERE tweet.tweetId = :tweetId")
     fun findTweetDetailInfoById(tweetId : Long) : Optional<TweetDetailProjection>
-    fun countByUserUserName(userName : String) : Int
     fun findTweetsByUserUserName(userName : String, pageable : Pageable) : Slice<TweetProjection>
-    @Query("SELECT t FROM Tweet t JOIN ReTweet rt ON t.tweetId = rt.tweet.tweetId WHERE rt.user.userId = :userId")
+    @Query("SELECT t FROM Tweet t JOIN ReTweet rt ON t.tweetId = rt.tweet.tweetId WHERE rt.user.userId = :userId AND t.status != 'DELETED' ORDER BY t.createAt DESC")
     fun findRetweetsByUserId(userId : UUID) : List<TweetProjection>
     fun findTweetsByUserUserId(userId : UUID) : List<TweetProjection>
+    @Query("SELECT t From Tweet t WHERE t.user.userId = :userId AND t.connectedTweetId IS NOT NULL AND t.status != 'DELETED' ORDER BY t.createAt DESC ")
+    fun findRepliesByUserId(userId : UUID) : List<TweetProjection>
+    fun countByUserUserName(userName : String) : Int
+
 }

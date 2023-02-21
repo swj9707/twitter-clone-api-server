@@ -9,7 +9,6 @@ import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.RetweetP
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
 import org.springframework.data.domain.Slice
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -85,7 +84,7 @@ class TweetDTO {
             var status: TweetStatus,
             var userInfo: UserDTO.Dto.TweetOwnerInfo,
             var isRetweeted: Boolean,
-            var retweetedDate: LocalDateTime? = null,
+            var modifiedDate: String?,
             var likedTweetsCount: Int = 0,
             var retweetsCount: Int = 0,
             var repliesCount: Int = 0
@@ -98,14 +97,14 @@ class TweetDTO {
                         tweetContent = projection.getTweet().getTweetContent(),
                         images = ImageDTO.Dto.ImageInfo.projectionsToListDTO(projection.getTweet().getImages()),
                         modified = projection.getTweet().getModified(),
-                        createdAt = projection.getCreateAt().toString(),
+                        createdAt = projection.getTweet().getCreateAt().toString(),
                         status = projection.getTweet().getStatus(),
                         userInfo = UserDTO.Dto.TweetOwnerInfo.projectionToDTO(projection.getTweet().getUser()),
                         isRetweeted = true,
                         likedTweetsCount = projection.getTweet().getLikedTweetsCount(),
                         retweetsCount = projection.getTweet().getRetweetsCount(),
                         repliesCount = projection.getTweet().getRepliesCount(),
-                        retweetedDate = projection.getCreateAt()
+                        modifiedDate = projection.getCreateAt().toString()
                     )
                 }
 
@@ -121,7 +120,8 @@ class TweetDTO {
                         isRetweeted = false,
                         likedTweetsCount = projection.getLikedTweetsCount(),
                         retweetsCount = projection.getRetweetsCount(),
-                        repliesCount = projection.getRepliesCount()
+                        repliesCount = projection.getRepliesCount(),
+                        modifiedDate = projection.getCreateAt().toString()
                     )
                 }
 
