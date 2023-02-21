@@ -2,6 +2,7 @@ package com.swj9707.twittercloneapiserver.tweet
 
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.LikeRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.RetweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import org.junit.jupiter.api.DisplayName
@@ -18,7 +19,7 @@ class TweetTest (
     @Autowired
     private val tweetRepository: TweetRepository,
     @Autowired
-    private val retweetRepository: RetweetRepository
+    private val likeRepository: LikeRepository
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     @Test

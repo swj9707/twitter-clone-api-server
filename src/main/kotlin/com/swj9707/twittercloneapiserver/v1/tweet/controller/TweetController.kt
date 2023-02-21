@@ -83,10 +83,9 @@ class TweetController(
     fun getUsersLikes(
         @PageableDefault(size = 5) pageable: Pageable,
         @RequestParam(name = "userId", defaultValue = "") userId : UUID
-    ) : Unit? {
-        //TODO
-        /*그냥 집어던질 것인가....좋아요면 따로 DTO를 뺄 것인가?*/
-        return null
+    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
+        val response = tweetService.getUsersLikes(userId, pageable)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
     @Deprecated(message = "더이상 사용하지 않음. 역할을 다 하셨습니다.", replaceWith = ReplaceWith("/getUsersTweet"))

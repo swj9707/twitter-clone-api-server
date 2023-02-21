@@ -185,7 +185,17 @@ class TweetServiceImpl(
     }
 
     override fun getUsersLikes(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
-        TODO("Not yet implemented")
+        val result =  likeRepository.getUsersLikedTweets(userId, pageable)
+        return TweetResDTO.Res.UserTweetsRes(
+            tweets = TweetDTO.Dto.UsersTweetInfo.likeProjToListDTO(result.content),
+            size = result.size,
+            number = result.number,
+            first = result.isFirst,
+            last = result.isLast,
+            numberOfElements = result.numberOfElements,
+            empty = result.isEmpty
+        )
+
     }
 
     override fun getUserTweets(userName : String, pageable: Pageable): TweetResDTO.Res.TweetsRes {

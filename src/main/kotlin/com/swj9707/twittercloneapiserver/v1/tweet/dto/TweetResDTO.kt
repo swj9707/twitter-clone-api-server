@@ -21,7 +21,7 @@ class TweetResDTO {
         )
 
         data class UserTweetsRes(
-            val tweets: MutableList<TweetDTO.Dto.UsersTweetInfo>,
+            val tweets: List<TweetDTO.Dto.UsersTweetInfo>,
             val size: Int,
             val number: Int,
             val first: Boolean,

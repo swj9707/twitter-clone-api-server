@@ -5,6 +5,7 @@ import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Like
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.LikeProjection
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.RetweetProjection
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
@@ -90,7 +91,22 @@ class TweetDTO {
             var repliesCount: Int = 0
         ) {
             companion object Util {
-
+                fun likeProjToDTO(projection : LikeProjection) : UsersTweetInfo {
+                    return UsersTweetInfo(
+                        tweetId = projection.getTweet().getTweetId(),
+                        tweetContent = projection.getTweet().getTweetContent(),
+                        images = ImageDTO.Dto.ImageInfo.projectionsToListDTO(projection.getTweet().getImages()),
+                        modified = projection.getTweet().getModified(),
+                        createdAt = projection.getTweet().getCreateAt().toString(),
+                        status = projection.getTweet().getStatus(),
+                        userInfo = UserDTO.Dto.TweetOwnerInfo.projectionToDTO(projection.getTweet().getUser()),
+                        isRetweeted = true,
+                        likedTweetsCount = projection.getTweet().getLikedTweetsCount(),
+                        retweetsCount = projection.getTweet().getRetweetsCount(),
+                        repliesCount = projection.getTweet().getRepliesCount(),
+                        modifiedDate = projection.getCreateAt().toString()
+                    )
+                }
                 fun retweetProjToDTO(projection: RetweetProjection): UsersTweetInfo {
                     return UsersTweetInfo(
                         tweetId = projection.getTweet().getTweetId(),
@@ -123,6 +139,10 @@ class TweetDTO {
                         repliesCount = projection.getRepliesCount(),
                         modifiedDate = projection.getCreateAt().toString()
                     )
+                }
+
+                fun likeProjToListDTO(projections: List<LikeProjection>) : List<UsersTweetInfo> {
+                    return projections.map { likeProjToDTO(it) }
                 }
 
                 fun retweetProjToListDTO(projections: List<RetweetProjection>): List<UsersTweetInfo> {
