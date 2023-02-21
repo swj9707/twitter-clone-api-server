@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/tweet")
@@ -60,7 +61,34 @@ class TweetController(
         val response = tweetService.readTweets(pageable)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
+    @GetMapping("/getUsersTweet")
+    fun getUserTweetsAndRetweet(
+        @PageableDefault(size = 5) pageable: Pageable,
+        @RequestParam(name = "userId", defaultValue = "") userId : UUID
+    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
+        val response = tweetService.getUsersTweets(userId, pageable)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
 
+    @GetMapping("/getUserReplies")
+    fun getUserRepliesAndRetweet(
+        @PageableDefault(size = 5) pageable: Pageable,
+        @RequestParam(name = "userId", defaultValue = "") userId : UUID
+    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
+        val response = tweetService.getUsersRetweetsAndReplies(userId, pageable)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
+
+    @GetMapping("/getUsersLikes")
+    fun getUsersLikes(
+        @PageableDefault(size = 5) pageable: Pageable,
+        @RequestParam(name = "userId", defaultValue = "") userId : UUID
+    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
+        val response = tweetService.getUsersLikes(userId, pageable)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
+
+    @Deprecated(message = "더이상 사용하지 않음. 역할을 다 하셨습니다.", replaceWith = ReplaceWith("/getUsersTweet"))
     @GetMapping("/user")
     fun getUserTweets(
         @PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable: Pageable,

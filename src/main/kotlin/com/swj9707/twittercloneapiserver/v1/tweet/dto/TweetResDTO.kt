@@ -19,5 +19,15 @@ class TweetResDTO {
             val numberOfElements: Int,
             val empty: Boolean
         )
+
+        data class UserTweetsRes(
+            val tweets: List<TweetDTO.Dto.UsersTweetInfo>,
+            val size: Int,
+            val number: Int,
+            val first: Boolean,
+            val last: Boolean,
+            val numberOfElements: Int,
+            val empty: Boolean
+        )
     }
 }

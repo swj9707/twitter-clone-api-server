@@ -1,6 +1,8 @@
 package com.swj9707.twittercloneapiserver.tweet
 
 import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.repository.LikeRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.RetweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import org.junit.jupiter.api.DisplayName
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @SpringBootTest
@@ -16,7 +19,7 @@ class TweetTest (
     @Autowired
     private val tweetRepository: TweetRepository,
     @Autowired
-    private val retweetRepository: RetweetRepository
+    private val likeRepository: LikeRepository
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     @Test
@@ -52,5 +55,15 @@ class TweetTest (
     fun countByUserNameTest() {
         val result = tweetRepository.countByUserUserName("wassup")
         logger.info("result : $result")
+    }
+
+    @Test
+    @DisplayName("리트윗 데이터 가져오기")
+    fun getRetweetsByUserID() {
+        val result = tweetRepository.findRepliesByUserId(UUID.fromString("2781a1c3-9c53-4572-869d-29b451ae5aec"))
+        result.forEach {
+            result ->
+            logger.info("result : ${result.getTweetId()}")
+        }
     }
 }

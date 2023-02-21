@@ -17,9 +17,11 @@ import com.swj9707.twittercloneapiserver.v1.tweet.repository.ReplyTweetRepositor
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.RetweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.service.inter.TweetService
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class TweetServiceImpl(
@@ -131,8 +133,74 @@ class TweetServiceImpl(
         )
     }
 
+    override fun getUsersTweets(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
+        val tweets = tweetRepository.findTweetsByUserUserId(userId)
+        val retweets = retweetRepository.findRetweetsByUserUserId(userId)
+
+        val tweetsDTO = TweetDTO.Dto.UsersTweetInfo.projectionsToListDTO(tweets)
+        val retweetsDTO = TweetDTO.Dto.UsersTweetInfo.retweetProjToListDTO(retweets)
+
+        val result = tweetsDTO.plus(retweetsDTO)
+            .sortedWith(compareBy({it.modifiedDate}, {it.createdAt})).reversed()
+
+        val start : Int = pageable.offset.toInt()
+        val end : Int = (start + pageable.pageSize).coerceAtMost(result.size)
+
+        val pageResult = PageImpl(result.subList(start, end), pageable, result.size.toLong())
+        return TweetResDTO.Res.UserTweetsRes(
+            tweets = pageResult.content,
+            size = pageResult.size,
+            number = pageResult.number,
+            first = pageResult.isFirst,
+            last = pageResult.isLast,
+            numberOfElements = pageResult.numberOfElements,
+            empty = pageResult.isEmpty
+        )
+    }
+
+    override fun getUsersRetweetsAndReplies(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
+        val retweets = retweetRepository.findRetweetsByUserUserId(userId)
+        val replies = tweetRepository.findRepliesByUserId(userId)
+
+        val retweetsDTO = TweetDTO.Dto.UsersTweetInfo.retweetProjToListDTO(retweets)
+        val repliesDTO = TweetDTO.Dto.UsersTweetInfo.projectionsToListDTO(replies)
+
+        val result = retweetsDTO.plus(repliesDTO)
+            .sortedWith(compareBy({it.modifiedDate}, {it.createdAt})).reversed()
+
+        val start : Int = pageable.offset.toInt()
+        val end : Int = (start + pageable.pageSize).coerceAtMost(result.size)
+
+        val pageResult = PageImpl(result.subList(start, end), pageable, result.size.toLong())
+        return TweetResDTO.Res.UserTweetsRes(
+            tweets = pageResult.content,
+            size = pageResult.size,
+            number = pageResult.number,
+            first = pageResult.isFirst,
+            last = pageResult.isLast,
+            numberOfElements = pageResult.numberOfElements,
+            empty = pageResult.isEmpty
+        )
+
+    }
+
+    override fun getUsersLikes(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
+        val result =  likeRepository.getUsersLikedTweets(userId, pageable)
+        return TweetResDTO.Res.UserTweetsRes(
+            tweets = TweetDTO.Dto.UsersTweetInfo.likeProjToListDTO(result.content),
+            size = result.size,
+            number = result.number,
+            first = result.isFirst,
+            last = result.isLast,
+            numberOfElements = result.numberOfElements,
+            empty = result.isEmpty
+        )
+
+    }
+
     override fun getUserTweets(userName : String, pageable: Pageable): TweetResDTO.Res.TweetsRes {
         val result = tweetRepository.findTweetsByUserUserName(userName, pageable)
+
         val responseData = TweetDTO.Dto.TweetInfo.toPageableDTO(result)
         return TweetResDTO.Res.TweetsRes(
             tweets = responseData.content,
