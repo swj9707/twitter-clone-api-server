@@ -26,7 +26,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String ) {
 
     //CONFLICT
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 계정 이메일입니다."),
-    DUPLICATE_USERNAME(HttpStatus.CONFLICT, "이미 존재하는 유저 닉네임입니다."),
+    DUPLICATE_USERNAME(HttpStatus.CONFLICT, "이미 존재하는 유저네임입니다."),
+    DUPLICATE_USERNICKNAME(HttpStatus.CONFLICT, "이미 존재하는 유저 닉네임입니다."),
     LOGIN_FAILED(HttpStatus.CONFLICT, "로그인에 실패하였습니다."),
 
     //INTERNAL SERVER ERROR

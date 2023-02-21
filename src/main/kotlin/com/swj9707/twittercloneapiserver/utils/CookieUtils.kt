@@ -8,29 +8,24 @@ import org.springframework.stereotype.Service
 
 @Service
 class CookieUtils {
-    fun createCookie(cookieName: String, value: String) : ResponseCookie {
-        return ResponseCookie.from(cookieName, value)
-            .path("/")
-            .secure(true)
-            .sameSite("None")
-            .httpOnly(true)
-            .maxAge(JwtUtils.REFRESH_TOKEN_VALID_TIME / 1000)
-            .build()
+    fun createCookie(cookieName: String, value: String): ResponseCookie {
+        return ResponseCookie.from(cookieName, value).path("/").secure(true).sameSite("None").httpOnly(true)
+            .maxAge(JwtUtils.REFRESH_TOKEN_VALID_TIME / 1000).build()
     }
 
-    fun getCookie(req : HttpServletRequest, cookieName : String) : Cookie? {
-        val cookies  = req.cookies ?: return null
-        for(cookie in cookies){
-            if(cookie.name.equals(cookieName)){
+    fun getCookie(req: HttpServletRequest, cookieName: String): Cookie? {
+        val cookies = req.cookies ?: return null
+        for (cookie in cookies) {
+            if (cookie.name.equals(cookieName)) {
                 return cookie
             }
         }
         return null
     }
 
-    fun deleteCookie(req: HttpServletRequest, res : HttpServletResponse, cookieName: String) {
+    fun deleteCookie(req: HttpServletRequest, res: HttpServletResponse, cookieName: String) {
         val cookie = getCookie(req, cookieName)
-        if(cookie != null){
+        if (cookie != null) {
             val myCookie = Cookie(cookieName, null)
             myCookie.maxAge = 0
             myCookie.path = "/"

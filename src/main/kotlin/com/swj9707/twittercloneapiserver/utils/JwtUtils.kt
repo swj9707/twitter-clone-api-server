@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.utils
 
-import com.swj9707.twittercloneapiserver.v1.auth.service.UserDetailsServiceImpl
+import com.swj9707.twittercloneapiserver.v1.user.service.UserDetailsServiceImpl
 import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import io.jsonwebtoken.Claims
@@ -29,35 +29,30 @@ class JwtUtils(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Value("\${jwt.security.key}")
-    private lateinit var SECRETKEY : String
+    private lateinit var SECRETKEY: String
 
-    companion object{
+    companion object {
         const val REFRESH_TOKEN_NAME = "refreshToken"
-        const val ACCESS_TOKEN_VALID_TIME =  30 * 60 * 1000L
-        const val REFRESH_TOKEN_VALID_TIME =  30 * 24 * 60 * 60 * 1000L
+        const val ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1000L
+        const val REFRESH_TOKEN_VALID_TIME = 30 * 24 * 60 * 60 * 1000L
     }
-    private val SIGNATUREALG : SignatureAlgorithm = SignatureAlgorithm.HS256
 
-    fun getSigningkey(secretKey : String) : Key{
+    private val SIGNATUREALG: SignatureAlgorithm = SignatureAlgorithm.HS256
+
+    fun getSigningkey(secretKey: String): Key {
         return Keys.hmacShaKeyFor(SECRETKEY.toByteArray(StandardCharsets.UTF_8))
     }
 
-    fun extractAllClaims(jwtToken: String) : Claims {
-        return Jwts.parserBuilder()
-            .setSigningKey(getSigningkey(SECRETKEY))
-            .build()
-            .parseClaimsJws(jwtToken)
-            .body
+    fun extractAllClaims(jwtToken: String): Claims {
+        return Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken).body
     }
-    fun createToken(userEmail : String, validTime : Long) : String{
-        val claims : Claims = Jwts.claims().setSubject(userEmail)
+
+    fun createToken(userEmail: String, validTime: Long): String {
+        val claims: Claims = Jwts.claims().setSubject(userEmail)
         claims["userEmail"] = userEmail
-        return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(Date(System.currentTimeMillis()))
+        return Jwts.builder().setClaims(claims).setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + validTime))
-            .signWith(getSigningkey(SECRETKEY), SIGNATUREALG)
-            .compact()
+            .signWith(getSigningkey(SECRETKEY), SIGNATUREALG).compact()
     }
 
     fun getAuthentication(token: String): Authentication {
@@ -72,11 +67,12 @@ class JwtUtils(
 
     fun resolveToken(request: HttpServletRequest): String? {
         var token = request.getHeader("Authorization")
-        if(token != null) {
+        if (token != null) {
             token = token.substring("Bearer ".length)
         }
         return token
     }
+
     fun validateToken(jwtToken: String): Boolean {
         return try {
             val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
@@ -84,33 +80,34 @@ class JwtUtils(
         } catch (e: SecurityException) {
             logger.error("Invalid JWT Signature : SecurityException")
             false
-        } catch (e : MalformedJwtException){
+        } catch (e: MalformedJwtException) {
             logger.error("Invalid JWT Signature : MalformedJwtException")
             false
-        } catch (e : UnsupportedJwtException) {
+        } catch (e: UnsupportedJwtException) {
             logger.error("Unsupported JWT Token")
             false
-        } catch (e : IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             logger.error("JWT token is invalid")
             false
-        } catch (e : ExpiredJwtException){
+        } catch (e: ExpiredJwtException) {
             logger.error("JWT token is Expired")
             false
         }
     }
 
-    fun getExpirationPeriod(jwtToken: String) : Int {
+    fun getExpirationPeriod(jwtToken: String): Int {
         return try {
             val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
-            val expireDate = Instant.ofEpochMilli(claims.body.expiration.time).atZone(ZoneId.systemDefault()).toLocalDate()
+            val expireDate =
+                Instant.ofEpochMilli(claims.body.expiration.time).atZone(ZoneId.systemDefault()).toLocalDate()
             val today = LocalDate.now()
             Period.between(today, expireDate).days
-        } catch (e : Exception){
+        } catch (e: Exception) {
             throw BaseException(BaseResponseCode.INVALID_TOKEN)
         }
     }
 
-    fun getExpiration(jwtToken : String) : Long {
+    fun getExpiration(jwtToken: String): Long {
         val expiration = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build()
             .parseClaimsJws(jwtToken).body.expiration
         val now = System.currentTimeMillis()
