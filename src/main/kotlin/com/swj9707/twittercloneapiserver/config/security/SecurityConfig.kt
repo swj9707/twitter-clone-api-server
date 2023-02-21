@@ -12,7 +12,10 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.CorsUtils
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +33,20 @@ class SecurityConfig(
         authenticationConfiguration.authenticationManager
 
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    fun corsConfigurationSource() : CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.addAllowedOrigin("*")
+        configuration.allowedMethods = mutableListOf("HEAD", "GET", "POST", "PUT", "DELETE")
+        configuration.addAllowedHeader("*")
+        configuration.allowCredentials = true
+        configuration.maxAge = 3600L
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
+    }
+
+    @Bean
+    fun filterChain(http: HttpSecurity) : SecurityFilterChain {
         http
             .csrf().disable()
             .httpBasic().disable()

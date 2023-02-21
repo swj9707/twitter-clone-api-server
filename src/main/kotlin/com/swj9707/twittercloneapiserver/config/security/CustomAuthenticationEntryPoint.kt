@@ -27,14 +27,8 @@ class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
     override fun commence(
         request: HttpServletRequest, response: HttpServletResponse, authException: AuthenticationException
     ) {
-        logger.error("Unauthorized Error : " + authException.message.toString())
-        //CORS 에러 방지용 (개선 필요)
+        logger.error("Unauthorized Error : " + authException.message)
         response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"))
-        response.setHeader("Access-Control-Allow-Credentials", "true")
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
         response.status = HttpStatus.UNAUTHORIZED.value()
         val objectMapper = ObjectMapper()
         objectMapper.writeValue(response.outputStream, expiredExceptionResponse)
