@@ -1,5 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.service.inter
 
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
@@ -13,6 +14,7 @@ interface TweetService {
     fun retweet(userInfo: TwitterUser, tweetId : Long) : TweetResDTO.Res.RetweetResult
     fun likeTweet(userInfo: TwitterUser, tweetId : Long) : TweetResDTO.Res.TweetInfo
     fun readTweets(pageable : Pageable) : TweetResDTO.Res.TweetsRes
+    fun getUsetTweetByTweetId(tweetId: Long) : TweetDTO.Dto.TweetInfo
     fun getTweetReplies(tweetId : Long, pageable: Pageable) : TweetResDTO.Res.TweetsRes
     fun getUsersTweets(userId : UUID, pageable: Pageable) : TweetResDTO.Res.UserTweetsRes
     fun getUsersRetweetsAndReplies(userId : UUID, pageable: Pageable) : TweetResDTO.Res.UserTweetsRes

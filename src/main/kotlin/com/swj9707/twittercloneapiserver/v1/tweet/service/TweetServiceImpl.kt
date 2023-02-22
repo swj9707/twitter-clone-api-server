@@ -133,6 +133,12 @@ class TweetServiceImpl(
         )
     }
 
+    override fun getUsetTweetByTweetId(tweetId: Long): TweetDTO.Dto.TweetInfo {
+        val result = tweetRepository.findById(tweetId)
+            .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+        return TweetDTO.Dto.TweetInfo.entityToDTO(result)
+    }
+
     override fun getTweetReplies(tweetId: Long, pageable: Pageable): TweetResDTO.Res.TweetsRes {
         val result = tweetRepository.findTweetsByConnectedTweetId(tweetId, pageable)
         val responseData = TweetDTO.Dto.TweetInfo.toPageableDTO(result)

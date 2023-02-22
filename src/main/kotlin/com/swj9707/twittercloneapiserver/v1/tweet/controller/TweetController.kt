@@ -1,6 +1,7 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.controller
 
 import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
@@ -61,6 +62,15 @@ class TweetController(
         val response = tweetService.readTweets(pageable)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
+
+    @GetMapping("/getTweet")
+    fun getTweetByTweetId(
+        @RequestParam(name ="tweetId", defaultValue = "") tweetId : Long
+    ) : ResponseEntity<BaseResponse<TweetDTO.Dto.TweetInfo>> {
+        val response = tweetService.getUsetTweetByTweetId(tweetId)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
+
     @GetMapping("/getUsersTweet")
     fun getUserTweetsAndRetweet(
         @PageableDefault(size = 5) pageable: Pageable,
