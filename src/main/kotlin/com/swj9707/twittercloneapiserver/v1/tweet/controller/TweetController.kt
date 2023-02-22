@@ -98,6 +98,15 @@ class TweetController(
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 
+    @GetMapping("/getReplies")
+    fun getReplies(
+        @PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable: Pageable,
+        @RequestParam(name = "tweetId", defaultValue = "") tweetId : Long
+    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>> {
+        val response = tweetService.getTweetReplies(tweetId, pageable)
+        return ResponseEntity.ok().body(BaseResponse.success(response))
+    }
+
     @PutMapping("/delete")
     fun deleteTweet(
         @AuthenticationPrincipal user: TwitterUser, @RequestBody request: TweetReqDTO.Req.DeleteTweet

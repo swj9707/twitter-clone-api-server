@@ -133,6 +133,20 @@ class TweetServiceImpl(
         )
     }
 
+    override fun getTweetReplies(tweetId: Long, pageable: Pageable): TweetResDTO.Res.TweetsRes {
+        val result = tweetRepository.findTweetsByConnectedTweetId(tweetId, pageable)
+        val responseData = TweetDTO.Dto.TweetInfo.toPageableDTO(result)
+        return TweetResDTO.Res.TweetsRes(
+            tweets = responseData.content,
+            size = responseData.size,
+            number = responseData.number,
+            first = responseData.isFirst,
+            last = responseData.isLast,
+            numberOfElements = responseData.numberOfElements,
+            empty = responseData.isEmpty
+        )
+    }
+
     override fun getUsersTweets(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
         val tweets = tweetRepository.findTweetsByUserUserId(userId)
         val retweets = retweetRepository.findRetweetsByUserUserId(userId)
