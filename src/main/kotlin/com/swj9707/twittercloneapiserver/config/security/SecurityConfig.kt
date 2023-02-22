@@ -35,8 +35,8 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource() : CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.addAllowedOrigin("*")
-        configuration.allowedMethods = mutableListOf("HEAD", "GET", "POST", "PUT", "DELETE")
+        configuration.addAllowedOriginPattern("*")
+        configuration.allowedMethods = mutableListOf("HEAD", "GET", "POST", "PUT", "DELETE", "OPTION")
         configuration.addAllowedHeader("*")
         configuration.allowCredentials = true
         configuration.maxAge = 3600L
@@ -48,24 +48,19 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity) : SecurityFilterChain {
         http
-            .csrf().disable()
             .httpBasic().disable()
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .addFilterBefore(JwtAuthenticationFilter(jwtUtils, redisUtils), UsernamePasswordAuthenticationFilter::class.java)
+            .exceptionHandling().authenticationEntryPoint(CustomAuthenticationEntryPoint())
+            .and()
+            .cors().configurationSource(corsConfigurationSource())
+            .and()
             .authorizeHttpRequests()
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-            .requestMatchers("/docs/**", "/v3/api-docs", "/swagger*/**", "/api/auth/v1/**").permitAll()
+            .requestMatchers("/api/auth/v1/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
             .requestMatchers("/api/v1/**").authenticated()
-            .and()
-            .addFilterBefore(
-                JwtAuthenticationFilter(jwtUtils, redisUtils),
-                UsernamePasswordAuthenticationFilter::class.java
-            ).exceptionHandling()
-            .authenticationEntryPoint(CustomAuthenticationEntryPoint())
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-
-
 
         return http.build()
     }
