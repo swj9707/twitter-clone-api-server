@@ -24,6 +24,7 @@ class UserDTO {
         }
 
         data class TwitterUserProfile(
+            val userId : UUID,
             val userName: String,
             val userNickname: String,
             val profileImage: ImageDTO.Dto.ImageInfo?,
@@ -34,6 +35,7 @@ class UserDTO {
             companion object Util {
                 fun fromEntity(entity: TwitterUser): TwitterUserProfile {
                     return TwitterUserProfile(
+                        userId = entity.userId,
                         userName = entity.userName,
                         userNickname = entity.userNickname,
                         profileImage = entity.profileImage?.let { ImageDTO.Dto.ImageInfo.entityToDTO(it) },
