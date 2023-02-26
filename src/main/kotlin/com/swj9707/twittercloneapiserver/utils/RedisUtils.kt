@@ -1,14 +1,13 @@
 package com.swj9707.twittercloneapiserver.utils
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.core.ValueOperations
 import org.springframework.stereotype.Service
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 @Service
 class RedisUtils(
-    @Autowired private val stringRedisTemplate: StringRedisTemplate
+    private val stringRedisTemplate: StringRedisTemplate
 ) {
     fun getData(key: String): String? {
         var valueOperations: ValueOperations<String, String> = stringRedisTemplate.opsForValue()
@@ -17,8 +16,7 @@ class RedisUtils(
 
     fun setDataExpire(key: String, value: String, duration: Long) {
         var valueOperations: ValueOperations<String, String> = stringRedisTemplate.opsForValue()
-        val expireDuration: Duration = Duration.ofMillis(duration)
-        valueOperations.set(key, value, expireDuration)
+        valueOperations.set(key, value, duration, TimeUnit.MILLISECONDS)
     }
 
     fun deleteData(key: String) {

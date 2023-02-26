@@ -1,10 +1,10 @@
 package com.swj9707.twittercloneapiserver.v1.user.entity
 
-import com.swj9707.twittercloneapiserver.constant.entity.BaseEntity
-import com.swj9707.twittercloneapiserver.constant.enum.Authority
-import com.swj9707.twittercloneapiserver.constant.enum.UserStatus
-import com.swj9707.twittercloneapiserver.constant.enum.Provider
-import com.swj9707.twittercloneapiserver.constant.entity.Image
+import com.swj9707.twittercloneapiserver.common.entity.BaseEntity
+import com.swj9707.twittercloneapiserver.common.enum.Authority
+import com.swj9707.twittercloneapiserver.common.enum.UserStatus
+import com.swj9707.twittercloneapiserver.common.enum.Provider
+import com.swj9707.twittercloneapiserver.common.entity.Image
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Like
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet

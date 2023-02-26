@@ -1,8 +1,8 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.service
 
-import com.swj9707.twittercloneapiserver.constant.entity.Image
-import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
-import com.swj9707.twittercloneapiserver.constant.enum.TweetStatus
+import com.swj9707.twittercloneapiserver.common.entity.Image
+import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
+import com.swj9707.twittercloneapiserver.common.enum.TweetStatus
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
@@ -12,10 +12,10 @@ import com.swj9707.twittercloneapiserver.v1.tweet.entity.Like
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReplyTweet
 import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
-import com.swj9707.twittercloneapiserver.v1.tweet.repository.LikeRepository
-import com.swj9707.twittercloneapiserver.v1.tweet.repository.ReplyTweetRepository
-import com.swj9707.twittercloneapiserver.v1.tweet.repository.RetweetRepository
-import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.LikeRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.ReplyTweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.RetweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.service.inter.TweetService
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -136,7 +136,7 @@ class TweetServiceImpl(
     override fun getUsetTweetByTweetId(tweetId: Long): TweetDTO.Dto.TweetInfo {
         val result = tweetRepository.findById(tweetId)
             .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
-        return TweetDTO.Dto.TweetInfo.entityToDTO(result)
+        return TweetDTO.Dto.TweetInfo.fromEntity(result)
     }
 
     override fun getTweetReplies(tweetId: Long, pageable: Pageable): TweetResDTO.Res.TweetsRes {

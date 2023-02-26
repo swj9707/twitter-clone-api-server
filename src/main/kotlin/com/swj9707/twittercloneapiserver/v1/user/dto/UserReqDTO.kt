@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.user.dto
 
-import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
+import com.swj9707.twittercloneapiserver.common.dto.ImageDTO
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import java.util.*
 

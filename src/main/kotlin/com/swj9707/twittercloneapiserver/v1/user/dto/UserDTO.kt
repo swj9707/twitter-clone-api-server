@@ -1,9 +1,9 @@
 package com.swj9707.twittercloneapiserver.v1.user.dto
 
-import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
-import com.swj9707.twittercloneapiserver.constant.enum.Authority
-import com.swj9707.twittercloneapiserver.constant.enum.Provider
-import com.swj9707.twittercloneapiserver.v1.tweet.repository.projection.TweetProjection
+import com.swj9707.twittercloneapiserver.common.dto.ImageDTO
+import com.swj9707.twittercloneapiserver.common.enum.Authority
+import com.swj9707.twittercloneapiserver.common.enum.Provider
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import java.util.*
 
@@ -14,7 +14,7 @@ class UserDTO {
             val provider: Provider,
         ) {
             companion object Util {
-                fun entityToDTO(entity: TwitterUser): TwitterUserAuthInfo {
+                fun fromEntity(entity: TwitterUser): TwitterUserAuthInfo {
                     return TwitterUserAuthInfo(
                         userId = entity.userId,
                         provider = entity.provider,
@@ -32,7 +32,7 @@ class UserDTO {
             val followingCount: Int
         ) {
             companion object Util {
-                fun entityToDTO(entity: TwitterUser): TwitterUserProfile {
+                fun fromEntity(entity: TwitterUser): TwitterUserProfile {
                     return TwitterUserProfile(
                         userName = entity.userName,
                         userNickname = entity.userNickname,
@@ -58,7 +58,7 @@ class UserDTO {
 
             ) {
             companion object Util {
-                fun entityToDTO(entity: TwitterUser): TwitterUserInfo {
+                fun fromEntity(entity: TwitterUser): TwitterUserInfo {
                     return TwitterUserInfo(
                         userId = entity.userId,
                         email = entity.email,
@@ -78,13 +78,13 @@ class UserDTO {
             val userName: String, val userNickname: String, val profileImage: ImageDTO.Dto.ImageInfo?
         ) {
             companion object Util {
-                fun entityToDTO(entity: TwitterUser): TweetOwnerInfo {
+                fun fromEntity(entity: TwitterUser): TweetOwnerInfo {
                     return TweetOwnerInfo(userName = entity.userName,
                         userNickname = entity.userNickname,
                         profileImage = entity.profileImage?.let { ImageDTO.Dto.ImageInfo.entityToDTO(it) })
                 }
 
-                fun projectionToDTO(projection: TweetProjection.UserProjection): TweetOwnerInfo {
+                fun fromProjection(projection: TweetProjection.UserProjection): TweetOwnerInfo {
                     return TweetOwnerInfo(userName = projection.getUserName(),
                         userNickname = projection.getUserNickname(),
                         profileImage = projection.getProfileImage()?.let { ImageDTO.Dto.ImageInfo.projectionToDTO(it) })

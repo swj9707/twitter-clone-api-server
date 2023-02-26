@@ -4,8 +4,8 @@ import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
-import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
-import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
+import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.CookieUtils
 import com.swj9707.twittercloneapiserver.utils.JwtUtils
@@ -56,7 +56,7 @@ class AuthController(
 
         val accessToken = jwtUtils.resolveToken(req)
         if (accessToken != null) {
-            val result = twitterUserServiceImpl.logout(accessToken)
+            val result = twitterUserServiceImpl.logout(accessToken, refreshToken)
             if (refreshToken.isNotEmpty()) {
                 cookieUtils.deleteCookie(req, res, JwtUtils.REFRESH_TOKEN_NAME)
             }

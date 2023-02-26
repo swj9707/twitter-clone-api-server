@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.dto
 
-import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
+import com.swj9707.twittercloneapiserver.common.dto.ImageDTO
 
 class TweetReqDTO {
     companion object Req {

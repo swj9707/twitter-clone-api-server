@@ -1,16 +1,16 @@
 package com.swj9707.twittercloneapiserver.v1.user.service
 
-import com.swj9707.twittercloneapiserver.constant.entity.Image
+import com.swj9707.twittercloneapiserver.common.entity.Image
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.v1.user.repository.TwitterUserRepository
+import com.swj9707.twittercloneapiserver.v1.user.entity.repository.TwitterUserRepository
 import com.swj9707.twittercloneapiserver.v1.user.service.inter.TwitterUserService
-import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
+import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.JwtUtils
 import com.swj9707.twittercloneapiserver.utils.RedisUtils
-import com.swj9707.twittercloneapiserver.v1.tweet.repository.TweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -61,7 +61,7 @@ class TwitterUserServiceImpl(
         } else {
             twitterUserRepository.save(user)
             return UserResDTO.Res.EditProfile(
-                userInfo = UserDTO.Dto.TwitterUserProfile.entityToDTO(user)
+                userInfo = UserDTO.Dto.TwitterUserProfile.fromEntity(user)
             )
         }
     }
@@ -79,7 +79,7 @@ class TwitterUserServiceImpl(
             user.profileImage = Image.dtoToEntity(editUserProfile.profileImage)
             user.backgroundImage = Image.dtoToEntity(editUserProfile.backgroundImage)
             twitterUserRepository.save(user)
-            return UserResDTO.Res.EditProfile(userInfo = UserDTO.Dto.TwitterUserProfile.entityToDTO(user))
+            return UserResDTO.Res.EditProfile(userInfo = UserDTO.Dto.TwitterUserProfile.fromEntity(user))
         }
     }
 
@@ -104,13 +104,10 @@ class TwitterUserServiceImpl(
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
 
         val accessToken = jwtUtils.createToken(authentication.name, JwtUtils.ACCESS_TOKEN_VALID_TIME)
-        var refreshToken = redisUtils.getData("RT" + authentication.name)
-        val userInfoDTO = UserDTO.Dto.TwitterUserAuthInfo.entityToDTO(userInfo)
+        val userInfoDTO = UserDTO.Dto.TwitterUserAuthInfo.fromEntity(userInfo)
 
-        if (refreshToken == null) {
-            refreshToken = jwtUtils.createToken(authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
-            redisUtils.setDataExpire("RT:" + authentication.name, refreshToken, JwtUtils.REFRESH_TOKEN_VALID_TIME)
-        }
+        val refreshToken = jwtUtils.createToken(authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+        redisUtils.setDataExpire(refreshToken, "RT:" + authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
 
         val now: LocalDateTime = LocalDateTime.now()
         userInfo.lastLogin = now
@@ -127,8 +124,8 @@ class TwitterUserServiceImpl(
             throw BaseException(BaseResponseCode.REFRESH_TOKEN_EXPIRED)
         }
         val userEmail = jwtUtils.getUserEmail(refreshToken)
-        val savedRefreshToken = redisUtils.getData("RT:$userEmail")
-        if (ObjectUtils.isEmpty(refreshToken) || savedRefreshToken == null || refreshToken != savedRefreshToken) {
+        val userInfo = redisUtils.getData(refreshToken)
+        if (ObjectUtils.isEmpty(refreshToken) || userInfo == null || userInfo != "RT:${userEmail}") {
             throw BaseException(BaseResponseCode.INVALID_TOKEN)
         } else {
             val newAccessToken = jwtUtils.createToken(userEmail, JwtUtils.ACCESS_TOKEN_VALID_TIME)
@@ -144,15 +141,15 @@ class TwitterUserServiceImpl(
         }
     }
 
-    override fun logout(accessToken: String): UserResDTO.Res.Logout {
+    override fun logout(accessToken: String, refreshToken: String): UserResDTO.Res.Logout {
         if (!jwtUtils.validateToken(accessToken)) {
             throw BaseException(BaseResponseCode.BAD_REQUEST)
         }
 
         val authentication = jwtUtils.getAuthentication(accessToken)
 
-        if (redisUtils.getData("RT:" + authentication.name) != null) {
-            redisUtils.deleteData("RT:" + authentication.name)
+        if (redisUtils.getData(refreshToken) != null) {
+            redisUtils.deleteData(refreshToken)
         }
 
         val expiration = jwtUtils.getExpiration(accessToken)
@@ -163,14 +160,14 @@ class TwitterUserServiceImpl(
     override fun getUserInfoByUserId(userId: String): UserResDTO.Res.UserInfo {
         val result = twitterUserRepository.findById(UUID.fromString(userId))
             .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
-        return UserResDTO.Res.UserInfo(UserDTO.Dto.TwitterUserInfo.entityToDTO(result))
+        return UserResDTO.Res.UserInfo(UserDTO.Dto.TwitterUserInfo.fromEntity(result))
     }
 
     override fun getUserProfileByUserName(userName: String): UserResDTO.Res.UserProfile {
         val result = twitterUserRepository.findUserByUserName(userName)
             .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
         val countOfTweets = tweetRepository.countByUserUserName(userName)
-        val userProfile = UserDTO.Dto.TwitterUserProfile.entityToDTO(result)
+        val userProfile = UserDTO.Dto.TwitterUserProfile.fromEntity(result)
 
         return UserResDTO.Res.UserProfile(userProfile = userProfile, countOfTweet = countOfTweets)
     }

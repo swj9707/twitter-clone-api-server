@@ -1,9 +1,9 @@
 package com.swj9707.twittercloneapiserver.v1.image.service
 
-import com.swj9707.twittercloneapiserver.constant.dto.ImageDTO
-import com.swj9707.twittercloneapiserver.constant.entity.Image
-import com.swj9707.twittercloneapiserver.constant.entity.repository.ImageRepository
-import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
+import com.swj9707.twittercloneapiserver.common.dto.ImageDTO
+import com.swj9707.twittercloneapiserver.common.entity.Image
+import com.swj9707.twittercloneapiserver.common.entity.repository.ImageRepository
+import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import com.swj9707.twittercloneapiserver.utils.FileUtils
 import com.swj9707.twittercloneapiserver.utils.StringUtils

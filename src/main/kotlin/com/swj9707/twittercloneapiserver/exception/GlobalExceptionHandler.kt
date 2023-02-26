@@ -1,7 +1,7 @@
 package com.swj9707.twittercloneapiserver.exception
 
-import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
-import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
+import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
