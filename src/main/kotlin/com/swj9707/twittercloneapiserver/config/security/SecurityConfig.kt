@@ -23,7 +23,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     private val jwtUtils: JwtUtils,
     private val redisUtils: RedisUtils,
-    private val entryPoint: CustomAuthenticationEntryPoint
 ) {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
