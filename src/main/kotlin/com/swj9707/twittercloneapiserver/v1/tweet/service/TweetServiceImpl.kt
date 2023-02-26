@@ -133,12 +133,14 @@ class TweetServiceImpl(
         )
     }
 
+    @Transactional
     override fun getUsetTweetByTweetId(tweetId: Long): TweetDTO.Dto.TweetInfo {
         val result = tweetRepository.findById(tweetId)
             .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
         return TweetDTO.Dto.TweetInfo.fromEntity(result)
     }
 
+    @Transactional
     override fun getTweetReplies(tweetId: Long, pageable: Pageable): TweetResDTO.Res.TweetsRes {
         val result = tweetRepository.findTweetsByConnectedTweetId(tweetId, pageable)
         val responseData = TweetDTO.Dto.TweetInfo.toPageableDTO(result)
@@ -152,7 +154,7 @@ class TweetServiceImpl(
             empty = responseData.isEmpty
         )
     }
-
+    @Transactional
     override fun getUsersTweets(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
         val tweets = tweetRepository.findTweetsByUserUserId(userId)
         val retweets = retweetRepository.findRetweetsByUserUserId(userId)
@@ -178,6 +180,7 @@ class TweetServiceImpl(
         )
     }
 
+    @Transactional
     override fun getUsersRetweetsAndReplies(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
         val retweets = retweetRepository.findRetweetsByUserUserId(userId)
         val replies = tweetRepository.findRepliesByUserId(userId)
@@ -204,6 +207,7 @@ class TweetServiceImpl(
 
     }
 
+    @Transactional
     override fun getUsersLikes(userId: UUID, pageable: Pageable): TweetResDTO.Res.UserTweetsRes {
         val result =  likeRepository.getUsersLikedTweets(userId, pageable)
         return TweetResDTO.Res.UserTweetsRes(
