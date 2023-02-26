@@ -33,7 +33,7 @@ class JwtUtils(
 
     companion object {
         const val REFRESH_TOKEN_NAME = "refreshToken"
-        const val ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1000L
+        const val ACCESS_TOKEN_VALID_TIME = 10 * 60 * 1000L
         const val REFRESH_TOKEN_VALID_TIME = 30 * 24 * 60 * 60 * 1000L
     }
 
