@@ -1,7 +1,7 @@
 package com.swj9707.twittercloneapiserver.utils
 
 import com.swj9707.twittercloneapiserver.v1.user.service.UserDetailsServiceImpl
-import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
+import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
 import com.swj9707.twittercloneapiserver.exception.BaseException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
@@ -37,7 +37,7 @@ class JwtUtils(
         const val REFRESH_TOKEN_VALID_TIME = 30 * 24 * 60 * 60 * 1000L
     }
 
-    private val SIGNATUREALG: SignatureAlgorithm = SignatureAlgorithm.HS256
+    private val signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.HS256
 
     fun getSigningkey(secretKey: String): Key {
         return Keys.hmacShaKeyFor(SECRETKEY.toByteArray(StandardCharsets.UTF_8))
@@ -52,7 +52,7 @@ class JwtUtils(
         claims["userEmail"] = userEmail
         return Jwts.builder().setClaims(claims).setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + validTime))
-            .signWith(getSigningkey(SECRETKEY), SIGNATUREALG).compact()
+            .signWith(getSigningkey(SECRETKEY), signatureAlgorithm).compact()
     }
 
     fun getAuthentication(token: String): Authentication {

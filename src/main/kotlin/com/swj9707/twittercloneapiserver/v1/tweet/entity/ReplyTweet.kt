@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.entity
 
-import com.swj9707.twittercloneapiserver.constant.entity.BaseImmutableEntity
+import com.swj9707.twittercloneapiserver.common.entity.BaseImmutableEntity
 import jakarta.persistence.*
 
 @Entity

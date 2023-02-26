@@ -3,7 +3,7 @@ package com.swj9707.twittercloneapiserver.v1.user.controller
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
-import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

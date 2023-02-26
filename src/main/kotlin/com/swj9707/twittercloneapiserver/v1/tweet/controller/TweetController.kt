@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.controller
 
-import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
@@ -95,16 +95,6 @@ class TweetController(
         @RequestParam(name = "userId", defaultValue = "") userId : UUID
     ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
         val response = tweetService.getUsersLikes(userId, pageable)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
-    }
-
-    @Deprecated(message = "더이상 사용하지 않음. 역할을 다 하셨습니다.", replaceWith = ReplaceWith("/getUsersTweet"))
-    @GetMapping("/user")
-    fun getUserTweets(
-        @PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable: Pageable,
-        @RequestParam(name = "userName", defaultValue = "") userName: String
-    ): ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>> {
-        val response = tweetService.getUserTweets(userName, pageable)
         return ResponseEntity.ok().body(BaseResponse.success(response))
     }
 

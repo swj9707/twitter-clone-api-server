@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.auth.controller
 
-import com.swj9707.twittercloneapiserver.v1.user.repository.TwitterUserRepository
+import com.swj9707.twittercloneapiserver.v1.user.entity.repository.TwitterUserRepository
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
