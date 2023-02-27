@@ -22,14 +22,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class SecurityConfig(
     private val jwtUtils: JwtUtils,
-    private val redisUtils : RedisUtils,
-    private val entryPoint: CustomAuthenticationEntryPoint) {
+    private val redisUtils: RedisUtils,
+) {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
     @Bean
-    fun AuthenticationManager(authenticationConfiguration: AuthenticationConfiguration)
-        = authenticationConfiguration.authenticationManager
+    fun AuthenticationManager(authenticationConfiguration: AuthenticationConfiguration) =
+        authenticationConfiguration.authenticationManager
 
     @Bean
     fun corsConfigurationSource() : CorsConfigurationSource {

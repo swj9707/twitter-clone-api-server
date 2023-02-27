@@ -1,8 +1,8 @@
 package com.swj9707.twittercloneapiserver.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.swj9707.twittercloneapiserver.constant.dto.BaseResponse
-import com.swj9707.twittercloneapiserver.constant.enum.BaseResponseCode
+import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

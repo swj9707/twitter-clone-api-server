@@ -14,13 +14,11 @@ import java.io.IOException
 import kotlin.jvm.Throws
 
 class JwtAuthenticationFilter(
-    private val jwtUtils: JwtUtils,
-    private val redisUtils: RedisUtils): OncePerRequestFilter() {
+    private val jwtUtils: JwtUtils, private val redisUtils: RedisUtils
+) : OncePerRequestFilter() {
     @Throws(IOException::class, ServletException::class, Exception::class, ExpiredJwtException::class)
     override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
+        request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain
     ) {
         val path = request.servletPath
         val token: String? = jwtUtils.resolveToken((request))
