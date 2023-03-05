@@ -1,13 +1,13 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.dto
 
-import com.swj9707.twittercloneapiserver.common.dto.ImageDTO
-import com.swj9707.twittercloneapiserver.common.enum.TweetStatus
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.Like
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.projection.LikeProjection
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.projection.RetweetProjection
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.projection.TweetProjection
+import com.swj9707.twittercloneapiserver.global.common.dto.ImageDTO
+import com.swj9707.twittercloneapiserver.global.common.enum.TweetStatus
+import com.swj9707.twittercloneapiserver.v1.tweet.model.Like
+import com.swj9707.twittercloneapiserver.v1.tweet.model.ReTweet
+import com.swj9707.twittercloneapiserver.v1.tweet.model.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.projection.LikeProjection
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.projection.RetweetProjection
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.projection.TweetProjection
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
 import org.springframework.data.domain.Slice
 import java.util.*

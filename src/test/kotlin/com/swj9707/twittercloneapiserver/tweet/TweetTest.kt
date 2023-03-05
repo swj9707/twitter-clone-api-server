@@ -1,7 +1,7 @@
 package com.swj9707.twittercloneapiserver.tweet
 
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.LikeRepository
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.TweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.LikeRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.TweetRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory

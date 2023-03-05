@@ -1,14 +1,14 @@
 package com.swj9707.twittercloneapiserver.v1.user.controller
 
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
-import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
-import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
-import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
-import com.swj9707.twittercloneapiserver.exception.BaseException
-import com.swj9707.twittercloneapiserver.utils.CookieUtils
-import com.swj9707.twittercloneapiserver.utils.JwtUtils
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
+import com.swj9707.twittercloneapiserver.global.exception.CustomException
+import com.swj9707.twittercloneapiserver.global.utils.CookieUtils
+import com.swj9707.twittercloneapiserver.global.utils.JwtUtils
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders.SET_COOKIE
@@ -62,7 +62,7 @@ class AuthController(
             }
             return ResponseEntity.ok().body(BaseResponse.success(result))
         } else {
-            throw BaseException(BaseResponseCode.INVALID_TOKEN)
+            throw CustomException(ResCode.INVALID_TOKEN)
         }
     }
 
@@ -83,7 +83,7 @@ class AuthController(
             }
             return ResponseEntity.ok().body(BaseResponse.success(result))
         } else {
-            throw BaseException(BaseResponseCode.REFRESH_TOKEN_EXPIRED)
+            throw CustomException(ResCode.REFRESH_TOKEN_EXPIRED)
         }
 
     }

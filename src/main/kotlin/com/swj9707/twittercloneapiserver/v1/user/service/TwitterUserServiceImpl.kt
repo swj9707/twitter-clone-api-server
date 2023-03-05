@@ -1,17 +1,19 @@
 package com.swj9707.twittercloneapiserver.v1.user.service
 
-import com.swj9707.twittercloneapiserver.common.entity.Image
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
-import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.v1.user.entity.repository.TwitterUserRepository
+import com.swj9707.twittercloneapiserver.global.common.model.Image
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.user.model.repository.TwitterUserRepository
 import com.swj9707.twittercloneapiserver.v1.user.service.inter.TwitterUserService
-import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
-import com.swj9707.twittercloneapiserver.exception.BaseException
-import com.swj9707.twittercloneapiserver.utils.JwtUtils
-import com.swj9707.twittercloneapiserver.utils.RedisUtils
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.TweetRepository
+import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
+import com.swj9707.twittercloneapiserver.global.exception.CustomException
+import com.swj9707.twittercloneapiserver.global.utils.JwtUtils
+import com.swj9707.twittercloneapiserver.global.utils.RedisUtils
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.user.dto.UserDTO
+import com.swj9707.twittercloneapiserver.v1.user.model.UserFollower
+import com.swj9707.twittercloneapiserver.v1.user.model.repository.UserFollowerRepository
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -23,6 +25,7 @@ import java.util.*
 class TwitterUserServiceImpl(
     private val twitterUserRepository: TwitterUserRepository,
     private val tweetRepository: TweetRepository,
+    private val userFollowerRepository: UserFollowerRepository,
     private val jwtUtils: JwtUtils,
     private val redisUtils: RedisUtils,
     private val passwordEncoder: PasswordEncoder,
@@ -37,15 +40,15 @@ class TwitterUserServiceImpl(
         )
 
         if (twitterUserRepository.existsTwitterUserByEmail(user.email)) {
-            throw BaseException(BaseResponseCode.DUPLICATE_EMAIL)
+            throw CustomException(ResCode.DUPLICATE_EMAIL)
         }
 
         if (twitterUserRepository.existsTwitterUserByUserName(user.userName)) {
-            throw BaseException(BaseResponseCode.DUPLICATE_USERNAME)
+            throw CustomException(ResCode.DUPLICATE_USERNAME)
         }
 
         if (twitterUserRepository.existsTwitterUserByUserName(user.userNickname)) {
-            throw BaseException(BaseResponseCode.DUPLICATE_USERNAME)
+            throw CustomException(ResCode.DUPLICATE_USERNAME)
         }
 
         twitterUserRepository.save(user)
@@ -54,10 +57,10 @@ class TwitterUserServiceImpl(
 
     override fun editUserProfile(editProfileReq: UserReqDTO.Req.EditProfile): UserResDTO.Res.EditProfile {
         val user = twitterUserRepository.findById(editProfileReq.userId)
-            .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.USER_NOT_FOUND) }
         user.userNickname = editProfileReq.newUserNickname
         if (twitterUserRepository.existsTwitterUserByUserName(user.userName)) {
-            throw BaseException(BaseResponseCode.DUPLICATE_USERNAME)
+            throw CustomException(ResCode.DUPLICATE_USERNAME)
         } else {
             twitterUserRepository.save(user)
             return UserResDTO.Res.EditProfile(
@@ -68,12 +71,12 @@ class TwitterUserServiceImpl(
 
     override fun editUserProfile(editUserProfile: UserReqDTO.Req.EditUserProfile): UserResDTO.Res.EditProfile {
         val user = twitterUserRepository.findById(editUserProfile.userId)
-            .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.USER_NOT_FOUND) }
         if (user.userNickname != editUserProfile.newUserNickname && twitterUserRepository.existsTwitterUserByUserNickname(
                 editUserProfile.newUserNickname
             )
         ) {
-            throw BaseException(BaseResponseCode.DUPLICATE_USERNICKNAME)
+            throw CustomException(ResCode.DUPLICATE_USERNICKNAME)
         } else {
             user.userNickname = editUserProfile.newUserNickname
             user.profileImage = Image.dtoToEntity(editUserProfile.profileImage)
@@ -86,9 +89,9 @@ class TwitterUserServiceImpl(
     override fun editUserPassword(editUserPasswordReq: UserReqDTO.Req.EditPassword): UserResDTO.Res.EditPassword {
 
         val userInfo = twitterUserRepository.findById(editUserPasswordReq.userId)
-            .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.USER_NOT_FOUND) }
         if (!passwordEncoder.matches(editUserPasswordReq.currentPassword, userInfo.password)) {
-            throw BaseException(BaseResponseCode.INVALID_PASSWORD)
+            throw CustomException(ResCode.INVALID_PASSWORD)
         } else {
             userInfo.passwd = passwordEncoder.encode(editUserPasswordReq.newPassword)
             twitterUserRepository.save(userInfo)
@@ -98,7 +101,7 @@ class TwitterUserServiceImpl(
 
     override fun login(req: UserReqDTO.Req.Login): UserResDTO.Res.Login {
         val userInfo = twitterUserRepository.findUserByEmail(req.userEmail)
-            .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.USER_NOT_FOUND) }
 
         val authenticationToken = req.toAuthentication()
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
@@ -121,12 +124,12 @@ class TwitterUserServiceImpl(
 
     override fun reissue(refreshToken: String): UserResDTO.Res.TokenInfo {
         if (!jwtUtils.validateToken(refreshToken)) {
-            throw BaseException(BaseResponseCode.REFRESH_TOKEN_EXPIRED)
+            throw CustomException(ResCode.REFRESH_TOKEN_EXPIRED)
         }
         val userEmail = jwtUtils.getUserEmail(refreshToken)
         val userInfo = redisUtils.getData(refreshToken)
         if (ObjectUtils.isEmpty(refreshToken) || userInfo == null || userInfo != "RT:${userEmail}") {
-            throw BaseException(BaseResponseCode.INVALID_TOKEN)
+            throw CustomException(ResCode.INVALID_TOKEN)
         } else {
             val newAccessToken = jwtUtils.createToken(userEmail, JwtUtils.ACCESS_TOKEN_VALID_TIME)
             return UserResDTO.Res.TokenInfo(accessToken = newAccessToken, refreshToken = "")
@@ -143,7 +146,7 @@ class TwitterUserServiceImpl(
 
     override fun logout(accessToken: String, refreshToken: String): UserResDTO.Res.Logout {
         if (!jwtUtils.validateToken(accessToken)) {
-            throw BaseException(BaseResponseCode.BAD_REQUEST)
+            throw CustomException(ResCode.BAD_REQUEST)
         }
 
         val authentication = jwtUtils.getAuthentication(accessToken)
@@ -159,16 +162,35 @@ class TwitterUserServiceImpl(
 
     override fun getUserInfoByUserId(userId: String): UserResDTO.Res.UserInfo {
         val result = twitterUserRepository.findById(UUID.fromString(userId))
-            .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.USER_NOT_FOUND) }
         return UserResDTO.Res.UserInfo(UserDTO.Dto.TwitterUserInfo.fromEntity(result))
     }
 
     override fun getUserProfileByUserName(userName: String): UserResDTO.Res.UserProfile {
         val result = twitterUserRepository.findUserByUserName(userName)
-            .orElseThrow { BaseException(BaseResponseCode.USER_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.USER_NOT_FOUND) }
         val countOfTweets = tweetRepository.countByUserUserName(userName)
         val userProfile = UserDTO.Dto.TwitterUserProfile.fromEntity(result)
 
         return UserResDTO.Res.UserProfile(userProfile = userProfile, countOfTweet = countOfTweets)
+    }
+
+    override fun followToUser(user : TwitterUser, req: UserReqDTO.Req.FollowReq): UserResDTO.Res.FollowRes {
+        val followee = twitterUserRepository.findById(req.userId)
+            .orElseThrow{ CustomException(ResCode.USER_NOT_FOUND)}
+
+        val followeeData = UserFollower(followee = followee, follower = user)
+        userFollowerRepository.save(followeeData)
+
+        return UserResDTO.Res.FollowRes(userId = followee.userId)
+    }
+
+    override fun unfollowToUser(user: TwitterUser, req: UserReqDTO.Req.FollowReq): UserResDTO.Res.FollowRes {
+        if(userFollowerRepository.existsByFolloweeUserIdAndFollowerUserId(req.userId, user.userId)){
+            userFollowerRepository.deleteByFolloweeUserIdAndFollowerUserId(req.userId, user.userId)
+            return UserResDTO.Res.FollowRes(userId = req.userId)
+        } else {
+            throw CustomException(ResCode.BAD_REQUEST)
+        }
     }
 }
