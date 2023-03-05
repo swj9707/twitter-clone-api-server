@@ -1,10 +1,12 @@
 package com.swj9707.twittercloneapiserver.v1.user.controller
 
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserResDTO
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
-import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -56,5 +58,13 @@ class UserController(
     ): ResponseEntity<BaseResponse<UserResDTO.Res.EditPassword>> {
         val result = twitterUserServiceImpl.editUserPassword(request)
         return ResponseEntity.ok().body(BaseResponse.success(result))
+    }
+
+    @PostMapping("/followUser")
+    fun followUser(
+        @AuthenticationPrincipal user: TwitterUser,
+        @RequestBody request : UserReqDTO.Req.FollowReq
+    ) : Unit? {
+        return null
     }
 }

@@ -1,10 +1,10 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.controller
 
-import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
-import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
-import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
+import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.vo.TweetReqDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.vo.TweetResDTO
 import com.swj9707.twittercloneapiserver.v1.tweet.service.TweetServiceImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort

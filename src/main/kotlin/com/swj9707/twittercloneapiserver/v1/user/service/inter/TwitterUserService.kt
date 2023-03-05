@@ -1,7 +1,8 @@
 package com.swj9707.twittercloneapiserver.v1.user.service.inter
 
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserReqDTO
-import com.swj9707.twittercloneapiserver.v1.user.dto.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserReqDTO
+import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserResDTO
+import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
 
 
 interface TwitterUserService {
@@ -14,4 +15,6 @@ interface TwitterUserService {
     fun logout(accessToken: String, refreshToken: String): UserResDTO.Res.Logout
     fun getUserInfoByUserId(userId: String): UserResDTO.Res.UserInfo
     fun getUserProfileByUserName(userName: String): UserResDTO.Res.UserProfile
+    fun followToUser(user: TwitterUser, req : UserReqDTO.Req.FollowReq) : UserResDTO.Res.FollowRes
+    fun unfollowToUser(user: TwitterUser, req : UserReqDTO.Req.FollowReq) : UserResDTO.Res.FollowRes
 }

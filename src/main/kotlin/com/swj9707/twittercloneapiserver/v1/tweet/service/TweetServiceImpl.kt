@@ -1,21 +1,21 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.service
 
-import com.swj9707.twittercloneapiserver.common.entity.Image
-import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
-import com.swj9707.twittercloneapiserver.common.enum.TweetStatus
-import com.swj9707.twittercloneapiserver.exception.BaseException
-import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
+import com.swj9707.twittercloneapiserver.global.common.model.Image
+import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
+import com.swj9707.twittercloneapiserver.global.common.enum.TweetStatus
+import com.swj9707.twittercloneapiserver.global.exception.CustomException
+import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
-import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
-import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.Like
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReTweet
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.ReplyTweet
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.Tweet
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.LikeRepository
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.ReplyTweetRepository
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.RetweetRepository
-import com.swj9707.twittercloneapiserver.v1.tweet.entity.repository.TweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.vo.TweetReqDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.vo.TweetResDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.model.Like
+import com.swj9707.twittercloneapiserver.v1.tweet.model.ReTweet
+import com.swj9707.twittercloneapiserver.v1.tweet.model.ReplyTweet
+import com.swj9707.twittercloneapiserver.v1.tweet.model.Tweet
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.LikeRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.ReplyTweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.RetweetRepository
+import com.swj9707.twittercloneapiserver.v1.tweet.model.repository.TweetRepository
 import com.swj9707.twittercloneapiserver.v1.tweet.service.inter.TweetService
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -50,7 +50,7 @@ class TweetServiceImpl(
     ): TweetResDTO.Res.TweetInfo {
         val tweet = request.tweetId?.let {
             tweetRepository.findById(it)
-                .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+                .orElseThrow{ CustomException(ResCode.TWEET_NOT_FOUND) }
         }
 
         val replyTweet = Tweet(
@@ -75,7 +75,7 @@ class TweetServiceImpl(
     @Transactional
     override fun retweet(userInfo: TwitterUser, tweetId: Long): TweetResDTO.Res.RetweetResult {
         val tweet = tweetRepository.findById(tweetId)
-            .orElseThrow{ BaseException(BaseResponseCode.TWEET_NOT_FOUND)}
+            .orElseThrow{ CustomException(ResCode.TWEET_NOT_FOUND) }
 
         val retweets = TweetDTO.Dto.RetweetInfo.getRetweetInfo(tweet)
 
@@ -99,7 +99,7 @@ class TweetServiceImpl(
     @Transactional
     override fun likeTweet(userInfo: TwitterUser, tweetId: Long) : TweetResDTO.Res.TweetInfo {
         var tweet = tweetRepository.findById(tweetId)
-            .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.TWEET_NOT_FOUND) }
 
         val likes = TweetDTO.Dto.LikeInfo.getLikeInfo(tweet)
 
@@ -136,7 +136,7 @@ class TweetServiceImpl(
     @Transactional
     override fun getUsetTweetByTweetId(tweetId: Long): TweetDTO.Dto.TweetInfo {
         val result = tweetRepository.findById(tweetId)
-            .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.TWEET_NOT_FOUND) }
         return TweetDTO.Dto.TweetInfo.fromEntity(result)
     }
 
@@ -240,10 +240,10 @@ class TweetServiceImpl(
     @Transactional
     override fun deleteTweet(userInfo : TwitterUser, request: TweetReqDTO.Req.DeleteTweet): TweetResDTO.Res.TweetInfo {
         val tweet = tweetRepository.findById(request.tweetId)
-            .orElseThrow { BaseException(BaseResponseCode.TWEET_NOT_FOUND) }
+            .orElseThrow { CustomException(ResCode.TWEET_NOT_FOUND) }
 
         if(tweet.user.userId != userInfo.userId){
-            throw BaseException(BaseResponseCode.FORBIDDEN)
+            throw CustomException(ResCode.FORBIDDEN)
         }
 
         tweet.status = TweetStatus.DELETED

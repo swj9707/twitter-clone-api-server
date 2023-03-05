@@ -1,7 +1,7 @@
 package com.swj9707.twittercloneapiserver.v1.image.controller
 
-import com.swj9707.twittercloneapiserver.common.dto.BaseResponse
-import com.swj9707.twittercloneapiserver.common.dto.ImageDTO
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.ImageDTO
 import com.swj9707.twittercloneapiserver.v1.image.service.ImageServiceImpl
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

@@ -1,12 +1,12 @@
 package com.swj9707.twittercloneapiserver.v1.image.service
 
-import com.swj9707.twittercloneapiserver.common.dto.ImageDTO
-import com.swj9707.twittercloneapiserver.common.entity.Image
-import com.swj9707.twittercloneapiserver.common.entity.repository.ImageRepository
-import com.swj9707.twittercloneapiserver.common.enum.BaseResponseCode
-import com.swj9707.twittercloneapiserver.exception.BaseException
-import com.swj9707.twittercloneapiserver.utils.FileUtils
-import com.swj9707.twittercloneapiserver.utils.StringUtils
+import com.swj9707.twittercloneapiserver.global.common.dto.ImageDTO
+import com.swj9707.twittercloneapiserver.global.common.model.Image
+import com.swj9707.twittercloneapiserver.global.common.model.repository.ImageRepository
+import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
+import com.swj9707.twittercloneapiserver.global.exception.CustomException
+import com.swj9707.twittercloneapiserver.global.utils.FileUtils
+import com.swj9707.twittercloneapiserver.global.utils.StringUtils
 import com.swj9707.twittercloneapiserver.v1.image.service.inter.ImageService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -32,7 +32,7 @@ class ImageServiceImpl (
             imageRepository.save(imageEntity)
             return ImageDTO.Dto.ImageInfo(imageId = imageEntity.imageId, imageUrl = imageEntity.imageUrl)
         } catch (e : Exception){
-            throw BaseException(BaseResponseCode.FILE_UPLOAD_ERROR)
+            throw CustomException(ResCode.FILE_UPLOAD_ERROR)
         }
     }
 }

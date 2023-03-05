@@ -1,9 +1,9 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.service.inter
 
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
-import com.swj9707.twittercloneapiserver.v1.user.entity.TwitterUser
-import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetReqDTO
-import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetResDTO
+import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.vo.TweetReqDTO
+import com.swj9707.twittercloneapiserver.v1.tweet.dto.vo.TweetResDTO
 import org.springframework.data.domain.Pageable
 import java.util.*
 
