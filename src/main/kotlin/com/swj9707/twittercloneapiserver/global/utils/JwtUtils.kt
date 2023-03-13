@@ -5,6 +5,7 @@ import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
 import com.swj9707.twittercloneapiserver.global.exception.CustomException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
@@ -33,7 +34,7 @@ class JwtUtils(
 
     companion object {
         const val REFRESH_TOKEN_NAME = "refreshToken"
-        const val ACCESS_TOKEN_VALID_TIME = 10 * 60 * 1000L
+        const val ACCESS_TOKEN_VALID_TIME = 2 * 60 * 1000L
         const val REFRESH_TOKEN_VALID_TIME = 30 * 24 * 60 * 60 * 1000L
     }
 
@@ -78,20 +79,15 @@ class JwtUtils(
             val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
             !claims.body.expiration.before(Date())
         } catch (e: SecurityException) {
-            logger.error("Invalid JWT Signature : SecurityException")
-            false
+            throw JwtException("Invalid JWT Signature")
         } catch (e: MalformedJwtException) {
-            logger.error("Invalid JWT Signature : MalformedJwtException")
-            false
+            throw JwtException("Malformed JWT Signature")
         } catch (e: UnsupportedJwtException) {
-            logger.error("Unsupported JWT Token")
-            false
+            throw JwtException("Unsupported JWT Token")
         } catch (e: IllegalArgumentException) {
-            logger.error("JWT token is invalid")
-            false
+            throw JwtException("JWT token compact of handler are invalid")
         } catch (e: ExpiredJwtException) {
-            logger.error("JWT token is Expired")
-            false
+            throw CustomException(ResCode.EXPIRED_TOKEN)
         }
     }
 

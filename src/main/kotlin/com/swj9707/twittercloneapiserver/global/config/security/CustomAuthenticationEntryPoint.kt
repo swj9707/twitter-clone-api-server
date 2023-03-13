@@ -19,10 +19,6 @@ import kotlin.jvm.Throws
 class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val expiredExceptionResponse = BaseResponse.failure(
-        ResCode.EXPIRED_TOKEN.status
-        , ResCode.EXPIRED_TOKEN.message)
-
     @Throws(IOException::class, ServletException::class)
     override fun commence(
         request: HttpServletRequest,
@@ -33,7 +29,11 @@ class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpStatus.UNAUTHORIZED.value()
         val objectMapper = ObjectMapper()
-        objectMapper.writeValue(response.outputStream, expiredExceptionResponse)
+        objectMapper.writeValue(response.outputStream, createExceptionResponse(authException))
         response.outputStream.flush()
+    }
+
+    fun createExceptionResponse(authException: AuthenticationException) : BaseResponse<String>{
+        return BaseResponse.failure(ResCode.UNAUTHORIZED.status, authException.message.toString())
     }
 }
