@@ -1,14 +1,11 @@
 package com.swj9707.twittercloneapiserver.global.config.security
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseRes
 import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.stereotype.Component
@@ -25,15 +22,10 @@ class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
-        logger.error("Unauthorized Error : " + authException.message)
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.status = HttpStatus.UNAUTHORIZED.value()
-        val objectMapper = ObjectMapper()
-        objectMapper.writeValue(response.outputStream, createExceptionResponse(authException))
         response.outputStream.flush()
     }
 
-    fun createExceptionResponse(authException: AuthenticationException) : BaseResponse<String>{
-        return BaseResponse.failure(ResCode.UNAUTHORIZED.status, authException.message.toString())
+    fun createExceptionResponse(authException: AuthenticationException) : BaseRes<String>{
+        return BaseRes.failure(ResCode.UNAUTHORIZED)
     }
 }

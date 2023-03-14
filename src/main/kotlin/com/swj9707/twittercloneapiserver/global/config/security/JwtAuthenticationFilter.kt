@@ -1,7 +1,8 @@
 package com.swj9707.twittercloneapiserver.global.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseRes
+import com.swj9707.twittercloneapiserver.global.common.enum.JwtTokenStatus
 import com.swj9707.twittercloneapiserver.global.utils.JwtUtils
 import com.swj9707.twittercloneapiserver.global.utils.RedisUtils
 import io.jsonwebtoken.ExpiredJwtException
@@ -15,38 +16,48 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.ObjectUtils
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
-import kotlin.jvm.Throws
+
 
 class JwtAuthenticationFilter(
     private val jwtUtils: JwtUtils, private val redisUtils: RedisUtils
 ) : OncePerRequestFilter() {
-    @Throws(IOException::class, ServletException::class, Exception::class, ExpiredJwtException::class)
+    @Throws(
+        IOException::class,
+        ServletException::class,
+        Exception::class,
+        ExpiredJwtException::class
+    )
     override fun doFilterInternal(
         request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain
     ) {
         val path = request.servletPath
-        val token: String? = jwtUtils.resolveToken((request))
-        try {
-            if(!path.startsWith("/api/auth/v1/reissue") && (token != null) && jwtUtils.validateToken(token)){
+        val token: String = jwtUtils.resolveToken((request))
+        val tokenStatus = jwtUtils.validateToken(token)
+        if (!(path.startsWith("/api/auth/v1/reissue") || path.startsWith("/api/auth/v1/login"))) {
+            if (tokenStatus == JwtTokenStatus.VALID) {
                 val isLogout = redisUtils.getData(token)
                 if (ObjectUtils.isEmpty(isLogout)) {
                     val authentication = jwtUtils.getAuthentication(token)
                     SecurityContextHolder.getContext().authentication = authentication
                 }
+            } else {
+                setErrorResponse(response, tokenStatus)
             }
-        } catch(e : Exception) {
-            sendErrorResponse(response, e.message.toString())
         }
+
         filterChain.doFilter(request, response)
     }
 
-    @Throws(IOException::class)
-    fun sendErrorResponse(response: HttpServletResponse, message : String){
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.status = HttpStatus.UNAUTHORIZED.value()
+    private fun setErrorResponse(
+        res: HttpServletResponse,
+        tokenStatus: JwtTokenStatus
+    ) {
+        logger.error("Unauthorized Error : " + tokenStatus.message)
+        res.contentType = MediaType.APPLICATION_JSON_VALUE
+        res.status = HttpStatus.UNAUTHORIZED.value()
         val objectMapper = ObjectMapper()
-        objectMapper.writeValue(response.outputStream, BaseResponse.failure(HttpStatus.UNAUTHORIZED, message))
-        response.outputStream.flush()
+        objectMapper.writeValue(res.outputStream, BaseRes.failure(tokenStatus))
+        res.outputStream.flush()
     }
 
 }

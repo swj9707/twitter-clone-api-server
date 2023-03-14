@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.image.controller
 
-import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseRes
 import com.swj9707.twittercloneapiserver.global.common.dto.ImageDTO
 import com.swj9707.twittercloneapiserver.v1.image.service.ImageServiceImpl
 import org.springframework.http.ResponseEntity
@@ -16,8 +16,8 @@ class ImageController(
     private val imageService: ImageServiceImpl
 ) {
     @PostMapping("/uploadImage")
-    fun uploadImage(@RequestParam("file") file: MultipartFile): ResponseEntity<BaseResponse<ImageDTO.Dto.ImageInfo>> {
+    fun uploadImage(@RequestParam("file") file: MultipartFile): ResponseEntity<BaseRes<ImageDTO.Dto.ImageInfo>> {
         val result = imageService.uploadImage(file)
-        return ResponseEntity.ok().body(BaseResponse.success(result))
+        return ResponseEntity.ok().body(BaseRes.success(result))
     }
 }

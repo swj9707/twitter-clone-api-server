@@ -1,5 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.user.service
 
+import com.swj9707.twittercloneapiserver.global.common.enum.JwtTokenStatus
 import com.swj9707.twittercloneapiserver.global.common.model.Image
 import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserResDTO
@@ -76,13 +77,17 @@ class TwitterUserServiceImpl(
                 editUserProfile.newUserNickname
             )
         ) {
-            throw CustomException(ResCode.DUPLICATE_USERNICKNAME)
+            throw CustomException(ResCode.DUPLICATE_USER_NICKNAME)
         } else {
             user.userNickname = editUserProfile.newUserNickname
             user.profileImage = Image.dtoToEntity(editUserProfile.profileImage)
             user.backgroundImage = Image.dtoToEntity(editUserProfile.backgroundImage)
             twitterUserRepository.save(user)
-            return UserResDTO.Res.EditProfile(userInfo = UserDTO.Dto.TwitterUserProfile.fromEntity(user))
+            return UserResDTO.Res.EditProfile(
+                userInfo = UserDTO.Dto.TwitterUserProfile.fromEntity(
+                    user
+                )
+            )
         }
     }
 
@@ -106,11 +111,17 @@ class TwitterUserServiceImpl(
         val authenticationToken = req.toAuthentication()
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
 
-        val accessToken = jwtUtils.createToken(authentication.name, JwtUtils.ACCESS_TOKEN_VALID_TIME)
+        val accessToken =
+            jwtUtils.createToken(authentication.name, JwtUtils.ACCESS_TOKEN_VALID_TIME)
         val userInfoDTO = UserDTO.Dto.TwitterUserAuthInfo.fromEntity(userInfo)
 
-        val refreshToken = jwtUtils.createToken(authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
-        redisUtils.setDataExpire(refreshToken, "RT:" + authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+        val refreshToken =
+            jwtUtils.createToken(authentication.name, JwtUtils.REFRESH_TOKEN_VALID_TIME)
+        redisUtils.setDataExpire(
+            refreshToken,
+            "RT:" + authentication.name,
+            JwtUtils.REFRESH_TOKEN_VALID_TIME
+        )
 
         val now: LocalDateTime = LocalDateTime.now()
         userInfo.lastLogin = now
@@ -118,12 +129,15 @@ class TwitterUserServiceImpl(
 
         return UserResDTO.Res.Login(
             userInfo = userInfoDTO,
-            tokenInfo = UserResDTO.Res.TokenInfo(accessToken = accessToken, refreshToken = refreshToken)
+            tokenInfo = UserResDTO.Res.TokenInfo(
+                accessToken = accessToken,
+                refreshToken = refreshToken
+            )
         )
     }
 
     override fun reissue(refreshToken: String): UserResDTO.Res.TokenInfo {
-        if (!jwtUtils.validateToken(refreshToken)) {
+        if (jwtUtils.validateToken(refreshToken) != JwtTokenStatus.VALID) {
             throw CustomException(ResCode.REFRESH_TOKEN_EXPIRED)
         }
         val userEmail = jwtUtils.getUserEmail(refreshToken)
@@ -145,7 +159,7 @@ class TwitterUserServiceImpl(
     }
 
     override fun logout(accessToken: String, refreshToken: String): UserResDTO.Res.Logout {
-        if (!jwtUtils.validateToken(accessToken)) {
+        if (jwtUtils.validateToken(accessToken) != JwtTokenStatus.VALID) {
             throw CustomException(ResCode.BAD_REQUEST)
         }
 
@@ -175,9 +189,12 @@ class TwitterUserServiceImpl(
         return UserResDTO.Res.UserProfile(userProfile = userProfile, countOfTweet = countOfTweets)
     }
 
-    override fun followToUser(user : TwitterUser, req: UserReqDTO.Req.FollowReq): UserResDTO.Res.FollowRes {
+    override fun followToUser(
+        user: TwitterUser,
+        req: UserReqDTO.Req.FollowReq
+    ): UserResDTO.Res.FollowRes {
         val followee = twitterUserRepository.findById(req.userId)
-            .orElseThrow{ CustomException(ResCode.USER_NOT_FOUND)}
+            .orElseThrow { CustomException(ResCode.USER_NOT_FOUND) }
 
         val followeeData = UserFollower(followee = followee, follower = user)
         userFollowerRepository.save(followeeData)
@@ -185,8 +202,15 @@ class TwitterUserServiceImpl(
         return UserResDTO.Res.FollowRes(userId = followee.userId)
     }
 
-    override fun unfollowToUser(user: TwitterUser, req: UserReqDTO.Req.FollowReq): UserResDTO.Res.FollowRes {
-        if(userFollowerRepository.existsByFolloweeUserIdAndFollowerUserId(req.userId, user.userId)){
+    override fun unfollowToUser(
+        user: TwitterUser,
+        req: UserReqDTO.Req.FollowReq
+    ): UserResDTO.Res.FollowRes {
+        if (userFollowerRepository.existsByFolloweeUserIdAndFollowerUserId(
+                req.userId,
+                user.userId
+            )
+        ) {
             userFollowerRepository.deleteByFolloweeUserIdAndFollowerUserId(req.userId, user.userId)
             return UserResDTO.Res.FollowRes(userId = req.userId)
         } else {

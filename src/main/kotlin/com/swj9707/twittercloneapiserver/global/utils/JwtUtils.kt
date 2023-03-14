@@ -1,11 +1,11 @@
 package com.swj9707.twittercloneapiserver.global.utils
 
+import com.swj9707.twittercloneapiserver.global.common.enum.JwtTokenStatus
 import com.swj9707.twittercloneapiserver.v1.user.service.UserDetailsServiceImpl
 import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
 import com.swj9707.twittercloneapiserver.global.exception.CustomException
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
@@ -34,7 +34,7 @@ class JwtUtils(
 
     companion object {
         const val REFRESH_TOKEN_NAME = "refreshToken"
-        const val ACCESS_TOKEN_VALID_TIME = 2 * 60 * 1000L
+        const val ACCESS_TOKEN_VALID_TIME = 15 * 60 * 1000L
         const val REFRESH_TOKEN_VALID_TIME = 30 * 24 * 60 * 60 * 1000L
     }
 
@@ -45,7 +45,8 @@ class JwtUtils(
     }
 
     fun extractAllClaims(jwtToken: String): Claims {
-        return Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken).body
+        return Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build()
+            .parseClaimsJws(jwtToken).body
     }
 
     fun createToken(userEmail: String, validTime: Long): String {
@@ -66,36 +67,40 @@ class JwtUtils(
         return result
     }
 
-    fun resolveToken(request: HttpServletRequest): String? {
+    fun resolveToken(request: HttpServletRequest): String {
         var token = request.getHeader("Authorization")
-        if (token != null) {
-            token = token.substring("Bearer ".length)
-        }
+        token = token?.substring("Bearer ".length) ?: ""
         return token
     }
 
-    fun validateToken(jwtToken: String): Boolean {
-        return try {
-            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
-            !claims.body.expiration.before(Date())
+    fun validateToken(jwtToken: String): JwtTokenStatus {
+        try {
+            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build()
+                .parseClaimsJws(jwtToken)
+            if (!claims.body.expiration.before(Date())) {
+                return JwtTokenStatus.VALID
+            }
         } catch (e: SecurityException) {
-            throw JwtException("Invalid JWT Signature")
+            return JwtTokenStatus.INVALID_SIGNATURE
         } catch (e: MalformedJwtException) {
-            throw JwtException("Malformed JWT Signature")
+            return JwtTokenStatus.MALFORMED
         } catch (e: UnsupportedJwtException) {
-            throw JwtException("Unsupported JWT Token")
+            return JwtTokenStatus.UNSUPPORTED
         } catch (e: IllegalArgumentException) {
-            throw JwtException("JWT token compact of handler are invalid")
+            return JwtTokenStatus.ILLEGAL_ARGUMENT
         } catch (e: ExpiredJwtException) {
-            throw CustomException(ResCode.EXPIRED_TOKEN)
+            return JwtTokenStatus.EXPIRED
         }
+        return JwtTokenStatus.VALID
     }
 
     fun getExpirationPeriod(jwtToken: String): Int {
         return try {
-            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build().parseClaimsJws(jwtToken)
+            val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build()
+                .parseClaimsJws(jwtToken)
             val expireDate =
-                Instant.ofEpochMilli(claims.body.expiration.time).atZone(ZoneId.systemDefault()).toLocalDate()
+                Instant.ofEpochMilli(claims.body.expiration.time).atZone(ZoneId.systemDefault())
+                    .toLocalDate()
             val today = LocalDate.now()
             Period.between(today, expireDate).days
         } catch (e: Exception) {

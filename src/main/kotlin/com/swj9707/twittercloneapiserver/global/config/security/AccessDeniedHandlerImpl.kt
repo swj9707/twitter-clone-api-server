@@ -1,7 +1,7 @@
 package com.swj9707.twittercloneapiserver.global.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseRes
 import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -21,7 +21,7 @@ class AccessDeniedHandlerImpl : AccessDeniedHandler {
         val objectMapper = ObjectMapper()
         objectMapper.writeValue(
             response.outputStream,
-            BaseResponse.failure(ResCode.FORBIDDEN.status, accessDeniedException.message.toString())
+            BaseRes.failure(ResCode.UNAUTHORIZED)
         )
         response.outputStream.flush()
     }

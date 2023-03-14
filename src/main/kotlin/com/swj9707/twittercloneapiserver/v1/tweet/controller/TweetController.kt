@@ -1,6 +1,6 @@
 package com.swj9707.twittercloneapiserver.v1.tweet.controller
 
-import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseRes
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.TweetDTO
 import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
 import com.swj9707.twittercloneapiserver.v1.tweet.dto.vo.TweetReqDTO
@@ -22,33 +22,33 @@ class TweetController(
     @PostMapping("/create")
     fun createTweet(
         @AuthenticationPrincipal user: TwitterUser, @RequestBody request: TweetReqDTO.Req.CreateTweet
-    ): ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
+    ): ResponseEntity<BaseRes<TweetResDTO.Res.TweetInfo>> {
         val response = tweetService.createTweet(user, request)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @PostMapping("/reply")
     fun createReplyTweet(
         @AuthenticationPrincipal user: TwitterUser, @RequestBody request: TweetReqDTO.Req.CreateTweet
-    ): ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
+    ): ResponseEntity<BaseRes<TweetResDTO.Res.TweetInfo>> {
         val response = tweetService.createReplyTweet(user, request)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/retweet")
     fun retweetRequest(
         @AuthenticationPrincipal user: TwitterUser, @RequestParam(name = "tweetId", defaultValue = "") tweetId: Long
-    ): ResponseEntity<BaseResponse<TweetResDTO.Res.RetweetResult>> {
+    ): ResponseEntity<BaseRes<TweetResDTO.Res.RetweetResult>> {
         val response = tweetService.retweet(user, tweetId)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/like")
     fun likeRequest(
         @AuthenticationPrincipal user: TwitterUser, @RequestParam(name = "tweetId", defaultValue = "") tweetId: Long
-    ): ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
+    ): ResponseEntity<BaseRes<TweetResDTO.Res.TweetInfo>> {
         val response = tweetService.likeTweet(user, tweetId)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/read")
@@ -58,60 +58,60 @@ class TweetController(
             sort = ["tweetId"],
             direction = Sort.Direction.DESC
         ) pageable: Pageable
-    ): ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>> {
+    ): ResponseEntity<BaseRes<TweetResDTO.Res.TweetsRes>> {
         val response = tweetService.readTweets(pageable)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/getTweet")
     fun getTweetByTweetId(
         @RequestParam(name ="tweetId", defaultValue = "") tweetId : Long
-    ) : ResponseEntity<BaseResponse<TweetDTO.Dto.TweetInfo>> {
+    ) : ResponseEntity<BaseRes<TweetDTO.Dto.TweetInfo>> {
         val response = tweetService.getUsetTweetByTweetId(tweetId)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/getUsersTweet")
     fun getUserTweetsAndRetweet(
         @PageableDefault(size = 5) pageable: Pageable,
         @RequestParam(name = "userId", defaultValue = "") userId : UUID
-    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
+    ) : ResponseEntity<BaseRes<TweetResDTO.Res.UserTweetsRes>> {
         val response = tweetService.getUsersTweets(userId, pageable)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/getUserReplies")
     fun getUserRepliesAndRetweet(
         @PageableDefault(size = 5) pageable: Pageable,
         @RequestParam(name = "userId", defaultValue = "") userId : UUID
-    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
+    ) : ResponseEntity<BaseRes<TweetResDTO.Res.UserTweetsRes>> {
         val response = tweetService.getUsersRetweetsAndReplies(userId, pageable)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/getUsersLikes")
     fun getUsersLikes(
         @PageableDefault(size = 5) pageable: Pageable,
         @RequestParam(name = "userId", defaultValue = "") userId : UUID
-    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.UserTweetsRes>> {
+    ) : ResponseEntity<BaseRes<TweetResDTO.Res.UserTweetsRes>> {
         val response = tweetService.getUsersLikes(userId, pageable)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @GetMapping("/getReplies")
     fun getReplies(
         @PageableDefault(size = 5, sort = ["tweetId"], direction = Sort.Direction.DESC) pageable: Pageable,
         @RequestParam(name = "tweetId", defaultValue = "") tweetId : Long
-    ) : ResponseEntity<BaseResponse<TweetResDTO.Res.TweetsRes>> {
+    ) : ResponseEntity<BaseRes<TweetResDTO.Res.TweetsRes>> {
         val response = tweetService.getTweetReplies(tweetId, pageable)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 
     @PutMapping("/delete")
     fun deleteTweet(
         @AuthenticationPrincipal user: TwitterUser, @RequestBody request: TweetReqDTO.Req.DeleteTweet
-    ): ResponseEntity<BaseResponse<TweetResDTO.Res.TweetInfo>> {
+    ): ResponseEntity<BaseRes<TweetResDTO.Res.TweetInfo>> {
         val response = tweetService.deleteTweet(user, request)
-        return ResponseEntity.ok().body(BaseResponse.success(response))
+        return ResponseEntity.ok().body(BaseRes.success(response))
     }
 }

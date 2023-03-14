@@ -1,7 +1,7 @@
 package com.swj9707.twittercloneapiserver.global.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseRes
 import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -27,7 +27,7 @@ class JwtExceptionFilter : OncePerRequestFilter() {
 
         }
     }
-    fun createExceptionResponse(message : String) : BaseResponse<String> {
-        return BaseResponse.failure(ResCode.UNAUTHORIZED.status, message)
+    fun createExceptionResponse(message : String) : BaseRes<String> {
+        return BaseRes.failure(ResCode.UNAUTHORIZED)
     }
 }

@@ -3,7 +3,7 @@ package com.swj9707.twittercloneapiserver.v1.user.controller
 import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserResDTO
 import com.swj9707.twittercloneapiserver.v1.user.service.TwitterUserServiceImpl
-import com.swj9707.twittercloneapiserver.global.common.dto.BaseResponse
+import com.swj9707.twittercloneapiserver.global.common.dto.BaseRes
 import com.swj9707.twittercloneapiserver.v1.user.model.TwitterUser
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -20,9 +20,9 @@ class UserController(
             name = "userId",
             defaultValue = ""
         ) userId: String
-    ): ResponseEntity<BaseResponse<UserResDTO.Res.UserInfo>> {
+    ): ResponseEntity<BaseRes<UserResDTO.Res.UserInfo>> {
         val result = twitterUserServiceImpl.getUserInfoByUserId(userId)
-        return ResponseEntity.ok().body(BaseResponse.success(result))
+        return ResponseEntity.ok().body(BaseRes.success(result))
     }
 
     @GetMapping("/getUserProfile")
@@ -31,33 +31,33 @@ class UserController(
             name = "userName",
             defaultValue = ""
         ) userName: String
-    ): ResponseEntity<BaseResponse<UserResDTO.Res.UserProfile>> {
+    ): ResponseEntity<BaseRes<UserResDTO.Res.UserProfile>> {
         val result = twitterUserServiceImpl.getUserProfileByUserName(userName)
-        return ResponseEntity.ok().body(BaseResponse.success(result))
+        return ResponseEntity.ok().body(BaseRes.success(result))
     }
 
     @PutMapping("/editProfile")
     fun editProfile(
         @RequestBody request: UserReqDTO.Req.EditProfile
-    ): ResponseEntity<BaseResponse<UserResDTO.Res.EditProfile>> {
+    ): ResponseEntity<BaseRes<UserResDTO.Res.EditProfile>> {
         val result = twitterUserServiceImpl.editUserProfile(request)
-        return ResponseEntity.ok().body(BaseResponse.success(result))
+        return ResponseEntity.ok().body(BaseRes.success(result))
     }
 
     @PutMapping("/editUserProfile")
     fun editUserProfile(
         @RequestBody request: UserReqDTO.Req.EditUserProfile
-    ): ResponseEntity<BaseResponse<UserResDTO.Res.EditProfile>> {
+    ): ResponseEntity<BaseRes<UserResDTO.Res.EditProfile>> {
         val result = twitterUserServiceImpl.editUserProfile(request)
-        return ResponseEntity.ok().body(BaseResponse.success(result))
+        return ResponseEntity.ok().body(BaseRes.success(result))
     }
 
     @PutMapping("/editPassword")
     fun editPassword(
         @RequestBody request: UserReqDTO.Req.EditPassword
-    ): ResponseEntity<BaseResponse<UserResDTO.Res.EditPassword>> {
+    ): ResponseEntity<BaseRes<UserResDTO.Res.EditPassword>> {
         val result = twitterUserServiceImpl.editUserPassword(request)
-        return ResponseEntity.ok().body(BaseResponse.success(result))
+        return ResponseEntity.ok().body(BaseRes.success(result))
     }
 
     @PostMapping("/followUser")
