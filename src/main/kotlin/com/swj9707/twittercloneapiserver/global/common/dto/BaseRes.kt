@@ -1,6 +1,5 @@
 package com.swj9707.twittercloneapiserver.global.common.dto
 
-import com.swj9707.twittercloneapiserver.global.common.enum.JwtTokenStatus
 import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
 import org.springframework.http.HttpStatus
 
@@ -20,12 +19,6 @@ data class BaseRes<T> (
             status = resCode.status,
             data = resCode.errorCode,
             message = resCode.message
-        )
-
-        fun failure(jwtTokenStatus: JwtTokenStatus) = BaseRes(
-            status = HttpStatus.UNAUTHORIZED,
-            data = jwtTokenStatus.errorCode,
-            message = jwtTokenStatus.message
         )
     }
 

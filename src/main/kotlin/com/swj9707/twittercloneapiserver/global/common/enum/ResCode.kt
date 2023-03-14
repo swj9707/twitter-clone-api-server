@@ -14,6 +14,10 @@ enum class ResCode(status: HttpStatus, message: String, errorCode : String ) {
     //UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다.", "ERROR-UA-00"),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Token Expired", "ERROR-UA-01"),
+    TOKEN_ILLEGAL_ARGUMENT(HttpStatus.UNAUTHORIZED, "잘못 된 토큰 요청입니다.", "ERROR-UA-002"),
+    TOKEN_UNSUPPORTED(HttpStatus.UNAUTHORIZED, "지원하지 않는 토큰 양식입니다.", "ERROR-UA-003"),
+    TOKEN_MALFORMED(HttpStatus.UNAUTHORIZED, "잘못 생성 된 토큰 입니다.", "ERROR-UA-004"),
+    TOKEN_INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "시그니쳐 키가 잘못 되었습니다.", "ERROR-UA-005"),
 
     //BAD_REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "요청이 올바르지 않습니다.", "ERROR-BR-00"),

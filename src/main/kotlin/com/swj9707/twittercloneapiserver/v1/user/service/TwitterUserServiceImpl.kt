@@ -1,6 +1,5 @@
 package com.swj9707.twittercloneapiserver.v1.user.service
 
-import com.swj9707.twittercloneapiserver.global.common.enum.JwtTokenStatus
 import com.swj9707.twittercloneapiserver.global.common.model.Image
 import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserReqDTO
 import com.swj9707.twittercloneapiserver.v1.user.dto.vo.UserResDTO
@@ -137,7 +136,7 @@ class TwitterUserServiceImpl(
     }
 
     override fun reissue(refreshToken: String): UserResDTO.Res.TokenInfo {
-        if (jwtUtils.validateToken(refreshToken) != JwtTokenStatus.VALID) {
+        if (jwtUtils.validateToken(refreshToken) != ResCode.OK) {
             throw CustomException(ResCode.REFRESH_TOKEN_EXPIRED)
         }
         val userEmail = jwtUtils.getUserEmail(refreshToken)
@@ -159,7 +158,7 @@ class TwitterUserServiceImpl(
     }
 
     override fun logout(accessToken: String, refreshToken: String): UserResDTO.Res.Logout {
-        if (jwtUtils.validateToken(accessToken) != JwtTokenStatus.VALID) {
+        if (jwtUtils.validateToken(accessToken) != ResCode.OK) {
             throw CustomException(ResCode.BAD_REQUEST)
         }
 

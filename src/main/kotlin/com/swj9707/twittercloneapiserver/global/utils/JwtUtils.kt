@@ -1,6 +1,5 @@
 package com.swj9707.twittercloneapiserver.global.utils
 
-import com.swj9707.twittercloneapiserver.global.common.enum.JwtTokenStatus
 import com.swj9707.twittercloneapiserver.v1.user.service.UserDetailsServiceImpl
 import com.swj9707.twittercloneapiserver.global.common.enum.ResCode
 import com.swj9707.twittercloneapiserver.global.exception.CustomException
@@ -34,7 +33,7 @@ class JwtUtils(
 
     companion object {
         const val REFRESH_TOKEN_NAME = "refreshToken"
-        const val ACCESS_TOKEN_VALID_TIME = 15 * 60 * 1000L
+        const val ACCESS_TOKEN_VALID_TIME = 2 * 60 * 1000L
         const val REFRESH_TOKEN_VALID_TIME = 30 * 24 * 60 * 60 * 1000L
     }
 
@@ -73,25 +72,26 @@ class JwtUtils(
         return token
     }
 
-    fun validateToken(jwtToken: String): JwtTokenStatus {
+    fun validateToken(jwtToken: String): ResCode {
         try {
             val claims = Jwts.parserBuilder().setSigningKey(getSigningkey(SECRETKEY)).build()
                 .parseClaimsJws(jwtToken)
-            if (!claims.body.expiration.before(Date())) {
-                return JwtTokenStatus.VALID
+            return if (!claims.body.expiration.before(Date())) {
+                ResCode.OK
+            } else {
+                ResCode.EXPIRED_TOKEN
             }
         } catch (e: SecurityException) {
-            return JwtTokenStatus.INVALID_SIGNATURE
+            return ResCode.TOKEN_INVALID_SIGNATURE
         } catch (e: MalformedJwtException) {
-            return JwtTokenStatus.MALFORMED
+            return ResCode.TOKEN_MALFORMED
         } catch (e: UnsupportedJwtException) {
-            return JwtTokenStatus.UNSUPPORTED
+            return ResCode.TOKEN_UNSUPPORTED
         } catch (e: IllegalArgumentException) {
-            return JwtTokenStatus.ILLEGAL_ARGUMENT
+            return ResCode.TOKEN_ILLEGAL_ARGUMENT
         } catch (e: ExpiredJwtException) {
-            return JwtTokenStatus.EXPIRED
+            return ResCode.EXPIRED_TOKEN
         }
-        return JwtTokenStatus.VALID
     }
 
     fun getExpirationPeriod(jwtToken: String): Int {
